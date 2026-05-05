@@ -6,210 +6,205 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<meta name="apple-mobile-web-app-title" content="Second Brain"/>
 <meta name="theme-color" content="#080C14"/>
 <title>Second Brain</title>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
-html,body,#root{height:100%;background:#080C14;font-family:'Sora',sans-serif}
+html,body{height:100%;background:#080C14;font-family:'Sora',sans-serif;color:#E2E8F0}
 ::-webkit-scrollbar{display:none}
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+button{font-family:'Sora',sans-serif;cursor:pointer}
+input,textarea,select{font-family:'Sora',sans-serif;color:#E2E8F0;color-scheme:dark}
 @keyframes spin{to{transform:rotate(360deg)}}
-input,textarea,select{color-scheme:dark;font-family:'Sora',sans-serif}
+#app{display:flex;flex-direction:column;height:100vh;max-width:430px;margin:0 auto;position:relative;overflow:hidden;background:#080C14}
+#hdr{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 10px;background:#080C14;border-bottom:1px solid #0F1829;flex-shrink:0}
+.brand{color:#E2E8F0;font-weight:700;font-size:17px}
+.sr{display:flex;align-items:center;gap:5px;margin-top:3px}
+.sd{width:6px;height:6px;border-radius:50%;display:inline-block;background:#34D399}
+.st{font-size:10px;color:#374151}
+.hbs{display:flex;gap:6px}
+.hb{background:#0F1829;border:none;border-radius:10px;color:#94A3B8;font-size:15px;padding:8px 10px}
+#apanel{background:#0A0F1E;border-bottom:1px solid #1F2937;padding:12px 16px;display:none;flex-shrink:0}
+#apanel.on{display:block}
+#body{flex:1;overflow-y:auto;padding-bottom:88px}
+.pg{padding:0 16px 16px}
+.hero{padding:18px 0 14px;border-bottom:1px solid #0F1829;margin-bottom:16px}
+.hdate{font-size:10px;color:#374151;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.htitle{font-size:24px;font-weight:700;letter-spacing:-0.03em;margin-bottom:3px}
+.hsub{font-size:12px;color:#4B5563;margin-bottom:10px}
+.bt{height:3px;background:#0F1829;border-radius:99px}
+.bf{height:100%;background:linear-gradient(90deg,#4F8EF7,#A78BFA);border-radius:99px;transition:width .6s}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.sc{background:#0A0F1E;border:1px solid #0F1829;border-radius:12px;padding:10px 6px;text-align:center}
+.sv{font-size:20px;font-weight:700;line-height:1}
+.sl{font-size:9px;color:#374151;margin-top:3px;text-transform:uppercase;letter-spacing:.06em}
+.al{background:#F8717112;border:1px solid #F8717133;border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.ab{background:#F87171;border:none;border-radius:8px;color:#fff;font-size:12px;font-weight:600;padding:4px 10px}
+.stl{color:#374151;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;margin-top:14px;display:block}
+.mc2{display:flex;align-items:center;gap:8px;background:#0A0F1E;border:1px solid #0F1829;border-radius:10px;padding:9px 12px;margin-bottom:6px;cursor:pointer}
+.ma{width:3px;height:24px;border-radius:99px;flex-shrink:0}
+.wb{background:linear-gradient(135deg,#4F8EF715,#A78BFA15);border:1px solid #4F8EF733;border-radius:14px;padding:14px 16px;margin:14px 0;display:flex;align-items:center;justify-content:space-between}
+.wl{color:#E2E8F0;font-size:13px;font-weight:600}
+.ws{color:#4B5563;font-size:11px;margin-top:2px}
+.wbtn{background:transparent;border:none;color:#4F8EF7;font-size:12px;font-weight:600;padding:0}
+.cg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.ct{background:#0A0F1E;border:1px solid #0F1829;border-radius:14px;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;position:relative;outline:none}
+.cti{font-size:20px}
+.ctl{font-size:11px;color:#6B7280;font-weight:500}
+.cba{position:absolute;top:6px;right:6px;border-radius:999px;font-size:9px;font-weight:700;color:#fff;min-width:16px;height:16px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+.lh{display:flex;align-items:center;gap:10px;padding:14px 0 10px}
+.lt{font-size:19px;font-weight:700;flex:1;letter-spacing:-0.02em}
+.lc{font-size:11px;color:#374151;background:#0F1829;border-radius:99px;padding:2px 10px}
+.chips{display:flex;gap:5px;overflow-x:auto;padding:0 0 10px}
+.chip{background:#0A0F1E;border:1px solid #0F1829;border-radius:999px;color:#4B5563;font-size:11px;padding:4px 10px;cursor:pointer;white-space:nowrap}
+.tc{background:#0A0F1E;border:1px solid #0F1829;border-radius:13px;margin-bottom:7px;display:flex;overflow:hidden;cursor:pointer}
+.tc.ov{border-color:#F8717155}
+.tac{width:3px;flex-shrink:0}
+.tb{flex:1;padding:11px 12px 9px;min-width:0}
+.tr{display:flex;gap:9px;align-items:flex-start;margin-bottom:7px}
+.sb{width:26px;height:26px;border-radius:7px;border:none;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0;cursor:pointer}
+.tt{font-size:13px;font-weight:500;line-height:1.4}
+.tt.dn{text-decoration:line-through;opacity:.4}
+.tn{font-size:11px;color:#4B5563;margin-top:4px;line-height:1.5}
+.td{font-size:10px;flex-shrink:0;color:#6B7280}
+.td.ov{color:#F87171}
+.mr{display:flex;flex-wrap:wrap;gap:4px}
+.bdg{font-size:10px;padding:2px 6px;border-radius:5px;font-weight:500}
+.tact{display:flex;gap:8px;margin-top:10px}
+.eb{background:#0F1829;border:none;border-radius:8px;color:#6B7280;font-size:12px;padding:5px 12px}
+.db{background:transparent;border:none;color:#F87171;font-size:12px}
+.abar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.ap{border-radius:10px;padding:10px 6px;text-align:center}
+.dh{display:flex;align-items:center;gap:8px;margin-bottom:7px;padding:4px 0}
+.dlb{font-size:12px;font-weight:600}
+.ddt{font-size:10px;color:#374151;flex:1}
+.dc{background:#0F1829;color:#4B5563;font-size:10px;border-radius:99px;padding:1px 7px}
+.lc2{background:#0A0F1E;border:1px solid #0F1829;border-radius:10px;padding:9px 12px;margin-bottom:5px;display:flex;gap:9px;align-items:flex-start}
+.la{width:3px;min-height:22px;border-radius:99px;flex-shrink:0;margin-top:1px}
+.ltx{font-size:12px;color:#C8D6E5;line-height:1.5;margin-bottom:4px}
+.ldel{background:transparent;border:none;color:#1F2937;font-size:14px;cursor:pointer;padding:0 2px;flex-shrink:0}
+.rh{background:linear-gradient(135deg,#4F8EF715,#A78BFA15);border:1px solid #4F8EF733;border-radius:14px;padding:16px;margin-bottom:16px}
+.rw{font-size:13px;font-weight:600;margin-bottom:4px}
+.rs{font-size:12px;color:#4B5563;margin-bottom:14px}
+.gbtn{width:100%;padding:12px;background:linear-gradient(135deg,#4F8EF7,#A78BFA);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px}
+.gbtn:disabled{opacity:.6}
+.racts{display:flex;gap:8px;margin-bottom:12px}
+.rab{flex:1;padding:10px;background:#0A0F1E;border:1px solid #1F2937;border-radius:10px;color:#94A3B8;font-size:13px}
+.rbox{background:#0A0F1E;border:1px solid #1F2937;border-radius:12px;padding:14px;overflow-x:auto}
+.rpre{margin:0;color:#C8D6E5;font-size:11px;line-height:1.8;white-space:pre-wrap}
+#nav{position:absolute;bottom:0;left:0;right:0;background:#080C14;border-top:1px solid #0F1829;display:flex;justify-content:space-around;padding:8px 0 22px;z-index:30}
+.ntab{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:#1F2937;padding:4px 2px;position:relative;min-width:44px}
+.ntab.on{color:#4F8EF7}
+.niw{font-size:18px;position:relative;display:inline-block}
+.nbdg{position:absolute;top:-1px;right:-3px;border-radius:999px;font-size:8px;font-weight:700;color:#fff;min-width:14px;height:14px;display:none;align-items:center;justify-content:center;padding:0 3px}
+.nlbl{font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+#fab{position:absolute;bottom:78px;right:16px;width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#4F8EF7,#A78BFA);border:none;color:#fff;font-size:24px;box-shadow:0 4px 18px #4F8EF755;display:flex;align-items:center;justify-content:center;z-index:31}
+.ovl{position:fixed;inset:0;background:#00000090;z-index:50;display:flex;align-items:flex-end}
+.mdl{background:#0A0F1E;border-radius:20px 20px 0 0;width:100%;max-width:430px;margin:0 auto;max-height:88vh;overflow-y:auto;padding:0 16px 40px}
+.mhdl{width:36px;height:4px;background:#1F2937;border-radius:99px;margin:12px auto 16px}
+.mhd{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.mttl{font-size:18px;font-weight:700}
+.mclb{background:#0F1829;border:none;border-radius:8px;color:#4B5563;font-size:16px;padding:6px 10px}
+.fld{margin-bottom:14px}
+.flbl{font-size:10px;color:#4B5563;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;font-weight:600;display:block}
+.inp{width:100%;background:#080C14;border:1px solid #1F2937;border-radius:10px;padding:10px 12px;color:#E2E8F0;font-size:14px;outline:none}
+.inpta{width:100%;background:#080C14;border:1px solid #1F2937;border-radius:10px;padding:10px 12px;color:#E2E8F0;font-size:14px;outline:none;height:68px;resize:none}
+.sel{width:100%;background:#080C14;border:1px solid #1F2937;border-radius:10px;padding:10px 12px;color:#E2E8F0;font-size:14px;outline:none;cursor:pointer}
+.r2{display:flex;gap:10px;margin-bottom:14px}
+.r2>div{flex:1}
+.ccs{display:flex;flex-wrap:wrap;gap:6px}
+.cc{background:#080C14;border:1px solid #1F2937;border-radius:99px;color:#4B5563;font-size:11px;padding:5px 10px;cursor:pointer}
+.tagrow{display:flex;gap:6px;margin-bottom:6px}
+.tadd{background:#0F1829;border:none;border-radius:10px;color:#6B7280;font-size:13px;padding:10px 14px}
+.tw{display:flex;flex-wrap:wrap;gap:6px}
+.tb2{display:inline-flex;align-items:center;gap:4px;background:#4F8EF722;color:#4F8EF7;border-radius:6px;font-size:11px;padding:3px 8px}
+.tx{background:none;border:none;color:inherit;cursor:pointer;padding:0;font-size:14px}
+.svbtn{width:100%;padding:13px;background:linear-gradient(135deg,#4F8EF7,#A78BFA);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;margin-top:8px}
+.svbtn:disabled{background:#1F2937;color:#4B5563}
+.igrid{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.ibtn{background:#0A0F1E;border:1px solid #1F2937;border-radius:8px;font-size:16px;padding:5px 6px;cursor:pointer}
+.crow{display:flex;flex-direction:column;gap:6px;margin-bottom:20px}
+.crb{display:flex;align-items:center;gap:12px;padding:12px;background:#080C14;border:1px solid #0F1829;border-radius:10px;cursor:pointer;outline:none;width:100%;text-align:left}
+.acb{background:#080C14;border:1px solid #0F1829;border-radius:14px;padding:14px}
 </style>
 </head>
 <body>
-<div id="root"></div>
-<script type="text/babel">
-const {useState,useEffect,useCallback,useRef} = React;
-
-// ── CONFIG — update these file IDs if you recreate Drive files ─────────────────
-const DRIVE_FILE_IDS = {
-tasks:      “1OWIXMe5PvrXOZXDVFDxVfylXQ8Kml_IE”,
-worklog:    “1w6jQLE48kmnSQ3kXn5TDiafhfYe2y4tQ”,
-categories: “14zFd-GoGYRGdbjr76ySlRNb-pqZrNSyK”,
-};
-const DRIVE_MCP = “https://drivemcp.googleapis.com/mcp/v1”;
-const MODEL     = “claude-sonnet-4-20250514”;
-
-// ── INITIAL DATA (your real data — also stored in Drive) ──────────────────────
-const INITIAL_TASKS = [
-{id:“1”,title:“DHCP Scope Failover UAT”,category:“work”,priority:“urgent”,status:“inprogress”,dueDate:“2026-05-09”,notes:“Network team using solution to assign IP on switch interface, which can exclude DS team involvement. Next: Discuss feasibility and stability with Vikas Maurya”,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
-{id:“2”,title:“Fix Packet Fence Auto Enrolment Issue”,category:“work”,priority:“high”,status:“inprogress”,dueDate:“2026-05-06”,notes:””,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
-{id:“3”,title:“Discuss feasibility and stability with Vikas Maurya”,category:“work”,priority:“high”,status:“todo”,dueDate:“2026-05-06”,notes:“Sub-task of DHCP Scope Failover UAT”,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
-{id:“4”,title:“Review IP assignment solution on switch interface”,category:“work”,priority:“normal”,status:“todo”,dueDate:“2026-05-06”,notes:””,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
-{id:“5”,title:“PacketFence Patching”,category:“work”,priority:“high”,status:“inprogress”,dueDate:“2026-05-25”,notes:“Patching planned for PFE01 server; rescheduled for 3rd May”,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
-{id:“6”,title:“SailPoint Pre Migration Activities”,category:“projects”,priority:“urgent”,status:“inprogress”,dueDate:“2026-05-08”,notes:“DC resource updates, backups, replication changes. Outbound replication disable, DC backup, user/group exports pending”,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
-{id:“7”,title:“SailPoint Post Migration Activities”,category:“projects”,priority:“urgent”,status:“inprogress”,dueDate:“2026-05-11”,notes:“Prepared required migration scripts and shared with team. Next: Power on DCs, Verify AD replication, Validate group membership, Enable outbound replication”,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
-{id:“8”,title:“AD Transformation (AD-Less Roadmap)”,category:“projects”,priority:“high”,status:“inprogress”,dueDate:“2026-05-08”,notes:“Discussion initiated with Microsoft regarding approach and challenges for AD-less environment. Next: Await Microsoft response”,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
-{id:“9”,title:“DHCP 50/50 Failover Dashboard”,category:“projects”,priority:“normal”,status:“inprogress”,dueDate:“2026-05-11”,notes:“PEG team working on dashboard. Next: Review dashboard once ready”,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
-{id:“10”,title:“DNS Block for corp.ad (Zscaler DNS Security)”,category:“projects”,priority:“high”,status:“inprogress”,dueDate:“2026-05-22”,notes:“Solution discussion completed with Zscaler vendor; Keshav to align with Vinay on pilot user count.”,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
-{id:“11”,title:“Arista AGNI Implementation”,category:“projects”,priority:“high”,status:“inprogress”,dueDate:“2026-09-30”,notes:“Port validation for India proxy IPs completed; discussed port allow with Rajesh; license procurement in progress; Infosec approval pending.”,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
-{id:“12”,title:“DHCP Scope Creation Automation”,category:“projects”,priority:“normal”,status:“inprogress”,dueDate:“2026-06-30”,notes:“BRD update in progress to include RITM/Catalogue-based scope creation.”,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
-{id:“13”,title:“DNS Catalogue Modification (with Database)”,category:“projects”,priority:“normal”,status:“inprogress”,dueDate:“2026-06-30”,notes:“DNS database updated with most domain owners; genpact.com ownership pending.”,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
-{id:“14”,title:“SailPoint Migration Scripts”,category:“projects”,priority:“normal”,status:“done”,dueDate:“2026-05-03”,notes:“All scripts prepared, tested and shared with team”,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
-];
-
-const INITIAL_WORKLOG = [
-{id:“w1”,date:“2026-05-05”,text:“AD transformation discussion with MS”,category:“projects”,type:“project”},
-{id:“w2”,date:“2026-05-01”,text:“DHCP incident RCA”,category:“projects”,type:“investigation”},
-{id:“w3”,date:“2026-05-01”,text:“Arista Agni port allow discussion with Rajesh”,category:“projects”,type:“project”},
-{id:“w4”,date:“2026-05-01”,text:“DNS database update”,category:“work”,type:“bau”},
-{id:“w5”,date:“2026-04-30”,text:“Prepared all scripts for SailPoint migration”,category:“projects”,type:“project”},
-{id:“w6”,date:“2026-04-30”,text:“DHCP scope both side enable/disable mismatch script”,category:“projects”,type:“bau”},
-{id:“w7”,date:“2026-04-30”,text:“KB article for DHCP INC”,category:“projects”,type:“bau”},
-{id:“w8”,date:“2026-04-30”,text:“Ad replication script”,category:“work”,type:“bau”},
-{id:“w9”,date:“2026-04-29”,text:“AD replication script”,category:“work”,type:“bau”},
-{id:“w10”,date:“2026-04-29”,text:“Ad replication monitoring from LM”,category:“work”,type:“bau”},
-{id:“w11”,date:“2026-04-28”,text:“Password expiry report scheduled for SP migration”,category:“work”,type:“project”},
-{id:“w12”,date:“2026-04-28”,text:“Discussed DHCP 50/50 failover dashboard use cases”,category:“projects”,type:“project”},
-{id:“w13”,date:“2026-04-28”,text:“Discussed agentic use cases with HA”,category:“work”,type:“agentic”},
-{id:“w14”,date:“2026-04-28”,text:“Cloud AD architecture discussion”,category:“work”,type:“bau”},
-{id:“w15”,date:“2026-04-28”,text:“AI builder training transform”,category:“work”,type:“bau”},
-{id:“w16”,date:“2026-04-26”,text:“Updated agentic AI use case with manual and proposed steps”,category:“work”,type:“agentic”},
-{id:“w17”,date:“2026-04-26”,text:“DNS catalog discussion with Subir (updates pending)”,category:“work”,type:“bau”},
-{id:“w18”,date:“2026-04-26”,text:“Completed AI builder immerse”,category:“work”,type:“bau”},
-{id:“w19”,date:“2026-04-25”,text:“Training on AI builder”,category:“work”,type:“bau”},
-{id:“w20”,date:“2026-04-24”,text:“Worked on agentic automation use case”,category:“work”,type:“agentic”},
-{id:“w21”,date:“2026-04-24”,text:“Worked on Arista AGNI explaining to PM”,category:“projects”,type:“project”},
-{id:“w22”,date:“2026-04-22”,text:“Worked on solutioning for DNS leakage with Zscaler vendor”,category:“projects”,type:“bau”},
-{id:“w23”,date:“2026-04-22”,text:“Worked on WD migration plan”,category:“work”,type:“project”},
-{id:“w24”,date:“2026-04-21”,text:“Worked on unregistering bulk users on packet fence”,category:“work”,type:“bau”},
-{id:“w25”,date:“2026-04-21”,text:“Worked on MS patch impacting PAM validation”,category:“work”,type:“bau”},
-{id:“w26”,date:“2026-04-20”,text:“Worked on bulk device unregistered packet fence”,category:“work”,type:“bau”},
-{id:“w27”,date:“2026-04-16”,text:“Worked on static Oracle DNS solution”,category:“work”,type:“bau”},
-{id:“w28”,date:“2026-04-16”,text:“Worked on cloud AD architecture review”,category:“work”,type:“bau”},
-{id:“w29”,date:“2026-04-16”,text:“Worked on DNS database creation”,category:“work”,type:“bau”},
-{id:“w30”,date:“2026-04-15”,text:“Worked on IVL database removal from cloud.ad”,category:“work”,type:“bau”},
-{id:“w31”,date:“2026-04-15”,text:“Worked on DNS database creation”,category:“work”,type:“bau”},
-{id:“w32”,date:“2026-04-14”,text:“Discussion on cloud.ad account issue”,category:“work”,type:“investigation”},
-{id:“w33”,date:“2026-04-14”,text:“Troubleshooting cloud.ad account issue”,category:“work”,type:“investigation”},
-{id:“w34”,date:“2026-04-14”,text:“Worked on cloud new account password reset issue”,category:“work”,type:“investigation”},
-{id:“w35”,date:“2026-04-13”,text:“Worked on SSL 3.0 disable vulnerability”,category:“work”,type:“investigation”},
-{id:“w36”,date:“2026-04-09”,text:“Worked on DNS block for corp.ad on client machines”,category:“work”,type:“bau”},
-{id:“w37”,date:“2026-04-09”,text:“Logged DHCP 50/50 failover use case discussion”,category:“projects”,type:“project”},
-{id:“w38”,date:“2026-04-09”,text:“Logged DNS catalogue modification BRD”,category:“projects”,type:“project”},
-{id:“w39”,date:“2026-04-09”,text:“Logged zscaler DNS security solution to monitor DNS leakage”,category:“projects”,type:“bau”},
-{id:“w40”,date:“2026-04-09”,text:“Logged DS capacity management”,category:“work”,type:“bau”},
-{id:“w41”,date:“2026-04-09”,text:“Logged BMO HAF VLAN change packet fence”,category:“work”,type:“bau”},
-{id:“w42”,date:“2026-04-08”,text:“Worked on packet fence bmo vlan change”,category:“work”,type:“bau”},
-{id:“w43”,date:“2026-04-08”,text:“Worked on ds capacity assessment”,category:“work”,type:“bau”},
-{id:“w44”,date:“2026-04-08”,text:“Worked on service account issue in bloom ad”,category:“work”,type:“investigation”},
-{id:“w45”,date:“2026-04-08”,text:“Worked on dell and hp reset use case”,category:“work”,type:“agentic”},
-{id:“w46”,date:“2026-04-07”,text:“Worked on dhcp scope creation brd”,category:“projects”,type:“bau”},
-{id:“w47”,date:“2026-04-07”,text:“Worked on packet fence patching discussion”,category:“work”,type:“bau”},
-{id:“w48”,date:“2026-04-07”,text:“Worked on zscaler group automation”,category:“projects”,type:“bau”},
-{id:“w49”,date:“2026-04-07”,text:“Worked on vulnerability assessment unencrypted http”,category:“work”,type:“investigation”},
-{id:“w50”,date:“2026-04-06”,text:“Worked on AD less road map transformation”,category:“work”,type:“project”},
-{id:“w51”,date:“2026-04-06”,text:“Worked on new account disabled in cloud.ad”,category:“work”,type:“bau”},
-];
-
-const DEFAULT_CATS = [
-{id:“work”,label:“Work”,icon:“💼”,color:”#4F8EF7”},
-{id:“projects”,label:“Projects”,icon:“🚀”,color:”#A78BFA”},
-{id:“personal”,label:“Personal”,icon:“🌿”,color:”#34D399”},
-{id:“knowledge”,label:“Knowledge”,icon:“🧠”,color:”#FBBF24”},
-{id:“bills”,label:“Bills”,icon:“💳”,color:”#F87171”},
-{id:“watchlist”,label:“Watchlist”,icon:“👁”,color:”#38BDF8”},
-{id:“health”,label:“Health”,icon:“❤️”,color:”#FB923C”},
-];
-const PRIORITIES = [{id:“urgent”,label:“Urgent”,color:”#F87171”},{id:“high”,label:“High”,color:”#FBBF24”},{id:“normal”,label:“Normal”,color:”#94A3B8”},{id:“low”,label:“Low”,color:”#475569”}];
-const STATUSES   = [{id:“todo”,label:“To Do”,color:”#94A3B8”},{id:“inprogress”,label:“In Progress”,color:”#FBBF24”},{id:“done”,label:“Done”,color:”#34D399”},{id:“blocked”,label:“Blocked”,color:”#F87171”},{id:“someday”,label:“Someday”,color:”#A78BFA”}];
-const TYPE_COLORS = {bau:”#94A3B8”,project:”#A78BFA”,investigation:”#F87171”,agentic:”#34D399”};
-const TYPE_LABELS = {bau:“BAU”,project:“Project”,investigation:“Investigation”,agentic:“Agentic”};
-
-// ── UTILS ──────────────────────────────────────────────────────────────────────
-const uid  = () => Math.random().toString(36).slice(2)+Date.now().toString(36);
-const nowISO = () => new Date().toISOString();
-const todayStr = () => new Date().toISOString().slice(0,10);
-
-function weekRange() {
-const d=new Date(),day=d.getDay();
-const mon=new Date(d); mon.setDate(d.getDate()-((day+6)%7));
-const sun=new Date(mon); sun.setDate(mon.getDate()+6);
-const fmt=x=>x.toLocaleDateString(“en-GB”,{day:“2-digit”,month:“short”,year:“numeric”});
-return {start:mon.toISOString().slice(0,10),end:sun.toISOString().slice(0,10),label:`${fmt(mon)} – ${fmt(sun)}`};
-}
-
-function fmtDate(iso) {
-if(!iso) return “”;
-const today=new Date(); today.setHours(0,0,0,0);
-const dt=new Date(iso); dt.setHours(0,0,0,0);
-const diff=Math.round((dt-today)/86400000);
-if(diff===0) return “Today”;
-if(diff===1) return “Tomorrow”;
-if(diff===-1) return “Yesterday”;
-if(diff<0) return `${Math.abs(diff)}d ago`;
-if(diff<8) return new Date(iso).toLocaleDateString(“en-US”,{weekday:“short”});
-return new Date(iso).toLocaleDateString(“en-US”,{month:“short”,day:“numeric”});
-}
-
-const isOverdue = i => i.dueDate && i.status!==“done” && new Date(i.dueDate) < new Date(new Date().toDateString());
-
-function blankTask(cat=“personal”) {
-return {id:uid(),createdAt:nowISO(),updatedAt:nowISO(),title:””,notes:””,category:cat,priority:“normal”,status:“todo”,dueDate:””,tags:[],url:””,amount:””,recurrence:””,reminderSynced:false};
-}
-function blankLog() {
-return {id:uid(),date:todayStr(),text:””,category:“work”,type:“bau”,taskId:””};
-}
-
-// ── DRIVE API (via Claude as middleware) ───────────────────────────────────────
-async function driveRead(fileId) {
-const apiKey = window._ANTHROPIC_KEY;
-if (!apiKey) return null;
-try {
-const res = await fetch(“https://api.anthropic.com/v1/messages”, {
-method:“POST”,
-headers:{“Content-Type”:“application/json”,“x-api-key”:apiKey,“anthropic-version”:“2023-06-01”,“anthropic-beta”:“mcp-client-2025-04-04”},
-body:JSON.stringify({
-model:MODEL, max_tokens:4000,
-system:`You have Google Drive access. Read the file with ID "${fileId}" and return ONLY its raw JSON. No explanation, no markdown.`,
-messages:[{role:“user”,content:“Read the file and return raw JSON only.”}],
-mcp_servers:[{type:“url”,url:DRIVE_MCP,name:“gdrive”}]
-})
-});
-const data = await res.json();
-for (const b of data.content||[]) {
-if(b.type===“mcp_tool_result”){const t=b?.content?.[0]?.text||””;try{return JSON.parse(t)}catch{}}
-}
-for (const b of data.content||[]) {
-if(b.type===“text”){const m=b.text.match(/{[\s\S]*}/);if(m)try{return JSON.parse(m[0])}catch{}}
-}
-} catch {}
-return null;
-}
-
-async function driveWrite(fileId, obj) {
-const apiKey = window._ANTHROPIC_KEY;
-if (!apiKey) return;
-try {
-await fetch(“https://api.anthropic.com/v1/messages”, {
-method:“POST”,
-headers:{“Content-Type”:“application/json”,“x-api-key”:apiKey,“anthropic-version”:“2023-06-01”,“anthropic-beta”:“mcp-client-2025-04-04”},
-body:JSON.stringify({
-model:MODEL, max_tokens:300,
-system:`You have Google Drive access. Overwrite the file with ID "${fileId}" with the exact JSON content provided. Reply only: saved`,
-messages:[{role:“user”,content:`Save this JSON:\n${JSON.stringify({...obj,lastUpdated:nowISO()},null,2)}`}],
-mcp_servers:[{type:“url”,url:DRIVE_MCP,name:“gdrive”}]
-})
-});
-} catch {}
-}
-
-async function generateReport(tasks, worklog, week, apiKey) {
-const logs = worklog.filter(e=>e.date>=week.start&&e.date<=week.end);
-const wtasks = tasks.filter(t=>[“work”,“projects”].includes(t.category));
-const res = await fetch(“https://api.anthropic.com/v1/messages”, {
-method:“POST”,
-headers:{“Content-Type”:“application/json”,“x-api-key”:apiKey,“anthropic-version”:“2023-06-01”},
-body:JSON.stringify({
-model:MODEL, max_tokens:2000,
-system:“You are a professional email writer. Follow the format exactly as instructed. Return ONLY the email text.”,
-messages:[{role:“user”,content:`Generate a weekly work update email in this EXACT format:
+<div id="app">
+  <div id="hdr">
+    <div>
+      <div class="brand">&#9001; Second Brain</div>
+      <div class="sr"><span class="sd" id="sdot"></span><span class="st" id="stxt">Loading...</span></div>
+    </div>
+    <div class="hbs">
+      <button class="hb" onclick="toggleApi()">Key</button>
+      <button class="hb" onclick="toggleLog()">Log</button>
+      <button class="hb" onclick="setTab('search')">Find</button>
+    </div>
+  </div>
+  <div id="apanel">
+    <div style="font-size:11px;color:#6B7280;margin-bottom:8px">Anthropic API Key (saved on device only)</div>
+    <div style="display:flex;gap:8px">
+      <input type="password" id="akey" class="inp" placeholder="sk-ant-..."/>
+      <button style="background:#4F8EF7;border:none;border-radius:10px;color:#fff;font-size:13px;padding:0 14px;font-weight:600" onclick="saveKey()">Save</button>
+      <button style="background:#0F1829;border:none;border-radius:10px;color:#6B7280;font-size:13px;padding:0 12px" onclick="toggleApi()">X</button>
+    </div>
+    <div style="font-size:10px;color:#374151;margin-top:6px">Get key: console.anthropic.com</div>
+  </div>
+  <div id="body"></div>
+  <div id="nav">
+    <button class="ntab on" id="nt0" onclick="setTab('home')"><span class="niw">&#127968;</span><span class="nlbl">Home</span></button>
+    <button class="ntab" id="nt1" onclick="setTab('work')"><span class="niw">&#128188;<span class="nbdg" id="nb1" style="background:#4F8EF7"></span></span><span class="nlbl">Work</span></button>
+    <button class="ntab" id="nt2" onclick="setTab('projects')"><span class="niw">&#128640;<span class="nbdg" id="nb2" style="background:#A78BFA"></span></span><span class="nlbl">Projects</span></button>
+    <button class="ntab" id="nt3" onclick="toggleLog()"><span class="niw">&#128203;<span class="nbdg" id="nb3" style="background:#34D399"></span></span><span class="nlbl">Log</span></button>
+    <button class="ntab" id="nt4" onclick="setTab('report')"><span class="niw">&#128202;</span><span class="nlbl">Report</span></button>
+    <button class="ntab" onclick="showCats()"><span class="niw">&#8943;</span><span class="nlbl">More</span></button>
+  </div>
+  <button id="fab" onclick="onFab()">+</button>
+</div>
+<div id="mc"></div>
+<script>
+var CATS=[{id:'work',label:'Work',icon:'W',color:'#4F8EF7'},{id:'projects',label:'Projects',icon:'P',color:'#A78BFA'},{id:'personal',label:'Personal',icon:'Me',color:'#34D399'},{id:'knowledge',label:'Knowledge',icon:'K',color:'#FBBF24'},{id:'bills',label:'Bills',icon:'$',color:'#F87171'},{id:'watchlist',label:'Watchlist',icon:'TV',color:'#38BDF8'},{id:'health',label:'Health',icon:'H',color:'#FB923C'}];
+var PRI=[{id:'urgent',label:'Urgent',color:'#F87171'},{id:'high',label:'High',color:'#FBBF24'},{id:'normal',label:'Normal',color:'#94A3B8'},{id:'low',label:'Low',color:'#475569'}];
+var STAT=[{id:'todo',label:'To Do',color:'#94A3B8'},{id:'inprogress',label:'In Progress',color:'#FBBF24'},{id:'done',label:'Done',color:'#34D399'},{id:'blocked',label:'Blocked',color:'#F87171'},{id:'someday',label:'Someday',color:'#A78BFA'}];
+var TC={bau:'#94A3B8',project:'#A78BFA',investigation:'#F87171',agentic:'#34D399'};
+var TL={bau:'BAU',project:'Project',investigation:'Investigation',agentic:'Agentic'};
+var DRIVE={tasks:'1OWIXMe5PvrXOZXDVFDxVfylXQ8Kml_IE',worklog:'1w6jQLE48kmnSQ3kXn5TDiafhfYe2y4tQ',categories:'14zFd-GoGYRGdbjr76ySlRNb-pqZrNSyK'};
+var DMCP='https://drivemcp.googleapis.com/mcp/v1';
+var MDL='claude-sonnet-4-20250514';
+var ITASKS=[{id:'1',title:'DHCP Scope Failover UAT',category:'work',priority:'urgent',status:'inprogress',dueDate:'2026-05-09',notes:'Network team using solution to assign IP on switch interface. Next: Discuss feasibility and stability with Vikas Maurya',tags:[],updatedAt:'2026-05-05T18:00:00Z',createdAt:'2026-05-05T18:00:00Z'},{id:'2',title:'Fix Packet Fence Auto Enrolment Issue',category:'work',priority:'high',status:'inprogress',dueDate:'2026-05-06',notes:'',tags:[],updatedAt:'2026-05-05T18:00:00Z',createdAt:'2026-05-05T18:00:00Z'},{id:'3',title:'Discuss feasibility with Vikas Maurya',category:'work',priority:'high',status:'todo',dueDate:'2026-05-06',notes:'Sub-task of DHCP Scope Failover UAT',tags:[],updatedAt:'2026-05-05T18:00:00Z',createdAt:'2026-05-05T18:00:00Z'},{id:'4',title:'PacketFence Patching',category:'work',priority:'high',status:'inprogress',dueDate:'2026-05-25',notes:'Patching planned for PFE01; rescheduled for 3rd May',tags:[],updatedAt:'2026-05-05T18:00:00Z',createdAt:'2026-05-05T18:00:00Z'},{id:'5',title:'SailPoint Pre Migration Activities',category:'projects',priority:'urgent',status:'inprogress',dueDate:'2026-05-08',notes:'DC resource updates, backups, replication changes pending',tags:[],updatedAt:'2026-05-05T18:00:00Z',createdAt:'2026-05-05T18:00:00Z'},{id:'6',title:'SailPoint Post Migration Activities',category:'projects',priority:'urgent',status:'inprogress',dueDate:'2026-05-11',notes:'Next: Power on DCs, Verify AD replication, Validate group membership',tags:[],updatedAt:'2026-05-05T18:00:00Z',createdAt:'2026-05-05T18:00:00Z'},{id:'7',title:'AD Transformation (AD-Less Roadmap)',category:'projects',priority:'high',status:'inprogress',dueDate:'2026-05-08',notes:'Discussion initiated with Microsoft. Await response.',tags:[],updatedAt:'2026-05-05T18:00:00Z',createdAt:'2026-05-05T18:00:00Z'},{id:'8',title:'DHCP 50/50 Failover Dashboard',category:'projects',priority:'normal',status:'inprogress',dueDate:'2026-05-11',notes:'PEG team working on dashboard.',tags:[],updatedAt:'2026-05-05T18:00:00Z',createdAt:'2026-05-05T18:00:00Z'},{id:'9',title:'DNS Block for corp.ad (Zscaler)',category:'projects',priority:'high',status:'inprogress',dueDate:'2026-05-22',notes:'Solution discussion completed with Zscaler vendor.',tags:[],updatedAt:'2026-05-05T18:00:00Z',createdAt:'2026-05-05T18:00:00Z'},{id:'10',title:'Arista AGNI Implementation',category:'projects',priority:'high',status:'inprogress',dueDate:'2026-09-30',notes:'Port validation done; Infosec approval pending.',tags:[],updatedAt:'2026-05-05T18:00:00Z',createdAt:'2026-05-05T18:00:00Z'},{id:'11',title:'DHCP Scope Creation Automation',category:'projects',priority:'normal',status:'inprogress',dueDate:'2026-06-30',notes:'BRD update in progress.',tags:[],updatedAt:'2026-05-05T18:00:00Z',createdAt:'2026-05-05T18:00:00Z'},{id:'12',title:'DNS Catalogue Modification',category:'projects',priority:'normal',status:'inprogress',dueDate:'2026-06-30',notes:'DNS database updated with most domain owners.',tags:[],updatedAt:'2026-05-05T18:00:00Z',createdAt:'2026-05-05T18:00:00Z'},{id:'13',title:'SailPoint Migration Scripts',category:'projects',priority:'normal',status:'done',dueDate:'2026-05-03',notes:'All scripts prepared and shared.',tags:[],updatedAt:'2026-05-05T18:00:00Z',createdAt:'2026-05-05T18:00:00Z'}];
+var IWL=[{id:'w1',date:'2026-05-05',text:'AD transformation discussion with MS',category:'projects',type:'project'},{id:'w2',date:'2026-05-01',text:'DHCP incident RCA',category:'projects',type:'investigation'},{id:'w3',date:'2026-05-01',text:'Arista Agni port allow discussion with Rajesh',category:'projects',type:'project'},{id:'w4',date:'2026-05-01',text:'DNS database update',category:'work',type:'bau'},{id:'w5',date:'2026-04-30',text:'Prepared all scripts for SailPoint migration',category:'projects',type:'project'},{id:'w6',date:'2026-04-30',text:'DHCP scope mismatch script',category:'projects',type:'bau'},{id:'w7',date:'2026-04-30',text:'KB article for DHCP INC',category:'projects',type:'bau'},{id:'w8',date:'2026-04-29',text:'AD replication script',category:'work',type:'bau'},{id:'w9',date:'2026-04-28',text:'Password expiry report for SP migration',category:'work',type:'project'},{id:'w10',date:'2026-04-28',text:'DHCP 50/50 failover dashboard use cases discussion',category:'projects',type:'project'},{id:'w11',date:'2026-04-28',text:'Discussed agentic use cases with HA',category:'work',type:'agentic'},{id:'w12',date:'2026-04-26',text:'Updated agentic AI use case with manual and proposed steps',category:'work',type:'agentic'},{id:'w13',date:'2026-04-26',text:'DNS catalog discussion with Subir',category:'work',type:'bau'},{id:'w14',date:'2026-04-25',text:'Training on AI builder',category:'work',type:'bau'},{id:'w15',date:'2026-04-24',text:'Worked on Arista AGNI explaining to PM',category:'projects',type:'project'},{id:'w16',date:'2026-04-22',text:'DNS leakage solutioning with Zscaler vendor',category:'projects',type:'bau'},{id:'w17',date:'2026-04-16',text:'Cloud AD architecture review',category:'work',type:'bau'},{id:'w18',date:'2026-04-15',text:'DNS database creation',category:'work',type:'bau'},{id:'w19',date:'2026-04-14',text:'Troubleshooting cloud.ad account issue',category:'work',type:'investigation'},{id:'w20',date:'2026-04-13',text:'SSL 3.0 disable vulnerability',category:'work',type:'investigation'},{id:'w21',date:'2026-04-09',text:'DHCP 50/50 failover use case discussion',category:'projects',type:'project'},{id:'w22',date:'2026-04-07',text:'DHCP scope creation BRD',category:'projects',type:'bau'},{id:'w23',date:'2026-04-06',text:'AD less road map transformation',category:'work',type:'project'}];
+var S={tasks:null,worklog:null,cats:null,apiKey:'',tab:'home',showLog:false,fStatus:'all',expId:null,report:'',repLoading:false,copied:false};
+var timers={};
+function uid(){return Math.random().toString(36).slice(2)+Date.now().toString(36)}
+function now(){return new Date().toISOString()}
+function today(){return new Date().toISOString().slice(0,10)}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function weekRange(){var d=new Date(),day=d.getDay(),mon=new Date(d);mon.setDate(d.getDate()-((day+6)%7));var sun=new Date(mon);sun.setDate(mon.getDate()+6);var f=function(x){return x.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})};return{start:mon.toISOString().slice(0,10),end:sun.toISOString().slice(0,10),label:f(mon)+' - '+f(sun)}}
+function fdate(iso){if(!iso)return'';var t=new Date();t.setHours(0,0,0,0);var dt=new Date(iso);dt.setHours(0,0,0,0);var d=Math.round((dt-t)/86400000);if(d===0)return'Today';if(d===1)return'Tomorrow';if(d===-1)return'Yesterday';if(d<0)return Math.abs(d)+'d ago';if(d<8)return new Date(iso).toLocaleDateString('en-US',{weekday:'short'});return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric'})}
+function isOv(t){return t.dueDate&&t.status!=='done'&&new Date(t.dueDate)<new Date(new Date().toDateString())}
+function getC(id){return S.cats.find(function(c){return c.id===id})||S.cats[0]}
+function getP(id){return PRI.find(function(p){return p.id===id})||PRI[2]}
+function getS(id){return STAT.find(function(s){return s.id===id})||STAT[0]}
+function syncDot(c,m){document.getElementById('sdot').style.background=c;document.getElementById('stxt').textContent=m}
+function lsave(){localStorage.setItem('sb_t',JSON.stringify(S.tasks));localStorage.setItem('sb_w',JSON.stringify(S.worklog));localStorage.setItem('sb_c',JSON.stringify(S.cats))}
+function toggleApi(){var p=document.getElementById('apanel');p.classList.toggle('on');if(p.classList.contains('on'))document.getElementById('akey').value=S.apiKey}
+function saveKey(){var k=document.getElementById('akey').value.trim();S.apiKey=k;localStorage.setItem('sb_k',k);toggleApi();if(k)syncDrive()}
+async function callAI(sys,usr,mx,mcp){var body={model:MDL,max_tokens:mx||1000,system:sys,messages:[{role:'user',content:usr}]};if(mcp)body.mcp_servers=[{type:'url',url:DMCP,name:'gdrive'}];var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':S.apiKey,'anthropic-version':'2023-06-01','anthropic-beta':'mcp-client-2025-04-04'},body:JSON.stringify(body)});return r.json()}
+async function driveRead(fid){if(!S.apiKey)return null;try{var d=await callAI('You have Google Drive access. Read file ID "'+fid+'". Return ONLY raw JSON, no markdown.','Read file, return JSON only.',4000,true);for(var i=0;i<(d.content||[]).length;i++){var b=d.content[i];if(b.type==='mcp_tool_result'){var t=(b.content&&b.content[0]&&b.content[0].text)||'';try{return JSON.parse(t)}catch(e){}}};for(var i=0;i<(d.content||[]).length;i++){var b=d.content[i];if(b.type==='text'){var m=b.text.match(/\{[\s\S]*\}/);if(m)try{return JSON.parse(m[0])}catch(e){}}}}catch(e){}return null}
+async function driveWrite(fid,obj){if(!S.apiKey)return;try{await callAI('You have Google Drive access. Overwrite file ID "'+fid+'" with exact JSON provided. Reply: saved','Save:
+'+JSON.stringify(Object.assign({},obj,{lastUpdated:now()}),null,2),200,true)}catch(e){}}
+function debSave(key,fid,data){clearTimeout(timers[key]);timers[key]=setTimeout(async function(){syncDot('#FBBF24','Saving...');await driveWrite(fid,data);syncDot('#34D399','Saved')},1200)}
+function saveTasks(){lsave();debSave('t',DRIVE.tasks,{version:1,items:S.tasks})}
+function saveWL(){lsave();debSave('w',DRIVE.worklog,{version:1,entries:S.worklog})}
+async function syncDrive(){syncDot('#FBBF24','Syncing Drive...');var r=await Promise.all([driveRead(DRIVE.tasks),driveRead(DRIVE.worklog),driveRead(DRIVE.categories)]);if(r[0]&&r[0].items&&r[0].items.length)S.tasks=r[0].items;if(r[1]&&r[1].entries&&r[1].entries.length)S.worklog=r[1].entries;if(r[2]&&r[2].categories&&r[2].categories.length)S.cats=r[2].categories;lsave();syncDot('#34D399','Synced with Drive');render()}
+function setTab(t){S.tab=t;S.showLog=false;S.fStatus='all';render()}
+function toggleLog(){S.showLog=!S.showLog;render()}
+function onFab(){if(S.showLog||S.tab==='home'){showLogModal()}else{showTaskModal(null,S.tab)}}
+function cycleStatus(id){var ord=['todo','inprogress','done','blocked','someday'];S.tasks=S.tasks.map(function(t){return t.id!==id?t:Object.assign({},t,{status:ord[(ord.indexOf(t.status)+1)%ord.length],updatedAt:now()})});saveTasks();render()}
+function delTask(id){if(!confirm('Delete?'))return;S.tasks=S.tasks.filter(function(t){return t.id!==id});saveTasks();render()}
+function togExp(id){S.expId=S.expId===id?null:id;render()}
+function delLog(id){S.worklog=S.worklog.filter(function(e){return e.id!==id});saveWL();render()}
+async function buildReport(){if(!S.apiKey){alert('Add API key first (Key button)');return}S.repLoading=true;S.report='';render();var wk=weekRange();var logs=S.worklog.filter(function(e){return e.date>=wk.start&&e.date<=wk.end});var wt=S.tasks.filter(function(t){return t.category==='work'||t.category==='projects'});try{var d=await callAI('You are a professional email writer. Follow the format exactly. Return ONLY the email text.','Generate weekly work update email:
 
 Hi Sir,
 
@@ -219,614 +214,69 @@ Please find below my weekly work update:
 
 Agentic Solutions / Ideas
 
-|Issue                         |Summary|Next Steps|
-|------------------------------|-------|----------|
-|[rows for agentic/ideas items]|       |          |
+| Issue | Summary | Next Steps |
+|——|———||———–|
+[rows]
 
 -----
 
 Projects
 
-|Project                 |Status|Summary|Next Steps|
-|------------------------|------|-------|----------|
-|[rows for project items]|      |       |          |
+|Project|Status|Summary|Next Steps|
+|-------|------|-------|----------|
+|[rows] |      |       |          |
 
 -----
 
 Troubleshooting / Investigation
 
-|Issue                         |Summary|Next Steps|
-|------------------------------|-------|----------|
-|[rows for investigation items]|       |          |
+| Issue | Summary | Next Steps |
+|——|———||———–|
+[rows]
 
 -----
 
-Please let me know if you would like additional details on any item.
+Please let me know if you would like additional details.
 
 Thanks,
 Abhi Kapoor
 
-WEEK: ${week.label}
+WEEK: ‘+wk.label+’
 
-WORKLOG THIS WEEK:
-${logs.map(e=>`[${e.date}][${e.type}] ${e.text}`).join(”\n”)||”(none)”}
+WORKLOG:
+‘+logs.map(function(e){return’[’+e.date+’][’+e.type+’] ‘+e.text}).join(’
+‘)+’
 
-ALL ACTIVE TASKS:
-${wtasks.map(t=>`[${t.category}][${t.status}][${t.priority}] ${t.title}${t.notes?" — "+t.notes:""}`).join(”\n”)||”(none)”}
-
-Rules: Categorize each item into the right table. Keep summaries to 1 sentence. Next Steps should be actionable. If a section is empty still show the header with an empty table row saying “No items this week”.`}]
-})
-});
-const data = await res.json();
-return (data.content||[]).filter(b=>b.type===“text”).map(b=>b.text).join(””) || “”;
-}
-
-// ── MAIN APP ───────────────────────────────────────────────────────────────────
-function App() {
-const [tasks,    setTasks]    = useState(INITIAL_TASKS);
-const [worklog,  setWorklog]  = useState(INITIAL_WORKLOG);
-const [cats,     setCats]     = useState(DEFAULT_CATS);
-const [apiKey,   setApiKey]   = useState(localStorage.getItem(“sb_api_key”)||””);
-const [showKeyInput, setShowKeyInput] = useState(false);
-const [syncing,  setSyncing]  = useState(false);
-const [syncMsg,  setSyncMsg]  = useState(“Local data loaded”);
-const [tab,      setTab]      = useState(“home”);
-const [fStatus,  setFStatus]  = useState(“all”);
-const [showForm, setShowForm] = useState(false);
-const [showLog,  setShowLog]  = useState(false);
-const [editTask, setEditTask] = useState(null);
-const [form,     setForm]     = useState(blankTask());
-const [logForm,  setLogForm]  = useState(blankLog());
-const [expandedId,setExpandedId] = useState(null);
-const [showCats, setShowCats] = useState(false);
-const [report,   setReport]   = useState(””);
-const [reportLoading,setReportLoading] = useState(false);
-const [copied,   setCopied]   = useState(false);
-const saveRef = useRef({});
-
-// Store key globally for Drive calls
-useEffect(() => { window._ANTHROPIC_KEY = apiKey; }, [apiKey]);
-
-// Load from Drive if key available
-useEffect(() => {
-if (!apiKey) return;
-(async () => {
-setSyncing(true); setSyncMsg(“Loading from Drive…”);
-const [t,w,c] = await Promise.all([
-driveRead(DRIVE_FILE_IDS.tasks),
-driveRead(DRIVE_FILE_IDS.worklog),
-driveRead(DRIVE_FILE_IDS.categories),
-]);
-if (t?.items?.length)   setTasks(t.items);
-if (w?.entries?.length) setWorklog(w.entries);
-if (c?.categories?.length) setCats(c.categories);
-setSyncMsg(“✓ Synced with Google Drive”);
-setSyncing(false);
-})();
-}, [apiKey]);
-
-function saveApiKey(key) {
-const k = key.trim();
-localStorage.setItem(“sb_api_key”, k);
-setApiKey(k);
-setShowKeyInput(false);
-}
-
-// Debounced saves
-function persistTasks(items) {
-setTasks(items);
-clearTimeout(saveRef.current.t);
-saveRef.current.t = setTimeout(async () => {
-if (!apiKey) return;
-setSyncing(true); setSyncMsg(“Saving…”);
-await driveWrite(DRIVE_FILE_IDS.tasks, {version:1,items});
-setSyncMsg(“✓ Saved”); setSyncing(false);
-}, 1000);
-}
-
-function persistWorklog(entries) {
-setWorklog(entries);
-clearTimeout(saveRef.current.w);
-saveRef.current.w = setTimeout(async () => {
-if (!apiKey) return;
-setSyncing(true); setSyncMsg(“Saving…”);
-await driveWrite(DRIVE_FILE_IDS.worklog, {version:1,entries});
-setSyncMsg(“✓ Saved”); setSyncing(false);
-}, 1000);
-}
-
-// Task CRUD
-function submitTask(f) {
-const updated = {…f, updatedAt:nowISO()};
-persistTasks(editTask
-? tasks.map(t=>t.id===editTask.id?updated:t)
-: [{…updated,id:uid(),createdAt:nowISO()},…tasks]
-);
-setShowForm(false); setEditTask(null); setForm(blankTask());
-}
-function deleteTask(id)  { persistTasks(tasks.filter(t=>t.id!==id)); }
-function cycleStatus(id) {
-const ord=[“todo”,“inprogress”,“done”,“blocked”,“someday”];
-persistTasks(tasks.map(t=>t.id!==id?t:{…t,status:ord[(ord.indexOf(t.status)+1)%ord.length],updatedAt:nowISO()}));
-}
-function openEdit(task)  { setForm({…task}); setEditTask(task); setShowForm(true); }
-function openAdd(catId)  {
-const validCat = cats.find(c=>c.id===catId) ? catId : “personal”;
-setForm(blankTask(validCat)); setEditTask(null); setShowForm(true);
-}
-
-// Worklog CRUD
-function submitLog(f) {
-persistWorklog([{…f,id:uid(),createdAt:nowISO()},…worklog]);
-setShowLog(false); setLogForm(blankLog());
-}
-function deleteLog(id) { persistWorklog(worklog.filter(e=>e.id!==id)); }
-
-// Category
-function addCat(label,icon,color) {
-const newCat={id:label.toLowerCase().replace(/\s+/g,”-”)+”-”+Date.now().toString(36),label,icon,color};
-const newCats=[…cats,newCat];
-setCats(newCats);
-if(apiKey) driveWrite(DRIVE_FILE_IDS.categories,{version:1,categories:newCats});
-}
-
-// Weekly report
-async function buildReport() {
-if (!apiKey) { alert(“Please add your Anthropic API key first (tap the key icon)”); return; }
-setReportLoading(true); setReport(””);
-const week = weekRange();
-const text = await generateReport(tasks, worklog, week, apiKey);
-setReport(text); setReportLoading(false);
-}
-function copyReport() {
-navigator.clipboard.writeText(report).then(()=>{setCopied(true);setTimeout(()=>setCopied(false),2000);});
-}
-function downloadReport() {
-const a=document.createElement(“a”);
-a.href=“data:text/plain;charset=utf-8,”+encodeURIComponent(report);
-a.download=`Weekly-Report-${todayStr()}.txt`; a.click();
-}
-
-// Filtered tasks
-const visibleTasks = (() => {
-let list = tasks;
-if (tab!==“home”&&tab!==“report”) list=list.filter(t=>t.category===tab);
-if (fStatus!==“all”) list=list.filter(t=>t.status===fStatus);
-return list.sort((a,b)=>{
-const p=[“urgent”,“high”,“normal”,“low”];
-return p.indexOf(a.priority)-p.indexOf(b.priority)||new Date(b.updatedAt)-new Date(a.updatedAt);
-});
-})();
-
-const stats = {
-total:tasks.length, done:tasks.filter(t=>t.status===“done”).length,
-overdue:tasks.filter(isOverdue).length,
-inprogress:tasks.filter(t=>t.status===“inprogress”).length,
-};
-const pct = stats.total ? Math.round(stats.done/stats.total*100) : 0;
-const week = weekRange();
-
-// Worklog grouped
-const grouped={};
-worklog.forEach(e=>{if(!grouped[e.date])grouped[e.date]=[];grouped[e.date].push(e);});
-const logDays=Object.keys(grouped).sort((a,b)=>b.localeCompare(a));
-
-const isListView = tab!==“home”&&tab!==“report”&&!showLog;
-const catOfTab = cats.find(c=>c.id===tab);
-
-return (
-<div style={{background:”#080C14”,height:“100vh”,maxWidth:430,margin:“0 auto”,display:“flex”,flexDirection:“column”,position:“relative”,overflow:“hidden”}}>
-
-```
-  {/* HEADER */}
-  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"14px 16px 10px",background:"#080C14",borderBottom:"1px solid #0F1829",flexShrink:0}}>
-    <div>
-      <div style={{color:"#E2E8F0",fontWeight:700,fontSize:17,letterSpacing:"-0.02em"}}>⬡ Second Brain</div>
-      <div style={{display:"flex",alignItems:"center",gap:5,marginTop:2}}>
-        <span style={{width:6,height:6,borderRadius:"50%",background:apiKey?(syncing?"#FBBF24":"#34D399"):"#F87171",display:"inline-block"}}/>
-        <span style={{fontSize:10,color:"#374151",fontFamily:"'JetBrains Mono',monospace"}}>{apiKey?syncMsg:"No API key — tap 🔑 to add"}</span>
-      </div>
-    </div>
-    <div style={{display:"flex",gap:6}}>
-      <button style={S.hBtn} onClick={()=>setShowKeyInput(s=>!s)}>🔑</button>
-      <button style={S.hBtn} onClick={()=>{setShowLog(s=>!s);setTab("home");}}>📋</button>
-      <button style={S.hBtn} onClick={()=>{setTab("search");setShowLog(false);}}>🔍</button>
-    </div>
-  </div>
-
-  {/* API KEY INPUT */}
-  {showKeyInput && (
-    <ApiKeyPanel apiKey={apiKey} onSave={saveApiKey} onClose={()=>setShowKeyInput(false)}/>
-  )}
-
-  {/* BODY */}
-  <div style={{flex:1,overflowY:"auto",paddingBottom:88}}>
-
-    {/* HOME */}
-    {tab==="home"&&!showLog&&(
-      <HomeView stats={stats} pct={pct} cats={cats} tasks={tasks} week={week}
-        setTab={t=>{setTab(t);setShowLog(false);}} onAdd={openAdd} onReport={()=>{setTab("report");setShowLog(false);}}/>
-    )}
-
-    {/* TASK LIST */}
-    {isListView&&(
-      <div style={{padding:"0 16px 16px"}}>
-        {catOfTab&&(
-          <div style={{display:"flex",alignItems:"center",gap:10,padding:"14px 0 10px"}}>
-            <span style={{fontSize:22}}>{catOfTab.icon}</span>
-            <span style={{fontSize:19,fontWeight:700,color:"#E2E8F0",flex:1,letterSpacing:"-0.02em"}}>{catOfTab.label}</span>
-            <span style={{fontSize:11,color:"#374151",background:"#0F1829",borderRadius:99,padding:"2px 10px"}}>{visibleTasks.filter(t=>t.status!=="done").length} open</span>
-          </div>
-        )}
-        <div style={{display:"flex",gap:5,overflowX:"auto",padding:"0 0 10px",scrollbarWidth:"none"}}>
-          {[{id:"all",label:"All"},...STATUSES].map(s=>{
-            const sc=STATUSES.find(x=>x.id===s.id);
-            return <button key={s.id} style={{...S.chip,...(fStatus===s.id?{background:(sc?.color||"#4F8EF7")+"22",color:sc?.color||"#4F8EF7",borderColor:sc?.color||"#4F8EF7"}:{})}} onClick={()=>setFStatus(s.id)}>{s.label}</button>;
-          })}
-        </div>
-        {visibleTasks.length===0
-          ? <div style={{textAlign:"center",padding:"40px 0",color:"#374151"}}>Nothing here yet</div>
-          : visibleTasks.map(t=><TaskCard key={t.id} item={t} cats={cats} expanded={expandedId===t.id}
-              onToggle={()=>setExpandedId(id=>id===t.id?null:t.id)}
-              onEdit={openEdit} onDelete={deleteTask} onStatus={cycleStatus}/>)
-        }
-        <div style={{height:20}}/>
-      </div>
-    )}
-
-    {/* WORKLOG */}
-    {showLog&&(
-      <div style={{padding:"0 16px 16px"}}>
-        <div style={{display:"flex",alignItems:"center",gap:10,padding:"14px 0 10px"}}>
-          <span style={{fontSize:22}}>📋</span>
-          <span style={{fontSize:19,fontWeight:700,color:"#E2E8F0",flex:1,letterSpacing:"-0.02em"}}>Worklog</span>
-          <button style={{...S.chip,color:"#4F8EF7",borderColor:"#4F8EF733"}} onClick={()=>setShowLog(false)&&setShowLog(false)}>✕ Close</button>
-        </div>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8,marginBottom:16}}>
-          {[["project","#A78BFA","Project"],["bau","#94A3B8","BAU"],["investigation","#F87171","Invest."],["agentic","#34D399","Agentic"]].map(([type,col,lbl])=>(
-            <div key={type} style={{background:col+"18",borderRadius:10,padding:"10px 6px",textAlign:"center"}}>
-              <div style={{color:col,fontWeight:700,fontSize:18}}>{worklog.filter(e=>e.type===type).length}</div>
-              <div style={{color:col,fontSize:9,marginTop:2}}>{lbl}</div>
-            </div>
-          ))}
-        </div>
-        {logDays.map(date=>(
-          <div key={date} style={{marginBottom:16}}>
-            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:7,padding:"4px 0"}}>
-              <span style={{color:"#E2E8F0",fontSize:12,fontWeight:600}}>{fmtDate(date)}</span>
-              <span style={{color:"#374151",fontSize:10,fontFamily:"'JetBrains Mono',monospace",flex:1}}>{date}</span>
-              <span style={{background:"#0F1829",color:"#4B5563",fontSize:10,borderRadius:99,padding:"1px 7px"}}>{grouped[date].length}</span>
-            </div>
-            {grouped[date].map(e=>{
-              const cat=cats.find(c=>c.id===e.category)||cats[0];
-              return(
-                <div key={e.id} style={{background:"#0A0F1E",border:"1px solid #0F1829",borderRadius:10,padding:"9px 12px",marginBottom:5,display:"flex",gap:9,alignItems:"flex-start"}}>
-                  <div style={{width:3,minHeight:22,borderRadius:99,background:cat.color,flexShrink:0,marginTop:1}}/>
-                  <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontSize:12,color:"#C8D6E5",lineHeight:1.5,marginBottom:4}}>{e.text}</div>
-                    <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
-                      <span style={{fontSize:10,padding:"2px 6px",borderRadius:5,background:cat.color+"22",color:cat.color}}>{cat.icon} {cat.label}</span>
-                      <span style={{fontSize:10,padding:"2px 6px",borderRadius:5,background:TYPE_COLORS[e.type]+"22",color:TYPE_COLORS[e.type]}}>{TYPE_LABELS[e.type]}</span>
-                    </div>
-                  </div>
-                  <button style={{background:"transparent",border:"none",color:"#1F2937",fontSize:14,cursor:"pointer",padding:"0 2px"}} onClick={()=>deleteLog(e.id)}>✕</button>
-                </div>
-              );
-            })}
-          </div>
-        ))}
-        <div style={{height:20}}/>
-      </div>
-    )}
-
-    {/* REPORT */}
-    {tab==="report"&&!showLog&&(
-      <div style={{padding:"0 16px 16px"}}>
-        <div style={{display:"flex",alignItems:"center",gap:10,padding:"14px 0 10px"}}>
-          <span style={{fontSize:22}}>📊</span>
-          <span style={{fontSize:19,fontWeight:700,color:"#E2E8F0",flex:1,letterSpacing:"-0.02em"}}>Weekly Report</span>
-        </div>
-        <div style={{background:"linear-gradient(135deg,#4F8EF715,#A78BFA15)",border:"1px solid #4F8EF733",borderRadius:14,padding:"16px",marginBottom:16}}>
-          <div style={{color:"#E2E8F0",fontSize:13,fontWeight:600,marginBottom:4}}>{week.label}</div>
-          <div style={{color:"#4B5563",fontSize:12,marginBottom:14}}>AI reads your worklog + tasks and drafts the email in Abhi's format</div>
-          <button style={{width:"100%",padding:"12px",background:"linear-gradient(135deg,#4F8EF7,#A78BFA)",border:"none",borderRadius:10,color:"#fff",fontSize:14,fontWeight:700,cursor:"pointer",opacity:reportLoading?.6:1,display:"flex",alignItems:"center",justifyContent:"center",gap:8}}
-            disabled={reportLoading} onClick={buildReport}>
-            {reportLoading?<><span style={{animation:"spin 1s linear infinite",display:"inline-block"}}>◌</span> Generating…</>:"✨ Generate Weekly Report"}
-          </button>
-        </div>
-        {report&&(
-          <>
-            <div style={{display:"flex",gap:8,marginBottom:12}}>
-              <button style={{flex:1,padding:"10px",background:"#0A0F1E",border:"1px solid #1F2937",borderRadius:10,color:"#94A3B8",fontSize:13,cursor:"pointer"}} onClick={copyReport}>{copied?"✓ Copied!":"📋 Copy Email"}</button>
-              <button style={{flex:1,padding:"10px",background:"#0A0F1E",border:"1px solid #1F2937",borderRadius:10,color:"#94A3B8",fontSize:13,cursor:"pointer"}} onClick={downloadReport}>⬇ Download</button>
-            </div>
-            <div style={{background:"#0A0F1E",border:"1px solid #1F2937",borderRadius:12,padding:"14px",overflowX:"auto"}}>
-              <pre style={{margin:0,color:"#C8D6E5",fontSize:11,fontFamily:"'JetBrains Mono',monospace",lineHeight:1.8,whiteSpace:"pre-wrap"}}>{report}</pre>
-            </div>
-          </>
-        )}
-        {!report&&!reportLoading&&(
-          <div style={{textAlign:"center",padding:"32px 0",color:"#374151",fontSize:13}}>
-            {apiKey?"Tap Generate to build your weekly report":"Add your API key first (🔑 top right)"}
-          </div>
-        )}
-        <div style={{height:20}}/>
-      </div>
-    )}
-  </div>
-
-  {/* BOTTOM NAV */}
-  <div style={{position:"absolute",bottom:0,left:0,right:0,background:"#080C14",borderTop:"1px solid #0F1829",display:"flex",justifyContent:"space-around",padding:"8px 0 22px",zIndex:30}}>
-    <NavTab icon="🏠" label="Home"     active={tab==="home"&&!showLog}     onPress={()=>{setTab("home");setShowLog(false);}}/>
-    <NavTab icon="💼" label="Work"     active={tab==="work"&&!showLog}     color="#4F8EF7" onPress={()=>{setTab("work");setShowLog(false);setFStatus("all");}} badge={tasks.filter(t=>t.category==="work"&&t.status!=="done").length}/>
-    <NavTab icon="🚀" label="Projects" active={tab==="projects"&&!showLog} color="#A78BFA" onPress={()=>{setTab("projects");setShowLog(false);setFStatus("all");}} badge={tasks.filter(t=>t.category==="projects"&&t.status!=="done").length}/>
-    <NavTab icon="📋" label="Log"      active={showLog}                    onPress={()=>{setShowLog(s=>!s);setTab("home");}} badge={worklog.filter(e=>e.date===todayStr()).length}/>
-    <NavTab icon="📊" label="Report"   active={tab==="report"&&!showLog}   onPress={()=>{setTab("report");setShowLog(false);}}/>
-    <NavTab icon="⋯"  label="More"     active={false}                      onPress={()=>setShowCats(true)}/>
-  </div>
-
-  {/* FAB */}
-  {!showLog&&tab!=="report"&&(
-    <button style={{position:"absolute",bottom:78,right:16,width:50,height:50,borderRadius:"50%",background:"linear-gradient(135deg,#4F8EF7,#A78BFA)",border:"none",color:"#fff",fontSize:24,cursor:"pointer",boxShadow:"0 4px 18px #4F8EF755",display:"flex",alignItems:"center",justifyContent:"center",zIndex:31}}
-      onClick={()=>tab==="home"?setShowLog(true):openAdd(tab)}>
-      {tab==="home"?"📝":"+"}
-    </button>
-  )}
-
-  {/* MODALS */}
-  {showForm&&<TaskFormModal form={form} setForm={setForm} cats={cats} editTask={editTask} onSave={submitTask} onClose={()=>{setShowForm(false);setEditTask(null);setForm(blankTask());}}/>}
-  {showLog&&<LogFormBtn onClick={()=>{setShowLog(false);setTimeout(()=>setShowLog(true),50);}}/> }
-  {showCats&&<CatModal cats={cats} tasks={tasks} tab={tab} setTab={t=>{setTab(t);setShowLog(false);setShowCats(false);}} onAdd={addCat} onClose={()=>setShowCats(false)}/>}
-</div>
-```
-
-);
-}
-
-// ── HOME VIEW ──────────────────────────────────────────────────────────────────
-function HomeView({stats,pct,cats,tasks,week,setTab,onAdd,onReport}) {
-const overdue=tasks.filter(isOverdue);
-const urgent=tasks.filter(t=>[“urgent”,“high”].includes(t.priority)&&t.status!==“done”).slice(0,3);
-return(
-<div style={{padding:“0 16px 16px”}}>
-<div style={{padding:“18px 0 14px”,borderBottom:“1px solid #0F1829”,marginBottom:16}}>
-<div style={{fontSize:10,color:”#374151”,fontFamily:”‘JetBrains Mono’,monospace”,textTransform:“uppercase”,letterSpacing:“0.08em”,marginBottom:4}}>
-{new Date().toLocaleDateString(“en-US”,{weekday:“long”,month:“long”,day:“numeric”})}
-</div>
-<div style={{fontSize:24,fontWeight:700,color:”#E2E8F0”,letterSpacing:”-0.03em”,marginBottom:3}}>Your Second Brain</div>
-<div style={{fontSize:12,color:”#4B5563”,marginBottom:10}}>{stats.total-stats.done} open · {pct}% complete</div>
-<div style={{height:3,background:”#0F1829”,borderRadius:99}}>
-<div style={{height:“100%”,background:“linear-gradient(90deg,#4F8EF7,#A78BFA)”,borderRadius:99,width:`${pct}%`,transition:“width .6s”}}/>
-</div>
-</div>
-
-```
-  <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8,marginBottom:16}}>
-    {[{l:"Total",v:stats.total,c:"#4F8EF7"},{l:"Done",v:stats.done,c:"#34D399"},{l:"Active",v:stats.inprogress,c:"#FBBF24"},{l:"Overdue",v:stats.overdue,c:"#F87171"}].map(s=>(
-      <div key={s.l} style={{background:"#0A0F1E",border:"1px solid #0F1829",borderRadius:12,padding:"10px 6px",textAlign:"center"}}>
-        <div style={{fontSize:20,fontWeight:700,color:s.c,lineHeight:1}}>{s.v}</div>
-        <div style={{fontSize:9,color:"#374151",marginTop:3,textTransform:"uppercase",letterSpacing:"0.06em"}}>{s.l}</div>
-      </div>
-    ))}
-  </div>
-
-  {overdue.length>0&&(
-    <div style={{background:"#F8717112",border:"1px solid #F8717133",borderRadius:12,padding:"10px 14px",display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
-      <span style={{color:"#F87171",fontSize:15}}>⚠</span>
-      <span style={{flex:1,color:"#F87171",fontSize:13,fontWeight:600}}>{overdue.length} overdue task{overdue.length>1?"s":""}</span>
-      <button style={{background:"#F87171",border:"none",borderRadius:8,color:"#fff",fontSize:12,fontWeight:600,padding:"4px 10px",cursor:"pointer"}} onClick={()=>setTab("work")}>View</button>
-    </div>
-  )}
-
-  {urgent.length>0&&(
-    <>
-      <div style={{color:"#374151",fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:8,marginTop:4}}>🔥 Urgent & High</div>
-      {urgent.map(t=>{
-        const cat=cats.find(c=>c.id===t.category)||cats[0];
-        const pri=PRIORITIES.find(p=>p.id===t.priority)||PRIORITIES[2];
-        return(
-          <div key={t.id} style={{display:"flex",alignItems:"center",gap:8,background:"#0A0F1E",border:"1px solid #0F1829",borderRadius:10,padding:"9px 12px",marginBottom:6}} onClick={()=>setTab(t.category)}>
-            <div style={{width:3,height:24,borderRadius:99,background:cat.color,flexShrink:0}}/>
-            <div style={{flex:1,fontSize:13,color:"#E2E8F0",overflow:"hidden",whiteSpace:"nowrap",textOverflow:"ellipsis"}}>{t.title}</div>
-            <span style={{fontSize:10,padding:"2px 6px",borderRadius:5,background:pri.color+"22",color:pri.color,flexShrink:0}}>{pri.label}</span>
-            {t.dueDate&&<span style={{fontSize:10,color:isOverdue(t)?"#F87171":"#6B7280",fontFamily:"'JetBrains Mono',monospace",flexShrink:0}}>{fmtDate(t.dueDate)}</span>}
-          </div>
-        );
-      })}
-    </>
-  )}
-
-  <div style={{background:"linear-gradient(135deg,#4F8EF715,#A78BFA15)",border:"1px solid #4F8EF733",borderRadius:14,padding:"14px 16px",marginTop:14,marginBottom:14,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-    <div>
-      <div style={{color:"#E2E8F0",fontSize:13,fontWeight:600}}>{week.label}</div>
-      <div style={{color:"#4B5563",fontSize:11,marginTop:2}}>Tap to generate weekly report</div>
-    </div>
-    <button style={{background:"transparent",border:"none",color:"#4F8EF7",fontSize:12,fontWeight:600,cursor:"pointer",padding:0}} onClick={onReport}>Generate →</button>
-  </div>
-
-  <div style={{color:"#374151",fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:8}}>Categories</div>
-  <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:16}}>
-    {cats.map(c=>{
-      const cnt=tasks.filter(t=>t.category===c.id&&t.status!=="done").length;
-      return(
-        <button key={c.id} style={{background:"#0A0F1E",border:`1px solid ${c.color}44`,borderRadius:14,padding:"14px 8px",display:"flex",flexDirection:"column",alignItems:"center",gap:4,cursor:"pointer",position:"relative",outline:"none"}} onClick={()=>setTab(c.id)}>
-          <span style={{fontSize:20}}>{c.icon}</span>
-          <span style={{fontSize:11,color:"#6B7280",fontWeight:500}}>{c.label}</span>
-          {cnt>0&&<span style={{position:"absolute",top:6,right:6,borderRadius:999,fontSize:9,fontWeight:700,color:"#fff",minWidth:16,height:16,display:"flex",alignItems:"center",justifyContent:"center",padding:"0 4px",background:c.color}}>{cnt}</span>}
-        </button>
-      );
-    })}
-  </div>
-</div>
-```
-
-);
-}
-
-// ── TASK CARD ──────────────────────────────────────────────────────────────────
-function TaskCard({item,cats,expanded,onToggle,onEdit,onDelete,onStatus}) {
-const cat=cats.find(c=>c.id===item.category)||cats[0];
-const pri=PRIORITIES.find(p=>p.id===item.priority)||PRIORITIES[2];
-const stat=STATUSES.find(s=>s.id===item.status)||STATUSES[0];
-const over=isOverdue(item);
-const icon={todo:“○”,inprogress:“▶”,done:“✓”,blocked:“✕”,someday:“☁”}[item.status]||“○”;
-return(
-<div style={{background:”#0A0F1E”,border:`1px solid ${over?"#F8717155":"#0F1829"}`,borderRadius:13,marginBottom:7,display:“flex”,overflow:“hidden”,cursor:“pointer”}} onClick={onToggle}>
-<div style={{width:3,background:cat.color,flexShrink:0}}/>
-<div style={{flex:1,padding:“11px 12px 9px”,minWidth:0}}>
-<div style={{display:“flex”,gap:9,alignItems:“flex-start”,marginBottom:7}}>
-<button style={{width:26,height:26,borderRadius:7,border:“none”,background:stat.color+“22”,color:stat.color,display:“flex”,alignItems:“center”,justifyContent:“center”,fontWeight:700,fontSize:11,flexShrink:0,cursor:“pointer”}}
-onClick={e=>{e.stopPropagation();onStatus(item.id);}}>{icon}</button>
-<div style={{flex:1,minWidth:0}}>
-<div style={{fontSize:13,fontWeight:500,color:”#E2E8F0”,lineHeight:1.4,…(item.status===“done”?{textDecoration:“line-through”,opacity:.4}:{})}}>{item.title}</div>
-{expanded&&item.notes&&<div style={{fontSize:11,color:”#4B5563”,marginTop:4,lineHeight:1.5}}>{item.notes}</div>}
-</div>
-{item.dueDate&&<span style={{fontSize:10,fontFamily:”‘JetBrains Mono’,monospace”,flexShrink:0,color:over?”#F87171”:”#6B7280”}}>{over?“⚠ “:””}{fmtDate(item.dueDate)}</span>}
-</div>
-<div style={{display:“flex”,flexWrap:“wrap”,gap:4}}>
-<span style={{fontSize:10,padding:“2px 6px”,borderRadius:5,background:pri.color+“22”,color:pri.color}}>{pri.label}</span>
-<span style={{fontSize:10,padding:“2px 6px”,borderRadius:5,background:stat.color+“22”,color:stat.color}}>{stat.label}</span>
-<span style={{fontSize:10,padding:“2px 6px”,borderRadius:5,background:cat.color+“22”,color:cat.color}}>{cat.icon} {cat.label}</span>
-</div>
-{expanded&&(
-<div style={{display:“flex”,gap:8,marginTop:10,alignItems:“center”}}>
-<button style={{background:”#0F1829”,border:“none”,borderRadius:8,color:”#6B7280”,fontSize:12,padding:“5px 12px”,cursor:“pointer”}} onClick={e=>{e.stopPropagation();onEdit(item);}}>Edit</button>
-<button style={{background:“transparent”,border:“none”,color:”#F87171”,fontSize:12,cursor:“pointer”}} onClick={e=>{e.stopPropagation();onDelete(item.id);}}>Delete</button>
-</div>
-)}
-</div>
-</div>
-);
-}
-
-// ── TASK FORM MODAL ────────────────────────────────────────────────────────────
-function TaskFormModal({form,setForm,cats,editTask,onSave,onClose}) {
-const [tagInput,setTagInput]=useState(””);
-const addTag=()=>{const t=tagInput.trim();if(t&&!(form.tags||[]).includes(t))setForm(f=>({…f,tags:[…(f.tags||[]),t]}));setTagInput(””);};
-return(
-<div style={{position:“fixed”,inset:0,background:”#00000090”,zIndex:50,display:“flex”,alignItems:“flex-end”}} onClick={onClose}>
-<div style={{background:”#0A0F1E”,borderRadius:“20px 20px 0 0”,width:“100%”,maxWidth:430,margin:“0 auto”,maxHeight:“88vh”,overflowY:“auto”,padding:“0 16px 40px”}} onClick={e=>e.stopPropagation()}>
-<div style={{width:36,height:4,background:”#1F2937”,borderRadius:99,margin:“12px auto 16px”}}/>
-<div style={{display:“flex”,justifyContent:“space-between”,alignItems:“center”,marginBottom:16}}>
-<span style={{fontSize:18,fontWeight:700,color:”#E2E8F0”}}>{editTask?“Edit Task”:“New Task”}</span>
-<button style={{background:”#0F1829”,border:“none”,borderRadius:8,color:”#4B5563”,fontSize:16,padding:“6px 10px”,cursor:“pointer”}} onClick={onClose}>✕</button>
-</div>
-
-```
-    <FL label="Category">
-      <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-        {cats.map(c=><button key={c.id} style={{background:"#080C14",border:`1px solid ${form.category===c.id?c.color:"#1F2937"}`,borderRadius:99,color:form.category===c.id?c.color:"#4B5563",fontSize:11,padding:"5px 10px",cursor:"pointer",background:form.category===c.id?c.color+"22":"#080C14"}} onClick={()=>setForm(f=>({...f,category:c.id}))}>{c.icon} {c.label}</button>)}
-      </div>
-    </FL>
-    <FL label="Title *"><input style={S.inp} value={form.title} placeholder="What needs to be done?" onChange={e=>setForm(f=>({...f,title:e.target.value}))}/></FL>
-    <FL label="Notes"><textarea style={{...S.inp,height:68,resize:"none"}} value={form.notes} placeholder="Details…" onChange={e=>setForm(f=>({...f,notes:e.target.value}))}/></FL>
-    <div style={{display:"flex",gap:10,marginBottom:14}}>
-      <div style={{flex:1}}><div style={S.fl}>Priority</div><select style={S.sel} value={form.priority} onChange={e=>setForm(f=>({...f,priority:e.target.value}))}>{PRIORITIES.map(p=><option key={p.id} value={p.id}>{p.label}</option>)}</select></div>
-      <div style={{flex:1}}><div style={S.fl}>Status</div><select style={S.sel} value={form.status} onChange={e=>setForm(f=>({...f,status:e.target.value}))}>{STATUSES.map(s=><option key={s.id} value={s.id}>{s.label}</option>)}</select></div>
-    </div>
-    <FL label="Due Date"><input type="date" style={S.inp} value={form.dueDate} onChange={e=>setForm(f=>({...f,dueDate:e.target.value}))}/></FL>
-    <FL label="Tags">
-      <div style={{display:"flex",gap:6,marginBottom:6}}>
-        <input style={{...S.inp,flex:1}} value={tagInput} placeholder="Add tag…" onChange={e=>setTagInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&addTag()}/>
-        <button style={{background:"#0F1829",border:"none",borderRadius:10,color:"#6B7280",fontSize:13,padding:"10px 14px",cursor:"pointer"}} onClick={addTag}>Add</button>
-      </div>
-      <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-        {(form.tags||[]).map(t=><span key={t} style={{display:"inline-flex",alignItems:"center",gap:4,background:"#4F8EF722",color:"#4F8EF7",borderRadius:6,fontSize:11,padding:"3px 8px"}}>{t}<button style={{background:"none",border:"none",color:"inherit",cursor:"pointer",padding:0,fontSize:14}} onClick={()=>setForm(f=>({...f,tags:f.tags.filter(x=>x!==t)}))}>×</button></span>)}
-      </div>
-    </FL>
-    <button style={{width:"100%",padding:"13px",background:form.title.trim()?"linear-gradient(135deg,#4F8EF7,#A78BFA)":"#1F2937",border:"none",borderRadius:12,color:form.title.trim()?"#fff":"#4B5563",fontSize:15,fontWeight:700,cursor:"pointer",marginTop:8}}
-      disabled={!form.title.trim()} onClick={()=>onSave(form)}>
-      {editTask?"Update Task":"Add Task"}
-    </button>
-  </div>
-</div>
-```
-
-);
-}
-
-// ── LOG ADD (floating button in log view) ──────────────────────────────────────
-function LogFormBtn({onClick}) { return null; } // handled via showLog state toggle
-
-// ── API KEY PANEL ──────────────────────────────────────────────────────────────
-function ApiKeyPanel({apiKey,onSave,onClose}) {
-const [val,setVal]=useState(apiKey);
-return(
-<div style={{background:”#0A0F1E”,borderBottom:“1px solid #1F2937”,padding:“12px 16px”,flexShrink:0}}>
-<div style={{fontSize:11,color:”#6B7280”,marginBottom:8}}>Anthropic API Key — stored locally on your device only</div>
-<div style={{display:“flex”,gap:8}}>
-<input type=“password” style={{…S.inp,flex:1,fontSize:12}} value={val} placeholder=“sk-ant-…” onChange={e=>setVal(e.target.value)}/>
-<button style={{background:”#4F8EF7”,border:“none”,borderRadius:10,color:”#fff”,fontSize:13,padding:“0 14px”,cursor:“pointer”,fontWeight:600}} onClick={()=>onSave(val)}>Save</button>
-<button style={{background:”#0F1829”,border:“none”,borderRadius:10,color:”#6B7280”,fontSize:13,padding:“0 12px”,cursor:“pointer”}} onClick={onClose}>✕</button>
-</div>
-<div style={{fontSize:10,color:”#374151”,marginTop:6}}>Get your key: console.anthropic.com → API Keys</div>
-</div>
-);
-}
-
-// ── CATEGORY MANAGER ───────────────────────────────────────────────────────────
-function CatModal({cats,tasks,tab,setTab,onAdd,onClose}) {
-const [label,setLabel]=useState(””),[icon,setIcon]=useState(“📌”),[color,setColor]=useState(”#8B5CF6”);
-const ICONS=[“📌”,“🎯”,“💡”,“🛒”,“📚”,“🎵”,“🏋️”,“✈️”,“🍕”,“🎮”,“📷”,“🌍”,“🤝”,“🏦”,“🎨”,“🔬”,“⚡”,“🧩”];
-return(
-<div style={{position:“fixed”,inset:0,background:”#00000090”,zIndex:50,display:“flex”,alignItems:“flex-end”}} onClick={onClose}>
-<div style={{background:”#0A0F1E”,borderRadius:“20px 20px 0 0”,width:“100%”,maxWidth:430,margin:“0 auto”,maxHeight:“80vh”,overflowY:“auto”,padding:“0 16px 40px”}} onClick={e=>e.stopPropagation()}>
-<div style={{width:36,height:4,background:”#1F2937”,borderRadius:99,margin:“12px auto 16px”}}/>
-<div style={{display:“flex”,justifyContent:“space-between”,marginBottom:16}}>
-<span style={{fontSize:18,fontWeight:700,color:”#E2E8F0”}}>All Categories</span>
-<button style={{background:”#0F1829”,border:“none”,borderRadius:8,color:”#4B5563”,fontSize:16,padding:“6px 10px”,cursor:“pointer”}} onClick={onClose}>✕</button>
-</div>
-<div style={{display:“flex”,flexDirection:“column”,gap:6,marginBottom:20}}>
-{cats.map(c=>(
-<button key={c.id} style={{display:“flex”,alignItems:“center”,gap:12,padding:“12px”,background:tab===c.id?c.color+“18”:”#080C14”,border:“1px solid #0F1829”,borderRadius:10,cursor:“pointer”,outline:“none”}} onClick={()=>setTab(c.id)}>
-<span style={{fontSize:20}}>{c.icon}</span>
-<span style={{flex:1,color:”#E2E8F0”,fontSize:14,fontWeight:500,textAlign:“left”}}>{c.label}</span>
-<span style={{color:”#4B5563”,fontSize:12,fontFamily:”‘JetBrains Mono’,monospace”}}>{tasks.filter(t=>t.category===c.id).length}</span>
-</button>
-))}
-</div>
-<div style={{background:”#080C14”,border:“1px solid #0F1829”,borderRadius:14,padding:14}}>
-<div style={S.fl}>New Category</div>
-<div style={{display:“flex”,flexWrap:“wrap”,gap:5,marginBottom:10}}>{ICONS.map(ic=><button key={ic} style={{background:icon===ic?”#4F8EF722”:”#0A0F1E”,border:`1px solid ${icon===ic?"#4F8EF7":"#1F2937"}`,borderRadius:8,fontSize:16,padding:“5px 6px”,cursor:“pointer”}} onClick={()=>setIcon(ic)}>{ic}</button>)}</div>
-<input style={{…S.inp,marginBottom:8}} value={label} placeholder=“Category name” onChange={e=>setLabel(e.target.value)}/>
-<div style={{display:“flex”,alignItems:“center”,gap:10,marginBottom:12}}>
-<span style={S.fl}>Color</span>
-<input type=“color” value={color} onChange={e=>setColor(e.target.value)} style={{width:36,height:30,border:“none”,borderRadius:6,cursor:“pointer”,background:“transparent”}}/>
-</div>
-<button style={{width:“100%”,padding:“11px”,background:label.trim()?“linear-gradient(135deg,#4F8EF7,#A78BFA)”:”#1F2937”,border:“none”,borderRadius:12,color:label.trim()?”#fff”:”#4B5563”,fontSize:14,fontWeight:700,cursor:“pointer”}}
-disabled={!label.trim()} onClick={()=>{onAdd(label.trim(),icon,color);setLabel(””);}}>Create Category</button>
-</div>
-</div>
-</div>
-);
-}
-
-// ── NAV TAB ────────────────────────────────────────────────────────────────────
-function NavTab({icon,label,active,onPress,color,badge}) {
-return(
-<button style={{display:“flex”,flexDirection:“column”,alignItems:“center”,gap:2,background:“none”,border:“none”,color:active?(color||”#4F8EF7”):”#1F2937”,cursor:“pointer”,padding:“4px 2px”,position:“relative”,minWidth:44}} onClick={onPress}>
-<span style={{fontSize:18,position:“relative”}}>
-{icon}
-{badge>0&&<span style={{position:“absolute”,top:-1,right:-3,borderRadius:999,fontSize:8,fontWeight:700,color:”#fff”,minWidth:14,height:14,display:“flex”,alignItems:“center”,justifyContent:“center”,padding:“0 3px”,background:color||”#4F8EF7”}}>{badge>9?“9+”:badge}</span>}
-</span>
-<span style={{fontSize:9,fontWeight:500,textTransform:“uppercase”,letterSpacing:“0.04em”}}>{label}</span>
-</button>
-);
-}
-
-function FL({label,children}) {
-return <div style={{marginBottom:14}}><div style={S.fl}>{label}</div>{children}</div>;
-}
-
-const S = {
-hBtn:{background:”#0F1829”,border:“none”,borderRadius:10,color:”#94A3B8”,fontSize:16,padding:“8px 10px”,cursor:“pointer”},
-chip:{background:”#0A0F1E”,border:“1px solid #0F1829”,borderRadius:999,color:”#4B5563”,fontSize:11,padding:“4px 10px”,cursor:“pointer”,whiteSpace:“nowrap”},
-inp:{width:“100%”,background:”#080C14”,border:“1px solid #1F2937”,borderRadius:10,padding:“10px 12px”,color:”#E2E8F0”,fontFamily:“Sora,sans-serif”,fontSize:14,outline:“none”},
-sel:{width:“100%”,background:”#080C14”,border:“1px solid #1F2937”,borderRadius:10,padding:“10px 12px”,color:”#E2E8F0”,fontFamily:“Sora,sans-serif”,fontSize:14,outline:“none”,cursor:“pointer”},
-fl:{fontSize:10,color:”#4B5563”,textTransform:“uppercase”,letterSpacing:“0.1em”,marginBottom:6,fontWeight:600,display:“block”},
-};
-
-ReactDOM.createRoot(document.getElementById(“root”)).render(<App/>);
+TASKS:
+‘+wt.map(function(t){return’[’+t.category+’][’+t.status+’] ‘+t.title+(t.notes?’ - ‘+t.notes:’’)}).join(’
+‘),2000,false);S.report=(d.content||[]).filter(function(b){return b.type===‘text’}).map(function(b){return b.text}).join(’’)||‘Error’}catch(e){S.report=‘Error: ‘+e.message}S.repLoading=false;render()}
+function copyRep(){navigator.clipboard.writeText(S.report).then(function(){S.copied=true;render();setTimeout(function(){S.copied=false;render()},2000)})}
+function dlRep(){var a=document.createElement(‘a’);a.href=‘data:text/plain;charset=utf-8,’+encodeURIComponent(S.report);a.download=‘Report-’+today()+’.txt’;a.click()}
+var tmd=null;
+function showTaskModal(task,dc){tmd=task?JSON.parse(JSON.stringify(task)):{id:uid(),createdAt:now(),updatedAt:now(),title:’’,notes:’’,category:dc||‘personal’,priority:‘normal’,status:‘todo’,dueDate:’’,tags:[]};renderTM()}
+function renderTM(){var t=tmd,isE=!!S.tasks.find(function(x){return x.id===t.id});var ccs=S.cats.map(function(c){var sel=t.category===c.id;return’<button class="cc" style="'+(sel?'background:'+c.color+'22;border-color:'+c.color+';color:'+c.color:'')+'" onclick="tmd.category=''+c.id+'';renderTM()">’+esc(c.label)+’</button>’}).join(’’);var tags=(t.tags||[]).map(function(tg){return’<span class="tb2">’+esc(tg)+’<button class="tx" onclick="tmd.tags=tmd.tags.filter(function(x){return x!==''+esc(tg)+''});renderTM()">x</button></span>’}).join(’’);var po=PRI.map(function(p){return’<option value=”’+p.id+’”’+(t.priority===p.id?’ selected’:’’)+’>’+p.label+’</option>’}).join(’’);var so=STAT.map(function(s){return’<option value=”’+s.id+’”’+(t.status===s.id?’ selected’:’’)+’>’+s.label+’</option>’}).join(’’);showM(’<div class="ovl" onclick="clsM(event,this)"><div class="mdl" onclick="event.stopPropagation()"><div class="mhdl"></div><div class="mhd"><span class="mttl">’+(isE?‘Edit Task’:‘New Task’)+’</span><button class="mclb" onclick="clsM()">X</button></div><div class="fld"><span class="flbl">Category</span><div class="ccs">’+ccs+’</div></div><div class="fld"><span class="flbl">Title</span><input class="inp" id="ft" value="'+esc(t.title)+'" placeholder="What needs to be done?"/></div><div class="fld"><span class="flbl">Notes</span><textarea class="inpta" id="fn" placeholder="Details...">’+esc(t.notes||’’)+’</textarea></div><div class="r2"><div><span class="flbl">Priority</span><select class="sel" id="fp">’+po+’</select></div><div><span class="flbl">Status</span><select class="sel" id="fs">’+so+’</select></div></div><div class="fld"><span class="flbl">Due Date</span><input type="date" class="inp" id="fd" value="'+(t.dueDate||'')+'"/></div><div class="fld"><span class="flbl">Tags</span><div class="tagrow"><input class="inp" id="ftag" placeholder="Add tag..." style="flex:1"/><button class="tadd" onclick="addTag()">Add</button></div><div class="tw">’+tags+’</div></div><button class="svbtn" onclick="subTask('+(isE?'true':'false')+')">’+(isE?‘Update Task’:‘Add Task’)+’</button></div></div>’)}
+function addTag(){var v=document.getElementById(‘ftag’).value.trim();if(v&&!(tmd.tags||[]).includes(v)){tmd.tags=[…(tmd.tags||[]),v]}renderTM()}
+function subTask(isE){var t=document.getElementById(‘ft’).value.trim();if(!t){alert(‘Title required’);return}tmd.title=t;tmd.notes=document.getElementById(‘fn’).value;tmd.priority=document.getElementById(‘fp’).value;tmd.status=document.getElementById(‘fs’).value;tmd.dueDate=document.getElementById(‘fd’).value;tmd.updatedAt=now();if(isE){S.tasks=S.tasks.map(function(x){return x.id===tmd.id?tmd:x})}else{S.tasks=[tmd,…S.tasks]}saveTasks();clsM();render()}
+var lmd=null;
+function showLogModal(){lmd={id:uid(),date:today(),text:’’,category:‘work’,type:‘bau’,taskId:’’};renderLM()}
+function renderLM(){var f=lmd;var co=S.cats.map(function(c){return’<option value=”’+c.id+’”’+(f.category===c.id?’ selected’:’’)+’>’+esc(c.label)+’</option>’}).join(’’);var to=[[‘bau’,‘BAU’],[‘project’,‘Project’],[‘investigation’,‘Investigation’],[‘agentic’,‘Agentic’]].map(function(x){return’<option value=”’+x[0]+’”’+(f.type===x[0]?’ selected’:’’)+’>’+x[1]+’</option>’}).join(’’);var tasks=S.tasks.filter(function(t){return t.category===‘work’||t.category===‘projects’});var tops=’<option value="">- None -</option>’+tasks.map(function(t){return’<option value="'+t.id+'">’+esc(t.title.slice(0,45))+’</option>’}).join(’’);showM(’<div class="ovl" onclick="clsM(event,this)"><div class="mdl" onclick="event.stopPropagation()"><div class="mhdl"></div><div class="mhd"><span class="mttl">Log Work Entry</span><button class="mclb" onclick="clsM()">X</button></div><div class="fld"><span class="flbl">Date</span><input type="date" class="inp" id="ld" value="'+f.date+'"/></div><div class="fld"><span class="flbl">What did you work on?</span><textarea class="inpta" id="lt" style="height:90px" placeholder="e.g. Worked on DHCP failover UAT...">’+esc(f.text)+’</textarea></div><div class="r2"><div><span class="flbl">Category</span><select class="sel" id="lc">’+co+’</select></div><div><span class="flbl">Type</span><select class="sel" id="ltp">’+to+’</select></div></div><div class="fld"><span class="flbl">Link Task</span><select class="sel" id="ltk">’+tops+’</select></div><button class="svbtn" onclick="subLog()">Save Entry</button></div></div>’)}
+function subLog(){var t=document.getElementById(‘lt’).value.trim();if(!t){alert(‘Describe what you worked on’);return}lmd.date=document.getElementById(‘ld’).value;lmd.text=t;lmd.category=document.getElementById(‘lc’).value;lmd.type=document.getElementById(‘ltp’).value;lmd.taskId=document.getElementById(‘ltk’).value;lmd.createdAt=now();S.worklog=[lmd,…S.worklog];saveWL();clsM();render()}
+var ncd={label:’’,icon:‘X’,color:’#8B5CF6’};
+var ICONS=[‘Pin’,‘Goal’,‘Idea’,‘Shop’,‘Book’,‘Music’,‘Gym’,‘Travel’,‘Food’,‘Game’,‘Photo’,‘World’,‘Team’,‘Bank’,‘Art’,‘Lab’,‘Power’,‘Puzzle’];
+var EMOS=[’\uD83D\uDCCC’,’\uD83C\uDFAF’,’\uD83D\uDCA1’,’\uD83D\uDED2’,’\uD83D\uDCDA’,’\uD83C\uDFB5’,’\uD83C\uDFCB\uFE0F’,’\u2708\uFE0F’,’\uD83C\uDF55’,’\uD83C\uDFAE’,’\uD83D\uDCF7’,’\uD83C\uDF0D’,’\uD83E\uDD1D’,’\uD83C\uDFE6’,’\uD83C\uDFA8’,’\uD83D\uDD2C’,’\u26A1’,’\uD83E\udde9’];
+function showCats(){ncd={label:’’,icon:‘Pin’,color:’#8B5CF6’};renderCM()}
+function renderCM(){var rows=S.cats.map(function(c){var cnt=S.tasks.filter(function(t){return t.category===c.id}).length;return’<button class="crb" style="'+(S.tab===c.id?'background:'+c.color+'18':'')+'" onclick="setTab(''+c.id+'');clsM()"><span style="font-size:18px">’+esc(c.icon)+’</span><span style="flex:1;color:#E2E8F0;font-size:14px;font-weight:500">’+esc(c.label)+’</span><span style="color:#4B5563;font-size:12px">’+cnt+’</span></button>’}).join(’’);showM(’<div class="ovl" onclick="clsM(event,this)"><div class="mdl" onclick="event.stopPropagation()"><div class="mhdl"></div><div class="mhd"><span class="mttl">All Categories</span><button class="mclb" onclick="clsM()">X</button></div><div class="crow">’+rows+’</div><div class="acb"><span class="flbl">New Category</span><div class="igrid">’+ICONS.map(function(ic,i){return’<button class="ibtn'+(ncd.icon===ic?' sel':'')+'" onclick="ncd.icon=''+ic+'';renderCM()">’+ic+’</button>’}).join(’’)+’</div><input class="inp" id="ncl" value="'+esc(ncd.label)+'" placeholder="Category name" style="margin-bottom:8px"/><div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span class="flbl" style="margin:0">Color</span><input type="color" value="'+ncd.color+'" oninput="ncd.color=this.value" style="width:36px;height:30px;border:none;border-radius:6px;cursor:pointer"/></div><button class="svbtn" onclick="subCat()">Create Category</button></div></div></div>’)}
+function subCat(){var l=document.getElementById(‘ncl’).value.trim();if(!l){alert(‘Name required’);return}var nc={id:l.toLowerCase().replace(/\s+/g,’-’)+’-’+Date.now().toString(36),label:l,icon:ncd.icon,color:ncd.color};S.cats=[…S.cats,nc];lsave();if(S.apiKey)driveWrite(DRIVE.categories,{version:1,categories:S.cats});clsM();render()}
+function showM(html){document.getElementById(‘mc’).innerHTML=html}
+function clsM(e,el){if(e&&el&&e.target!==el)return;document.getElementById(‘mc’).innerHTML=’’}
+function updNav(){var tabs=[‘home’,‘work’,‘projects’,‘log’,‘report’];tabs.forEach(function(t,i){var el=document.getElementById(‘nt’+i);if(!el)return;var isActive=(t===‘log’&&S.showLog)||(t!==‘log’&&S.tab===t&&!S.showLog);el.className=‘ntab’+(isActive?’ on’:’’)});var wb=S.tasks.filter(function(t){return t.category===‘work’&&t.status!==‘done’}).length;var pb=S.tasks.filter(function(t){return t.category===‘projects’&&t.status!==‘done’}).length;var lb=S.worklog.filter(function(e){return e.date===today()}).length;function setBdg(id,cnt){var el=document.getElementById(id);if(!el)return;el.textContent=cnt>9?‘9+’:cnt;el.style.display=cnt>0?‘flex’:‘none’}setBdg(‘nb1’,wb);setBdg(‘nb2’,pb);setBdg(‘nb3’,lb)}
+function render(){updNav();var b=document.getElementById(‘body’);if(S.showLog){b.innerHTML=renderLog();return}if(S.tab===‘home’){b.innerHTML=renderHome();return}if(S.tab===‘report’){b.innerHTML=renderRep();return}b.innerHTML=renderList()}
+function renderHome(){var tasks=S.tasks,done=tasks.filter(function(t){return t.status===‘done’}).length,ovList=tasks.filter(isOv),inp=tasks.filter(function(t){return t.status===‘inprogress’}).length,pct=tasks.length?Math.round(done/tasks.length*100):0,wk=weekRange(),urg=tasks.filter(function(t){return(t.priority===‘urgent’||t.priority===‘high’)&&t.status!==‘done’}).slice(0,3);var oal=ovList.length?’<div class="al"><span style="color:#F87171;font-size:15px">!</span><span style="flex:1;color:#F87171;font-size:13px;font-weight:600">’+ovList.length+’ overdue task’+(ovList.length>1?‘s’:’’)+’</span><button class="ab" onclick="setTab('work')">View</button></div>’:’’;var uc=urg.map(function(t){var c=getC(t.category),p=getP(t.priority),ov=isOv(t);return’<div class="mc2" onclick="setTab(''+t.category+'')"><div class="ma" style="background:'+c.color+'"></div><span style="flex:1;font-size:13px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">’+esc(t.title)+’</span><span class="bdg" style="background:'+p.color+'22;color:'+p.color+'">’+p.label+’</span>’+(t.dueDate?’<span style="font-size:10px;color:'+(ov?'#F87171':'#6B7280')+'">’+fdate(t.dueDate)+’</span>’:’’)+’</div>’}).join(’’);var cg=S.cats.map(function(c){var cnt=tasks.filter(function(t){return t.category===c.id&&t.status!==‘done’}).length;return’<button class="ct" style="border-color:'+c.color+'44" onclick="setTab(''+c.id+'')"><span class="cti">’+esc(c.icon)+’</span><span class="ctl">’+esc(c.label)+’</span>’+(cnt>0?’<span class="cba" style="background:'+c.color+'">’+cnt+’</span>’:’’)+’</button>’}).join(’’);return’<div class="pg"><div class="hero"><div class="hdate">’+new Date().toLocaleDateString(‘en-US’,{weekday:‘long’,month:‘long’,day:‘numeric’})+’</div><div class="htitle">Your Second Brain</div><div class="hsub">’+(tasks.length-done)+’ open - ‘+pct+’% complete</div><div class="bt"><div class="bf" style="width:'+pct+'%"></div></div></div><div class="sg"><div class="sc"><div class="sv" style="color:#4F8EF7">’+tasks.length+’</div><div class="sl">Total</div></div><div class="sc"><div class="sv" style="color:#34D399">’+done+’</div><div class="sl">Done</div></div><div class="sc"><div class="sv" style="color:#FBBF24">’+inp+’</div><div class="sl">Active</div></div><div class="sc"><div class="sv" style="color:#F87171">’+ovList.length+’</div><div class="sl">Overdue</div></div></div>’+oal+(urg.length?’<span class="stl">Urgent & High Priority</span>’+uc:’’)+’<div class="wb"><div><div class="wl">’+wk.label+’</div><div class="ws">Tap to generate weekly report</div></div><button class="wbtn" onclick="setTab('report')">Generate</button></div><span class="stl">Categories</span><div class="cg">’+cg+’</div></div>’}
+function renderList(){var c=getC(S.tab);var list=S.tasks.filter(function(t){return t.category===S.tab});if(S.fStatus!==‘all’)list=list.filter(function(t){return t.status===S.fStatus});list=list.sort(function(a,b){var p=[‘urgent’,‘high’,‘normal’,‘low’];return p.indexOf(a.priority)-p.indexOf(b.priority)||new Date(b.updatedAt)-new Date(a.updatedAt)});var chips=[{id:‘all’,label:‘All’}].concat(STAT).map(function(s){var sc=STAT.find(function(x){return x.id===s.id});var on=S.fStatus===s.id;return’<button class="chip'+(on?' on':'')+'" style="'+(on&&sc?'background:'+sc.color+'22;color:'+sc.color+';border-color:'+sc.color:'')+'" onclick="S.fStatus=''+s.id+'';render()">’+s.label+’</button>’}).join(’’);var cards=list.length?list.map(renderTC).join(’’):’<div style="text-align:center;padding:40px 0;color:#374151">Nothing here - tap + to add</div>’;return’<div class="pg"><div class="lh"><span style="font-size:20px">’+esc(c.icon)+’</span><span class="lt">’+esc(c.label)+’</span><span class="lc">’+list.filter(function(t){return t.status!==‘done’}).length+’ open</span></div><div class="chips">’+chips+’</div>’+cards+’<div style="height:20px"></div></div>’}
+function renderTC(t){var c=getC(t.category),p=getP(t.priority),s=getS(t.status),ov=isOv(t),exp=S.expId===t.id;var icon={todo:‘O’,inprogress:’>>’,done:‘OK’,blocked:‘X’,someday:’~’}[t.status]||‘O’;var tags=(t.tags||[]).map(function(tg){return’<span class="bdg" style="background:#0F1829;color:#4B5563">#’+esc(tg)+’</span>’}).join(’’);return’<div class="tc'+(ov?' ov':'')+'" onclick="togExp(''+t.id+'')"><div class="tac" style="background:'+c.color+'"></div><div class="tb"><div class="tr"><button class="sb" style="background:'+s.color+'22;color:'+s.color+'" onclick="event.stopPropagation();cycleStatus(''+t.id+'')">’+icon+’</button><div style="flex:1;min-width:0"><div class="tt'+(t.status==='done'?' dn':'')+'">’+esc(t.title)+’</div>’+(exp&&t.notes?’<div class="tn">’+esc(t.notes)+’</div>’:’’)+’</div>’+(t.dueDate?’<span class="td'+(ov?' ov':'')+'">’+(ov?’! ‘:’’)+fdate(t.dueDate)+’</span>’:’’)+’</div><div class="mr"><span class="bdg" style="background:'+p.color+'22;color:'+p.color+'">’+p.label+’</span><span class="bdg" style="background:'+s.color+'22;color:'+s.color+'">’+s.label+’</span><span class="bdg" style="background:'+c.color+'22;color:'+c.color+'">’+esc(c.label)+’</span>’+tags+’</div>’+(exp?’<div class="tact"><button class="eb" onclick="event.stopPropagation();showTaskModal(S.tasks.find(function(x){return x.id===''+t.id+''}))">Edit</button><button class="db" onclick="event.stopPropagation();delTask(''+t.id+'')">Delete</button></div>’:’’)+’</div></div>’}
+function renderLog(){var g={};S.worklog.forEach(function(e){if(!g[e.date])g[e.date]=[];g[e.date].push(e)});var days=Object.keys(g).sort(function(a,b){return b.localeCompare(a)});var cnt={bau:0,project:0,investigation:0,agentic:0};S.worklog.forEach(function(e){if(cnt[e.type]!==undefined)cnt[e.type]++});var abar=’<div class="abar">’+[[‘project’,’#A78BFA’,‘Project’],[‘bau’,’#94A3B8’,‘BAU’],[‘investigation’,’#F87171’,‘Invest.’],[‘agentic’,’#34D399’,‘Agentic’]].map(function(x){return’<div class="ap" style="background:'+x[1]+'18"><div style="font-size:18px;font-weight:700;color:'+x[1]+'">’+cnt[x[0]]+’</div><div style="font-size:9px;color:'+x[1]+'">’+x[2]+’</div></div>’}).join(’’)+’</div>’;var dh=days.map(function(date){var es=g[date];var eh=es.map(function(e){var c=getC(e.category),tc=TC[e.type]||’#94A3B8’,tl=TL[e.type]||e.type;return’<div class="lc2"><div class="la" style="background:'+c.color+'"></div><div style="flex:1;min-width:0"><div class="ltx">’+esc(e.text)+’</div><div style="display:flex;gap:5px;flex-wrap:wrap"><span class="bdg" style="background:'+c.color+'22;color:'+c.color+'">’+esc(c.label)+’</span><span class="bdg" style="background:'+tc+'22;color:'+tc+'">’+tl+’</span></div></div><button class="ldel" onclick="delLog(''+e.id+'')">x</button></div>’}).join(’’);return’<div style="margin-bottom:16px"><div class="dh"><span class="dlb">’+fdate(date)+’</span><span class="ddt">’+date+’</span><span class="dc">’+es.length+’</span></div>’+eh+’</div>’}).join(’’);return’<div class="pg"><div class="lh"><span style="font-size:20px">Log</span><span class="lt">Worklog</span><span class="lc">’+S.worklog.length+’ entries</span></div>’+abar+(days.length?dh:’<div style="text-align:center;padding:40px 0;color:#374151">No entries - tap + to log</div>’)+’<div style="height:20px"></div></div>’}
+function renderRep(){var wk=weekRange();var rbody=S.report?’<div class="racts"><button class="rab" onclick="copyRep()">’+(S.copied?‘Copied!’:‘Copy Email’)+’</button><button class="rab" onclick="dlRep()">Download</button></div><div class="rbox"><pre class="rpre">’+esc(S.report)+’</pre></div>’:’<div style="text-align:center;padding:32px 0;color:#374151;font-size:13px">’+(S.apiKey?‘Tap Generate to build your weekly report’:‘Add API key first (Key button)’)+’</div>’;return’<div class="pg"><div class="lh"><span style="font-size:20px">Report</span><span class="lt">Weekly Report</span></div><div class="rh"><div class="rw">’+wk.label+’</div><div class="rs">AI reads your worklog and tasks to draft your email</div><button class=“gbtn” onclick=“buildReport()” ‘+(S.repLoading?‘disabled’:’’)+’>’+( S.repLoading?’<span style="animation:spin 1s linear infinite;display:inline-block">O</span> Generating…’:‘Generate Weekly Report’)+’</button></div>’+rbody+’<div style="height:20px"></div></div>’}
+window.onload=function(){S.tasks=JSON.parse(localStorage.getItem(‘sb_t’)||‘null’)||ITASKS;S.worklog=JSON.parse(localStorage.getItem(‘sb_w’)||‘null’)||IWL;S.cats=JSON.parse(localStorage.getItem(‘sb_c’)||‘null’)||CATS;S.apiKey=localStorage.getItem(‘sb_k’)||’’;syncDot(S.apiKey?’#FBBF24’:’#F87171’,S.apiKey?‘Syncing…’:‘No API key - tap Key button’);render();if(S.apiKey)syncDrive();else syncDot(’#F87171’,‘Local data - tap Key to sync Drive’)};
 </script>
 
 </body>
