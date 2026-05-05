@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Second Brain"/>
+<meta name="theme-color" content="#080C14"/>
+<title>Second Brain</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+html,body,#root{height:100%;background:#080C14;font-family:'Sora',sans-serif}
+::-webkit-scrollbar{display:none}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes spin{to{transform:rotate(360deg)}}
+input,textarea,select{color-scheme:dark;font-family:'Sora',sans-serif}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useCallback,useRef} = React;
+
+// ── CONFIG — update these file IDs if you recreate Drive files ─────────────────
+const DRIVE_FILE_IDS = {
+tasks:      “1OWIXMe5PvrXOZXDVFDxVfylXQ8Kml_IE”,
+worklog:    “1w6jQLE48kmnSQ3kXn5TDiafhfYe2y4tQ”,
+categories: “14zFd-GoGYRGdbjr76ySlRNb-pqZrNSyK”,
+};
+const DRIVE_MCP = “https://drivemcp.googleapis.com/mcp/v1”;
+const MODEL     = “claude-sonnet-4-20250514”;
+
+// ── INITIAL DATA (your real data — also stored in Drive) ──────────────────────
+const INITIAL_TASKS = [
+{id:“1”,title:“DHCP Scope Failover UAT”,category:“work”,priority:“urgent”,status:“inprogress”,dueDate:“2026-05-09”,notes:“Network team using solution to assign IP on switch interface, which can exclude DS team involvement. Next: Discuss feasibility and stability with Vikas Maurya”,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
+{id:“2”,title:“Fix Packet Fence Auto Enrolment Issue”,category:“work”,priority:“high”,status:“inprogress”,dueDate:“2026-05-06”,notes:””,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
+{id:“3”,title:“Discuss feasibility and stability with Vikas Maurya”,category:“work”,priority:“high”,status:“todo”,dueDate:“2026-05-06”,notes:“Sub-task of DHCP Scope Failover UAT”,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
+{id:“4”,title:“Review IP assignment solution on switch interface”,category:“work”,priority:“normal”,status:“todo”,dueDate:“2026-05-06”,notes:””,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
+{id:“5”,title:“PacketFence Patching”,category:“work”,priority:“high”,status:“inprogress”,dueDate:“2026-05-25”,notes:“Patching planned for PFE01 server; rescheduled for 3rd May”,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
+{id:“6”,title:“SailPoint Pre Migration Activities”,category:“projects”,priority:“urgent”,status:“inprogress”,dueDate:“2026-05-08”,notes:“DC resource updates, backups, replication changes. Outbound replication disable, DC backup, user/group exports pending”,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
+{id:“7”,title:“SailPoint Post Migration Activities”,category:“projects”,priority:“urgent”,status:“inprogress”,dueDate:“2026-05-11”,notes:“Prepared required migration scripts and shared with team. Next: Power on DCs, Verify AD replication, Validate group membership, Enable outbound replication”,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
+{id:“8”,title:“AD Transformation (AD-Less Roadmap)”,category:“projects”,priority:“high”,status:“inprogress”,dueDate:“2026-05-08”,notes:“Discussion initiated with Microsoft regarding approach and challenges for AD-less environment. Next: Await Microsoft response”,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
+{id:“9”,title:“DHCP 50/50 Failover Dashboard”,category:“projects”,priority:“normal”,status:“inprogress”,dueDate:“2026-05-11”,notes:“PEG team working on dashboard. Next: Review dashboard once ready”,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
+{id:“10”,title:“DNS Block for corp.ad (Zscaler DNS Security)”,category:“projects”,priority:“high”,status:“inprogress”,dueDate:“2026-05-22”,notes:“Solution discussion completed with Zscaler vendor; Keshav to align with Vinay on pilot user count.”,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
+{id:“11”,title:“Arista AGNI Implementation”,category:“projects”,priority:“high”,status:“inprogress”,dueDate:“2026-09-30”,notes:“Port validation for India proxy IPs completed; discussed port allow with Rajesh; license procurement in progress; Infosec approval pending.”,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
+{id:“12”,title:“DHCP Scope Creation Automation”,category:“projects”,priority:“normal”,status:“inprogress”,dueDate:“2026-06-30”,notes:“BRD update in progress to include RITM/Catalogue-based scope creation.”,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
+{id:“13”,title:“DNS Catalogue Modification (with Database)”,category:“projects”,priority:“normal”,status:“inprogress”,dueDate:“2026-06-30”,notes:“DNS database updated with most domain owners; genpact.com ownership pending.”,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
+{id:“14”,title:“SailPoint Migration Scripts”,category:“projects”,priority:“normal”,status:“done”,dueDate:“2026-05-03”,notes:“All scripts prepared, tested and shared with team”,tags:[],reminderSynced:false,createdAt:“2026-05-05T18:12:24.903Z”,updatedAt:“2026-05-05T18:12:24.903Z”,url:””,amount:””,recurrence:””},
+];
+
+const INITIAL_WORKLOG = [
+{id:“w1”,date:“2026-05-05”,text:“AD transformation discussion with MS”,category:“projects”,type:“project”},
+{id:“w2”,date:“2026-05-01”,text:“DHCP incident RCA”,category:“projects”,type:“investigation”},
+{id:“w3”,date:“2026-05-01”,text:“Arista Agni port allow discussion with Rajesh”,category:“projects”,type:“project”},
+{id:“w4”,date:“2026-05-01”,text:“DNS database update”,category:“work”,type:“bau”},
+{id:“w5”,date:“2026-04-30”,text:“Prepared all scripts for SailPoint migration”,category:“projects”,type:“project”},
+{id:“w6”,date:“2026-04-30”,text:“DHCP scope both side enable/disable mismatch script”,category:“projects”,type:“bau”},
+{id:“w7”,date:“2026-04-30”,text:“KB article for DHCP INC”,category:“projects”,type:“bau”},
+{id:“w8”,date:“2026-04-30”,text:“Ad replication script”,category:“work”,type:“bau”},
+{id:“w9”,date:“2026-04-29”,text:“AD replication script”,category:“work”,type:“bau”},
+{id:“w10”,date:“2026-04-29”,text:“Ad replication monitoring from LM”,category:“work”,type:“bau”},
+{id:“w11”,date:“2026-04-28”,text:“Password expiry report scheduled for SP migration”,category:“work”,type:“project”},
+{id:“w12”,date:“2026-04-28”,text:“Discussed DHCP 50/50 failover dashboard use cases”,category:“projects”,type:“project”},
+{id:“w13”,date:“2026-04-28”,text:“Discussed agentic use cases with HA”,category:“work”,type:“agentic”},
+{id:“w14”,date:“2026-04-28”,text:“Cloud AD architecture discussion”,category:“work”,type:“bau”},
+{id:“w15”,date:“2026-04-28”,text:“AI builder training transform”,category:“work”,type:“bau”},
+{id:“w16”,date:“2026-04-26”,text:“Updated agentic AI use case with manual and proposed steps”,category:“work”,type:“agentic”},
+{id:“w17”,date:“2026-04-26”,text:“DNS catalog discussion with Subir (updates pending)”,category:“work”,type:“bau”},
+{id:“w18”,date:“2026-04-26”,text:“Completed AI builder immerse”,category:“work”,type:“bau”},
+{id:“w19”,date:“2026-04-25”,text:“Training on AI builder”,category:“work”,type:“bau”},
+{id:“w20”,date:“2026-04-24”,text:“Worked on agentic automation use case”,category:“work”,type:“agentic”},
+{id:“w21”,date:“2026-04-24”,text:“Worked on Arista AGNI explaining to PM”,category:“projects”,type:“project”},
+{id:“w22”,date:“2026-04-22”,text:“Worked on solutioning for DNS leakage with Zscaler vendor”,category:“projects”,type:“bau”},
+{id:“w23”,date:“2026-04-22”,text:“Worked on WD migration plan”,category:“work”,type:“project”},
+{id:“w24”,date:“2026-04-21”,text:“Worked on unregistering bulk users on packet fence”,category:“work”,type:“bau”},
+{id:“w25”,date:“2026-04-21”,text:“Worked on MS patch impacting PAM validation”,category:“work”,type:“bau”},
+{id:“w26”,date:“2026-04-20”,text:“Worked on bulk device unregistered packet fence”,category:“work”,type:“bau”},
+{id:“w27”,date:“2026-04-16”,text:“Worked on static Oracle DNS solution”,category:“work”,type:“bau”},
+{id:“w28”,date:“2026-04-16”,text:“Worked on cloud AD architecture review”,category:“work”,type:“bau”},
+{id:“w29”,date:“2026-04-16”,text:“Worked on DNS database creation”,category:“work”,type:“bau”},
+{id:“w30”,date:“2026-04-15”,text:“Worked on IVL database removal from cloud.ad”,category:“work”,type:“bau”},
+{id:“w31”,date:“2026-04-15”,text:“Worked on DNS database creation”,category:“work”,type:“bau”},
+{id:“w32”,date:“2026-04-14”,text:“Discussion on cloud.ad account issue”,category:“work”,type:“investigation”},
+{id:“w33”,date:“2026-04-14”,text:“Troubleshooting cloud.ad account issue”,category:“work”,type:“investigation”},
+{id:“w34”,date:“2026-04-14”,text:“Worked on cloud new account password reset issue”,category:“work”,type:“investigation”},
+{id:“w35”,date:“2026-04-13”,text:“Worked on SSL 3.0 disable vulnerability”,category:“work”,type:“investigation”},
+{id:“w36”,date:“2026-04-09”,text:“Worked on DNS block for corp.ad on client machines”,category:“work”,type:“bau”},
+{id:“w37”,date:“2026-04-09”,text:“Logged DHCP 50/50 failover use case discussion”,category:“projects”,type:“project”},
+{id:“w38”,date:“2026-04-09”,text:“Logged DNS catalogue modification BRD”,category:“projects”,type:“project”},
+{id:“w39”,date:“2026-04-09”,text:“Logged zscaler DNS security solution to monitor DNS leakage”,category:“projects”,type:“bau”},
+{id:“w40”,date:“2026-04-09”,text:“Logged DS capacity management”,category:“work”,type:“bau”},
+{id:“w41”,date:“2026-04-09”,text:“Logged BMO HAF VLAN change packet fence”,category:“work”,type:“bau”},
+{id:“w42”,date:“2026-04-08”,text:“Worked on packet fence bmo vlan change”,category:“work”,type:“bau”},
+{id:“w43”,date:“2026-04-08”,text:“Worked on ds capacity assessment”,category:“work”,type:“bau”},
+{id:“w44”,date:“2026-04-08”,text:“Worked on service account issue in bloom ad”,category:“work”,type:“investigation”},
+{id:“w45”,date:“2026-04-08”,text:“Worked on dell and hp reset use case”,category:“work”,type:“agentic”},
+{id:“w46”,date:“2026-04-07”,text:“Worked on dhcp scope creation brd”,category:“projects”,type:“bau”},
+{id:“w47”,date:“2026-04-07”,text:“Worked on packet fence patching discussion”,category:“work”,type:“bau”},
+{id:“w48”,date:“2026-04-07”,text:“Worked on zscaler group automation”,category:“projects”,type:“bau”},
+{id:“w49”,date:“2026-04-07”,text:“Worked on vulnerability assessment unencrypted http”,category:“work”,type:“investigation”},
+{id:“w50”,date:“2026-04-06”,text:“Worked on AD less road map transformation”,category:“work”,type:“project”},
+{id:“w51”,date:“2026-04-06”,text:“Worked on new account disabled in cloud.ad”,category:“work”,type:“bau”},
+];
+
+const DEFAULT_CATS = [
+{id:“work”,label:“Work”,icon:“💼”,color:”#4F8EF7”},
+{id:“projects”,label:“Projects”,icon:“🚀”,color:”#A78BFA”},
+{id:“personal”,label:“Personal”,icon:“🌿”,color:”#34D399”},
+{id:“knowledge”,label:“Knowledge”,icon:“🧠”,color:”#FBBF24”},
+{id:“bills”,label:“Bills”,icon:“💳”,color:”#F87171”},
+{id:“watchlist”,label:“Watchlist”,icon:“👁”,color:”#38BDF8”},
+{id:“health”,label:“Health”,icon:“❤️”,color:”#FB923C”},
+];
+const PRIORITIES = [{id:“urgent”,label:“Urgent”,color:”#F87171”},{id:“high”,label:“High”,color:”#FBBF24”},{id:“normal”,label:“Normal”,color:”#94A3B8”},{id:“low”,label:“Low”,color:”#475569”}];
+const STATUSES   = [{id:“todo”,label:“To Do”,color:”#94A3B8”},{id:“inprogress”,label:“In Progress”,color:”#FBBF24”},{id:“done”,label:“Done”,color:”#34D399”},{id:“blocked”,label:“Blocked”,color:”#F87171”},{id:“someday”,label:“Someday”,color:”#A78BFA”}];
+const TYPE_COLORS = {bau:”#94A3B8”,project:”#A78BFA”,investigation:”#F87171”,agentic:”#34D399”};
+const TYPE_LABELS = {bau:“BAU”,project:“Project”,investigation:“Investigation”,agentic:“Agentic”};
+
+// ── UTILS ──────────────────────────────────────────────────────────────────────
+const uid  = () => Math.random().toString(36).slice(2)+Date.now().toString(36);
+const nowISO = () => new Date().toISOString();
+const todayStr = () => new Date().toISOString().slice(0,10);
+
+function weekRange() {
+const d=new Date(),day=d.getDay();
+const mon=new Date(d); mon.setDate(d.getDate()-((day+6)%7));
+const sun=new Date(mon); sun.setDate(mon.getDate()+6);
+const fmt=x=>x.toLocaleDateString(“en-GB”,{day:“2-digit”,month:“short”,year:“numeric”});
+return {start:mon.toISOString().slice(0,10),end:sun.toISOString().slice(0,10),label:`${fmt(mon)} – ${fmt(sun)}`};
+}
+
+function fmtDate(iso) {
+if(!iso) return “”;
+const today=new Date(); today.setHours(0,0,0,0);
+const dt=new Date(iso); dt.setHours(0,0,0,0);
+const diff=Math.round((dt-today)/86400000);
+if(diff===0) return “Today”;
+if(diff===1) return “Tomorrow”;
+if(diff===-1) return “Yesterday”;
+if(diff<0) return `${Math.abs(diff)}d ago`;
+if(diff<8) return new Date(iso).toLocaleDateString(“en-US”,{weekday:“short”});
+return new Date(iso).toLocaleDateString(“en-US”,{month:“short”,day:“numeric”});
+}
+
+const isOverdue = i => i.dueDate && i.status!==“done” && new Date(i.dueDate) < new Date(new Date().toDateString());
+
+function blankTask(cat=“personal”) {
+return {id:uid(),createdAt:nowISO(),updatedAt:nowISO(),title:””,notes:””,category:cat,priority:“normal”,status:“todo”,dueDate:””,tags:[],url:””,amount:””,recurrence:””,reminderSynced:false};
+}
+function blankLog() {
+return {id:uid(),date:todayStr(),text:””,category:“work”,type:“bau”,taskId:””};
+}
+
+// ── DRIVE API (via Claude as middleware) ───────────────────────────────────────
+async function driveRead(fileId) {
+const apiKey = window._ANTHROPIC_KEY;
+if (!apiKey) return null;
+try {
+const res = await fetch(“https://api.anthropic.com/v1/messages”, {
+method:“POST”,
+headers:{“Content-Type”:“application/json”,“x-api-key”:apiKey,“anthropic-version”:“2023-06-01”,“anthropic-beta”:“mcp-client-2025-04-04”},
+body:JSON.stringify({
+model:MODEL, max_tokens:4000,
+system:`You have Google Drive access. Read the file with ID "${fileId}" and return ONLY its raw JSON. No explanation, no markdown.`,
+messages:[{role:“user”,content:“Read the file and return raw JSON only.”}],
+mcp_servers:[{type:“url”,url:DRIVE_MCP,name:“gdrive”}]
+})
+});
+const data = await res.json();
+for (const b of data.content||[]) {
+if(b.type===“mcp_tool_result”){const t=b?.content?.[0]?.text||””;try{return JSON.parse(t)}catch{}}
+}
+for (const b of data.content||[]) {
+if(b.type===“text”){const m=b.text.match(/{[\s\S]*}/);if(m)try{return JSON.parse(m[0])}catch{}}
+}
+} catch {}
+return null;
+}
+
+async function driveWrite(fileId, obj) {
+const apiKey = window._ANTHROPIC_KEY;
+if (!apiKey) return;
+try {
+await fetch(“https://api.anthropic.com/v1/messages”, {
+method:“POST”,
+headers:{“Content-Type”:“application/json”,“x-api-key”:apiKey,“anthropic-version”:“2023-06-01”,“anthropic-beta”:“mcp-client-2025-04-04”},
+body:JSON.stringify({
+model:MODEL, max_tokens:300,
+system:`You have Google Drive access. Overwrite the file with ID "${fileId}" with the exact JSON content provided. Reply only: saved`,
+messages:[{role:“user”,content:`Save this JSON:\n${JSON.stringify({...obj,lastUpdated:nowISO()},null,2)}`}],
+mcp_servers:[{type:“url”,url:DRIVE_MCP,name:“gdrive”}]
+})
+});
+} catch {}
+}
+
+async function generateReport(tasks, worklog, week, apiKey) {
+const logs = worklog.filter(e=>e.date>=week.start&&e.date<=week.end);
+const wtasks = tasks.filter(t=>[“work”,“projects”].includes(t.category));
+const res = await fetch(“https://api.anthropic.com/v1/messages”, {
+method:“POST”,
+headers:{“Content-Type”:“application/json”,“x-api-key”:apiKey,“anthropic-version”:“2023-06-01”},
+body:JSON.stringify({
+model:MODEL, max_tokens:2000,
+system:“You are a professional email writer. Follow the format exactly as instructed. Return ONLY the email text.”,
+messages:[{role:“user”,content:`Generate a weekly work update email in this EXACT format:
+
+Hi Sir,
+
+Please find below my weekly work update:
+
+-----
+
+Agentic Solutions / Ideas
+
+|Issue                         |Summary|Next Steps|
+|------------------------------|-------|----------|
+|[rows for agentic/ideas items]|       |          |
+
+-----
+
+Projects
+
+|Project                 |Status|Summary|Next Steps|
+|------------------------|------|-------|----------|
+|[rows for project items]|      |       |          |
+
+-----
+
+Troubleshooting / Investigation
+
+|Issue                         |Summary|Next Steps|
+|------------------------------|-------|----------|
+|[rows for investigation items]|       |          |
+
+-----
+
+Please let me know if you would like additional details on any item.
+
+Thanks,
+Abhi Kapoor
+
+WEEK: ${week.label}
+
+WORKLOG THIS WEEK:
+${logs.map(e=>`[${e.date}][${e.type}] ${e.text}`).join(”\n”)||”(none)”}
+
+ALL ACTIVE TASKS:
+${wtasks.map(t=>`[${t.category}][${t.status}][${t.priority}] ${t.title}${t.notes?" — "+t.notes:""}`).join(”\n”)||”(none)”}
+
+Rules: Categorize each item into the right table. Keep summaries to 1 sentence. Next Steps should be actionable. If a section is empty still show the header with an empty table row saying “No items this week”.`}]
+})
+});
+const data = await res.json();
+return (data.content||[]).filter(b=>b.type===“text”).map(b=>b.text).join(””) || “”;
+}
+
+// ── MAIN APP ───────────────────────────────────────────────────────────────────
+function App() {
+const [tasks,    setTasks]    = useState(INITIAL_TASKS);
+const [worklog,  setWorklog]  = useState(INITIAL_WORKLOG);
+const [cats,     setCats]     = useState(DEFAULT_CATS);
+const [apiKey,   setApiKey]   = useState(localStorage.getItem(“sb_api_key”)||””);
+const [showKeyInput, setShowKeyInput] = useState(false);
+const [syncing,  setSyncing]  = useState(false);
+const [syncMsg,  setSyncMsg]  = useState(“Local data loaded”);
+const [tab,      setTab]      = useState(“home”);
+const [fStatus,  setFStatus]  = useState(“all”);
+const [showForm, setShowForm] = useState(false);
+const [showLog,  setShowLog]  = useState(false);
+const [editTask, setEditTask] = useState(null);
+const [form,     setForm]     = useState(blankTask());
+const [logForm,  setLogForm]  = useState(blankLog());
+const [expandedId,setExpandedId] = useState(null);
+const [showCats, setShowCats] = useState(false);
+const [report,   setReport]   = useState(””);
+const [reportLoading,setReportLoading] = useState(false);
+const [copied,   setCopied]   = useState(false);
+const saveRef = useRef({});
+
+// Store key globally for Drive calls
+useEffect(() => { window._ANTHROPIC_KEY = apiKey; }, [apiKey]);
+
+// Load from Drive if key available
+useEffect(() => {
+if (!apiKey) return;
+(async () => {
+setSyncing(true); setSyncMsg(“Loading from Drive…”);
+const [t,w,c] = await Promise.all([
+driveRead(DRIVE_FILE_IDS.tasks),
+driveRead(DRIVE_FILE_IDS.worklog),
+driveRead(DRIVE_FILE_IDS.categories),
+]);
+if (t?.items?.length)   setTasks(t.items);
+if (w?.entries?.length) setWorklog(w.entries);
+if (c?.categories?.length) setCats(c.categories);
+setSyncMsg(“✓ Synced with Google Drive”);
+setSyncing(false);
+})();
+}, [apiKey]);
+
+function saveApiKey(key) {
+const k = key.trim();
+localStorage.setItem(“sb_api_key”, k);
+setApiKey(k);
+setShowKeyInput(false);
+}
+
+// Debounced saves
+function persistTasks(items) {
+setTasks(items);
+clearTimeout(saveRef.current.t);
+saveRef.current.t = setTimeout(async () => {
+if (!apiKey) return;
+setSyncing(true); setSyncMsg(“Saving…”);
+await driveWrite(DRIVE_FILE_IDS.tasks, {version:1,items});
+setSyncMsg(“✓ Saved”); setSyncing(false);
+}, 1000);
+}
+
+function persistWorklog(entries) {
+setWorklog(entries);
+clearTimeout(saveRef.current.w);
+saveRef.current.w = setTimeout(async () => {
+if (!apiKey) return;
+setSyncing(true); setSyncMsg(“Saving…”);
+await driveWrite(DRIVE_FILE_IDS.worklog, {version:1,entries});
+setSyncMsg(“✓ Saved”); setSyncing(false);
+}, 1000);
+}
+
+// Task CRUD
+function submitTask(f) {
+const updated = {…f, updatedAt:nowISO()};
+persistTasks(editTask
+? tasks.map(t=>t.id===editTask.id?updated:t)
+: [{…updated,id:uid(),createdAt:nowISO()},…tasks]
+);
+setShowForm(false); setEditTask(null); setForm(blankTask());
+}
+function deleteTask(id)  { persistTasks(tasks.filter(t=>t.id!==id)); }
+function cycleStatus(id) {
+const ord=[“todo”,“inprogress”,“done”,“blocked”,“someday”];
+persistTasks(tasks.map(t=>t.id!==id?t:{…t,status:ord[(ord.indexOf(t.status)+1)%ord.length],updatedAt:nowISO()}));
+}
+function openEdit(task)  { setForm({…task}); setEditTask(task); setShowForm(true); }
+function openAdd(catId)  {
+const validCat = cats.find(c=>c.id===catId) ? catId : “personal”;
+setForm(blankTask(validCat)); setEditTask(null); setShowForm(true);
+}
+
+// Worklog CRUD
+function submitLog(f) {
+persistWorklog([{…f,id:uid(),createdAt:nowISO()},…worklog]);
+setShowLog(false); setLogForm(blankLog());
+}
+function deleteLog(id) { persistWorklog(worklog.filter(e=>e.id!==id)); }
+
+// Category
+function addCat(label,icon,color) {
+const newCat={id:label.toLowerCase().replace(/\s+/g,”-”)+”-”+Date.now().toString(36),label,icon,color};
+const newCats=[…cats,newCat];
+setCats(newCats);
+if(apiKey) driveWrite(DRIVE_FILE_IDS.categories,{version:1,categories:newCats});
+}
+
+// Weekly report
+async function buildReport() {
+if (!apiKey) { alert(“Please add your Anthropic API key first (tap the key icon)”); return; }
+setReportLoading(true); setReport(””);
+const week = weekRange();
+const text = await generateReport(tasks, worklog, week, apiKey);
+setReport(text); setReportLoading(false);
+}
+function copyReport() {
+navigator.clipboard.writeText(report).then(()=>{setCopied(true);setTimeout(()=>setCopied(false),2000);});
+}
+function downloadReport() {
+const a=document.createElement(“a”);
+a.href=“data:text/plain;charset=utf-8,”+encodeURIComponent(report);
+a.download=`Weekly-Report-${todayStr()}.txt`; a.click();
+}
+
+// Filtered tasks
+const visibleTasks = (() => {
+let list = tasks;
+if (tab!==“home”&&tab!==“report”) list=list.filter(t=>t.category===tab);
+if (fStatus!==“all”) list=list.filter(t=>t.status===fStatus);
+return list.sort((a,b)=>{
+const p=[“urgent”,“high”,“normal”,“low”];
+return p.indexOf(a.priority)-p.indexOf(b.priority)||new Date(b.updatedAt)-new Date(a.updatedAt);
+});
+})();
+
+const stats = {
+total:tasks.length, done:tasks.filter(t=>t.status===“done”).length,
+overdue:tasks.filter(isOverdue).length,
+inprogress:tasks.filter(t=>t.status===“inprogress”).length,
+};
+const pct = stats.total ? Math.round(stats.done/stats.total*100) : 0;
+const week = weekRange();
+
+// Worklog grouped
+const grouped={};
+worklog.forEach(e=>{if(!grouped[e.date])grouped[e.date]=[];grouped[e.date].push(e);});
+const logDays=Object.keys(grouped).sort((a,b)=>b.localeCompare(a));
+
+const isListView = tab!==“home”&&tab!==“report”&&!showLog;
+const catOfTab = cats.find(c=>c.id===tab);
+
+return (
+<div style={{background:”#080C14”,height:“100vh”,maxWidth:430,margin:“0 auto”,display:“flex”,flexDirection:“column”,position:“relative”,overflow:“hidden”}}>
+
+```
+  {/* HEADER */}
+  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"14px 16px 10px",background:"#080C14",borderBottom:"1px solid #0F1829",flexShrink:0}}>
+    <div>
+      <div style={{color:"#E2E8F0",fontWeight:700,fontSize:17,letterSpacing:"-0.02em"}}>⬡ Second Brain</div>
+      <div style={{display:"flex",alignItems:"center",gap:5,marginTop:2}}>
+        <span style={{width:6,height:6,borderRadius:"50%",background:apiKey?(syncing?"#FBBF24":"#34D399"):"#F87171",display:"inline-block"}}/>
+        <span style={{fontSize:10,color:"#374151",fontFamily:"'JetBrains Mono',monospace"}}>{apiKey?syncMsg:"No API key — tap 🔑 to add"}</span>
+      </div>
+    </div>
+    <div style={{display:"flex",gap:6}}>
+      <button style={S.hBtn} onClick={()=>setShowKeyInput(s=>!s)}>🔑</button>
+      <button style={S.hBtn} onClick={()=>{setShowLog(s=>!s);setTab("home");}}>📋</button>
+      <button style={S.hBtn} onClick={()=>{setTab("search");setShowLog(false);}}>🔍</button>
+    </div>
+  </div>
+
+  {/* API KEY INPUT */}
+  {showKeyInput && (
+    <ApiKeyPanel apiKey={apiKey} onSave={saveApiKey} onClose={()=>setShowKeyInput(false)}/>
+  )}
+
+  {/* BODY */}
+  <div style={{flex:1,overflowY:"auto",paddingBottom:88}}>
+
+    {/* HOME */}
+    {tab==="home"&&!showLog&&(
+      <HomeView stats={stats} pct={pct} cats={cats} tasks={tasks} week={week}
+        setTab={t=>{setTab(t);setShowLog(false);}} onAdd={openAdd} onReport={()=>{setTab("report");setShowLog(false);}}/>
+    )}
+
+    {/* TASK LIST */}
+    {isListView&&(
+      <div style={{padding:"0 16px 16px"}}>
+        {catOfTab&&(
+          <div style={{display:"flex",alignItems:"center",gap:10,padding:"14px 0 10px"}}>
+            <span style={{fontSize:22}}>{catOfTab.icon}</span>
+            <span style={{fontSize:19,fontWeight:700,color:"#E2E8F0",flex:1,letterSpacing:"-0.02em"}}>{catOfTab.label}</span>
+            <span style={{fontSize:11,color:"#374151",background:"#0F1829",borderRadius:99,padding:"2px 10px"}}>{visibleTasks.filter(t=>t.status!=="done").length} open</span>
+          </div>
+        )}
+        <div style={{display:"flex",gap:5,overflowX:"auto",padding:"0 0 10px",scrollbarWidth:"none"}}>
+          {[{id:"all",label:"All"},...STATUSES].map(s=>{
+            const sc=STATUSES.find(x=>x.id===s.id);
+            return <button key={s.id} style={{...S.chip,...(fStatus===s.id?{background:(sc?.color||"#4F8EF7")+"22",color:sc?.color||"#4F8EF7",borderColor:sc?.color||"#4F8EF7"}:{})}} onClick={()=>setFStatus(s.id)}>{s.label}</button>;
+          })}
+        </div>
+        {visibleTasks.length===0
+          ? <div style={{textAlign:"center",padding:"40px 0",color:"#374151"}}>Nothing here yet</div>
+          : visibleTasks.map(t=><TaskCard key={t.id} item={t} cats={cats} expanded={expandedId===t.id}
+              onToggle={()=>setExpandedId(id=>id===t.id?null:t.id)}
+              onEdit={openEdit} onDelete={deleteTask} onStatus={cycleStatus}/>)
+        }
+        <div style={{height:20}}/>
+      </div>
+    )}
+
+    {/* WORKLOG */}
+    {showLog&&(
+      <div style={{padding:"0 16px 16px"}}>
+        <div style={{display:"flex",alignItems:"center",gap:10,padding:"14px 0 10px"}}>
+          <span style={{fontSize:22}}>📋</span>
+          <span style={{fontSize:19,fontWeight:700,color:"#E2E8F0",flex:1,letterSpacing:"-0.02em"}}>Worklog</span>
+          <button style={{...S.chip,color:"#4F8EF7",borderColor:"#4F8EF733"}} onClick={()=>setShowLog(false)&&setShowLog(false)}>✕ Close</button>
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8,marginBottom:16}}>
+          {[["project","#A78BFA","Project"],["bau","#94A3B8","BAU"],["investigation","#F87171","Invest."],["agentic","#34D399","Agentic"]].map(([type,col,lbl])=>(
+            <div key={type} style={{background:col+"18",borderRadius:10,padding:"10px 6px",textAlign:"center"}}>
+              <div style={{color:col,fontWeight:700,fontSize:18}}>{worklog.filter(e=>e.type===type).length}</div>
+              <div style={{color:col,fontSize:9,marginTop:2}}>{lbl}</div>
+            </div>
+          ))}
+        </div>
+        {logDays.map(date=>(
+          <div key={date} style={{marginBottom:16}}>
+            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:7,padding:"4px 0"}}>
+              <span style={{color:"#E2E8F0",fontSize:12,fontWeight:600}}>{fmtDate(date)}</span>
+              <span style={{color:"#374151",fontSize:10,fontFamily:"'JetBrains Mono',monospace",flex:1}}>{date}</span>
+              <span style={{background:"#0F1829",color:"#4B5563",fontSize:10,borderRadius:99,padding:"1px 7px"}}>{grouped[date].length}</span>
+            </div>
+            {grouped[date].map(e=>{
+              const cat=cats.find(c=>c.id===e.category)||cats[0];
+              return(
+                <div key={e.id} style={{background:"#0A0F1E",border:"1px solid #0F1829",borderRadius:10,padding:"9px 12px",marginBottom:5,display:"flex",gap:9,alignItems:"flex-start"}}>
+                  <div style={{width:3,minHeight:22,borderRadius:99,background:cat.color,flexShrink:0,marginTop:1}}/>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{fontSize:12,color:"#C8D6E5",lineHeight:1.5,marginBottom:4}}>{e.text}</div>
+                    <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
+                      <span style={{fontSize:10,padding:"2px 6px",borderRadius:5,background:cat.color+"22",color:cat.color}}>{cat.icon} {cat.label}</span>
+                      <span style={{fontSize:10,padding:"2px 6px",borderRadius:5,background:TYPE_COLORS[e.type]+"22",color:TYPE_COLORS[e.type]}}>{TYPE_LABELS[e.type]}</span>
+                    </div>
+                  </div>
+                  <button style={{background:"transparent",border:"none",color:"#1F2937",fontSize:14,cursor:"pointer",padding:"0 2px"}} onClick={()=>deleteLog(e.id)}>✕</button>
+                </div>
+              );
+            })}
+          </div>
+        ))}
+        <div style={{height:20}}/>
+      </div>
+    )}
+
+    {/* REPORT */}
+    {tab==="report"&&!showLog&&(
+      <div style={{padding:"0 16px 16px"}}>
+        <div style={{display:"flex",alignItems:"center",gap:10,padding:"14px 0 10px"}}>
+          <span style={{fontSize:22}}>📊</span>
+          <span style={{fontSize:19,fontWeight:700,color:"#E2E8F0",flex:1,letterSpacing:"-0.02em"}}>Weekly Report</span>
+        </div>
+        <div style={{background:"linear-gradient(135deg,#4F8EF715,#A78BFA15)",border:"1px solid #4F8EF733",borderRadius:14,padding:"16px",marginBottom:16}}>
+          <div style={{color:"#E2E8F0",fontSize:13,fontWeight:600,marginBottom:4}}>{week.label}</div>
+          <div style={{color:"#4B5563",fontSize:12,marginBottom:14}}>AI reads your worklog + tasks and drafts the email in Abhi's format</div>
+          <button style={{width:"100%",padding:"12px",background:"linear-gradient(135deg,#4F8EF7,#A78BFA)",border:"none",borderRadius:10,color:"#fff",fontSize:14,fontWeight:700,cursor:"pointer",opacity:reportLoading?.6:1,display:"flex",alignItems:"center",justifyContent:"center",gap:8}}
+            disabled={reportLoading} onClick={buildReport}>
+            {reportLoading?<><span style={{animation:"spin 1s linear infinite",display:"inline-block"}}>◌</span> Generating…</>:"✨ Generate Weekly Report"}
+          </button>
+        </div>
+        {report&&(
+          <>
+            <div style={{display:"flex",gap:8,marginBottom:12}}>
+              <button style={{flex:1,padding:"10px",background:"#0A0F1E",border:"1px solid #1F2937",borderRadius:10,color:"#94A3B8",fontSize:13,cursor:"pointer"}} onClick={copyReport}>{copied?"✓ Copied!":"📋 Copy Email"}</button>
+              <button style={{flex:1,padding:"10px",background:"#0A0F1E",border:"1px solid #1F2937",borderRadius:10,color:"#94A3B8",fontSize:13,cursor:"pointer"}} onClick={downloadReport}>⬇ Download</button>
+            </div>
+            <div style={{background:"#0A0F1E",border:"1px solid #1F2937",borderRadius:12,padding:"14px",overflowX:"auto"}}>
+              <pre style={{margin:0,color:"#C8D6E5",fontSize:11,fontFamily:"'JetBrains Mono',monospace",lineHeight:1.8,whiteSpace:"pre-wrap"}}>{report}</pre>
+            </div>
+          </>
+        )}
+        {!report&&!reportLoading&&(
+          <div style={{textAlign:"center",padding:"32px 0",color:"#374151",fontSize:13}}>
+            {apiKey?"Tap Generate to build your weekly report":"Add your API key first (🔑 top right)"}
+          </div>
+        )}
+        <div style={{height:20}}/>
+      </div>
+    )}
+  </div>
+
+  {/* BOTTOM NAV */}
+  <div style={{position:"absolute",bottom:0,left:0,right:0,background:"#080C14",borderTop:"1px solid #0F1829",display:"flex",justifyContent:"space-around",padding:"8px 0 22px",zIndex:30}}>
+    <NavTab icon="🏠" label="Home"     active={tab==="home"&&!showLog}     onPress={()=>{setTab("home");setShowLog(false);}}/>
+    <NavTab icon="💼" label="Work"     active={tab==="work"&&!showLog}     color="#4F8EF7" onPress={()=>{setTab("work");setShowLog(false);setFStatus("all");}} badge={tasks.filter(t=>t.category==="work"&&t.status!=="done").length}/>
+    <NavTab icon="🚀" label="Projects" active={tab==="projects"&&!showLog} color="#A78BFA" onPress={()=>{setTab("projects");setShowLog(false);setFStatus("all");}} badge={tasks.filter(t=>t.category==="projects"&&t.status!=="done").length}/>
+    <NavTab icon="📋" label="Log"      active={showLog}                    onPress={()=>{setShowLog(s=>!s);setTab("home");}} badge={worklog.filter(e=>e.date===todayStr()).length}/>
+    <NavTab icon="📊" label="Report"   active={tab==="report"&&!showLog}   onPress={()=>{setTab("report");setShowLog(false);}}/>
+    <NavTab icon="⋯"  label="More"     active={false}                      onPress={()=>setShowCats(true)}/>
+  </div>
+
+  {/* FAB */}
+  {!showLog&&tab!=="report"&&(
+    <button style={{position:"absolute",bottom:78,right:16,width:50,height:50,borderRadius:"50%",background:"linear-gradient(135deg,#4F8EF7,#A78BFA)",border:"none",color:"#fff",fontSize:24,cursor:"pointer",boxShadow:"0 4px 18px #4F8EF755",display:"flex",alignItems:"center",justifyContent:"center",zIndex:31}}
+      onClick={()=>tab==="home"?setShowLog(true):openAdd(tab)}>
+      {tab==="home"?"📝":"+"}
+    </button>
+  )}
+
+  {/* MODALS */}
+  {showForm&&<TaskFormModal form={form} setForm={setForm} cats={cats} editTask={editTask} onSave={submitTask} onClose={()=>{setShowForm(false);setEditTask(null);setForm(blankTask());}}/>}
+  {showLog&&<LogFormBtn onClick={()=>{setShowLog(false);setTimeout(()=>setShowLog(true),50);}}/> }
+  {showCats&&<CatModal cats={cats} tasks={tasks} tab={tab} setTab={t=>{setTab(t);setShowLog(false);setShowCats(false);}} onAdd={addCat} onClose={()=>setShowCats(false)}/>}
+</div>
+```
+
+);
+}
+
+// ── HOME VIEW ──────────────────────────────────────────────────────────────────
+function HomeView({stats,pct,cats,tasks,week,setTab,onAdd,onReport}) {
+const overdue=tasks.filter(isOverdue);
+const urgent=tasks.filter(t=>[“urgent”,“high”].includes(t.priority)&&t.status!==“done”).slice(0,3);
+return(
+<div style={{padding:“0 16px 16px”}}>
+<div style={{padding:“18px 0 14px”,borderBottom:“1px solid #0F1829”,marginBottom:16}}>
+<div style={{fontSize:10,color:”#374151”,fontFamily:”‘JetBrains Mono’,monospace”,textTransform:“uppercase”,letterSpacing:“0.08em”,marginBottom:4}}>
+{new Date().toLocaleDateString(“en-US”,{weekday:“long”,month:“long”,day:“numeric”})}
+</div>
+<div style={{fontSize:24,fontWeight:700,color:”#E2E8F0”,letterSpacing:”-0.03em”,marginBottom:3}}>Your Second Brain</div>
+<div style={{fontSize:12,color:”#4B5563”,marginBottom:10}}>{stats.total-stats.done} open · {pct}% complete</div>
+<div style={{height:3,background:”#0F1829”,borderRadius:99}}>
+<div style={{height:“100%”,background:“linear-gradient(90deg,#4F8EF7,#A78BFA)”,borderRadius:99,width:`${pct}%`,transition:“width .6s”}}/>
+</div>
+</div>
+
+```
+  <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8,marginBottom:16}}>
+    {[{l:"Total",v:stats.total,c:"#4F8EF7"},{l:"Done",v:stats.done,c:"#34D399"},{l:"Active",v:stats.inprogress,c:"#FBBF24"},{l:"Overdue",v:stats.overdue,c:"#F87171"}].map(s=>(
+      <div key={s.l} style={{background:"#0A0F1E",border:"1px solid #0F1829",borderRadius:12,padding:"10px 6px",textAlign:"center"}}>
+        <div style={{fontSize:20,fontWeight:700,color:s.c,lineHeight:1}}>{s.v}</div>
+        <div style={{fontSize:9,color:"#374151",marginTop:3,textTransform:"uppercase",letterSpacing:"0.06em"}}>{s.l}</div>
+      </div>
+    ))}
+  </div>
+
+  {overdue.length>0&&(
+    <div style={{background:"#F8717112",border:"1px solid #F8717133",borderRadius:12,padding:"10px 14px",display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
+      <span style={{color:"#F87171",fontSize:15}}>⚠</span>
+      <span style={{flex:1,color:"#F87171",fontSize:13,fontWeight:600}}>{overdue.length} overdue task{overdue.length>1?"s":""}</span>
+      <button style={{background:"#F87171",border:"none",borderRadius:8,color:"#fff",fontSize:12,fontWeight:600,padding:"4px 10px",cursor:"pointer"}} onClick={()=>setTab("work")}>View</button>
+    </div>
+  )}
+
+  {urgent.length>0&&(
+    <>
+      <div style={{color:"#374151",fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:8,marginTop:4}}>🔥 Urgent & High</div>
+      {urgent.map(t=>{
+        const cat=cats.find(c=>c.id===t.category)||cats[0];
+        const pri=PRIORITIES.find(p=>p.id===t.priority)||PRIORITIES[2];
+        return(
+          <div key={t.id} style={{display:"flex",alignItems:"center",gap:8,background:"#0A0F1E",border:"1px solid #0F1829",borderRadius:10,padding:"9px 12px",marginBottom:6}} onClick={()=>setTab(t.category)}>
+            <div style={{width:3,height:24,borderRadius:99,background:cat.color,flexShrink:0}}/>
+            <div style={{flex:1,fontSize:13,color:"#E2E8F0",overflow:"hidden",whiteSpace:"nowrap",textOverflow:"ellipsis"}}>{t.title}</div>
+            <span style={{fontSize:10,padding:"2px 6px",borderRadius:5,background:pri.color+"22",color:pri.color,flexShrink:0}}>{pri.label}</span>
+            {t.dueDate&&<span style={{fontSize:10,color:isOverdue(t)?"#F87171":"#6B7280",fontFamily:"'JetBrains Mono',monospace",flexShrink:0}}>{fmtDate(t.dueDate)}</span>}
+          </div>
+        );
+      })}
+    </>
+  )}
+
+  <div style={{background:"linear-gradient(135deg,#4F8EF715,#A78BFA15)",border:"1px solid #4F8EF733",borderRadius:14,padding:"14px 16px",marginTop:14,marginBottom:14,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+    <div>
+      <div style={{color:"#E2E8F0",fontSize:13,fontWeight:600}}>{week.label}</div>
+      <div style={{color:"#4B5563",fontSize:11,marginTop:2}}>Tap to generate weekly report</div>
+    </div>
+    <button style={{background:"transparent",border:"none",color:"#4F8EF7",fontSize:12,fontWeight:600,cursor:"pointer",padding:0}} onClick={onReport}>Generate →</button>
+  </div>
+
+  <div style={{color:"#374151",fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:8}}>Categories</div>
+  <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:16}}>
+    {cats.map(c=>{
+      const cnt=tasks.filter(t=>t.category===c.id&&t.status!=="done").length;
+      return(
+        <button key={c.id} style={{background:"#0A0F1E",border:`1px solid ${c.color}44`,borderRadius:14,padding:"14px 8px",display:"flex",flexDirection:"column",alignItems:"center",gap:4,cursor:"pointer",position:"relative",outline:"none"}} onClick={()=>setTab(c.id)}>
+          <span style={{fontSize:20}}>{c.icon}</span>
+          <span style={{fontSize:11,color:"#6B7280",fontWeight:500}}>{c.label}</span>
+          {cnt>0&&<span style={{position:"absolute",top:6,right:6,borderRadius:999,fontSize:9,fontWeight:700,color:"#fff",minWidth:16,height:16,display:"flex",alignItems:"center",justifyContent:"center",padding:"0 4px",background:c.color}}>{cnt}</span>}
+        </button>
+      );
+    })}
+  </div>
+</div>
+```
+
+);
+}
+
+// ── TASK CARD ──────────────────────────────────────────────────────────────────
+function TaskCard({item,cats,expanded,onToggle,onEdit,onDelete,onStatus}) {
+const cat=cats.find(c=>c.id===item.category)||cats[0];
+const pri=PRIORITIES.find(p=>p.id===item.priority)||PRIORITIES[2];
+const stat=STATUSES.find(s=>s.id===item.status)||STATUSES[0];
+const over=isOverdue(item);
+const icon={todo:“○”,inprogress:“▶”,done:“✓”,blocked:“✕”,someday:“☁”}[item.status]||“○”;
+return(
+<div style={{background:”#0A0F1E”,border:`1px solid ${over?"#F8717155":"#0F1829"}`,borderRadius:13,marginBottom:7,display:“flex”,overflow:“hidden”,cursor:“pointer”}} onClick={onToggle}>
+<div style={{width:3,background:cat.color,flexShrink:0}}/>
+<div style={{flex:1,padding:“11px 12px 9px”,minWidth:0}}>
+<div style={{display:“flex”,gap:9,alignItems:“flex-start”,marginBottom:7}}>
+<button style={{width:26,height:26,borderRadius:7,border:“none”,background:stat.color+“22”,color:stat.color,display:“flex”,alignItems:“center”,justifyContent:“center”,fontWeight:700,fontSize:11,flexShrink:0,cursor:“pointer”}}
+onClick={e=>{e.stopPropagation();onStatus(item.id);}}>{icon}</button>
+<div style={{flex:1,minWidth:0}}>
+<div style={{fontSize:13,fontWeight:500,color:”#E2E8F0”,lineHeight:1.4,…(item.status===“done”?{textDecoration:“line-through”,opacity:.4}:{})}}>{item.title}</div>
+{expanded&&item.notes&&<div style={{fontSize:11,color:”#4B5563”,marginTop:4,lineHeight:1.5}}>{item.notes}</div>}
+</div>
+{item.dueDate&&<span style={{fontSize:10,fontFamily:”‘JetBrains Mono’,monospace”,flexShrink:0,color:over?”#F87171”:”#6B7280”}}>{over?“⚠ “:””}{fmtDate(item.dueDate)}</span>}
+</div>
+<div style={{display:“flex”,flexWrap:“wrap”,gap:4}}>
+<span style={{fontSize:10,padding:“2px 6px”,borderRadius:5,background:pri.color+“22”,color:pri.color}}>{pri.label}</span>
+<span style={{fontSize:10,padding:“2px 6px”,borderRadius:5,background:stat.color+“22”,color:stat.color}}>{stat.label}</span>
+<span style={{fontSize:10,padding:“2px 6px”,borderRadius:5,background:cat.color+“22”,color:cat.color}}>{cat.icon} {cat.label}</span>
+</div>
+{expanded&&(
+<div style={{display:“flex”,gap:8,marginTop:10,alignItems:“center”}}>
+<button style={{background:”#0F1829”,border:“none”,borderRadius:8,color:”#6B7280”,fontSize:12,padding:“5px 12px”,cursor:“pointer”}} onClick={e=>{e.stopPropagation();onEdit(item);}}>Edit</button>
+<button style={{background:“transparent”,border:“none”,color:”#F87171”,fontSize:12,cursor:“pointer”}} onClick={e=>{e.stopPropagation();onDelete(item.id);}}>Delete</button>
+</div>
+)}
+</div>
+</div>
+);
+}
+
+// ── TASK FORM MODAL ────────────────────────────────────────────────────────────
+function TaskFormModal({form,setForm,cats,editTask,onSave,onClose}) {
+const [tagInput,setTagInput]=useState(””);
+const addTag=()=>{const t=tagInput.trim();if(t&&!(form.tags||[]).includes(t))setForm(f=>({…f,tags:[…(f.tags||[]),t]}));setTagInput(””);};
+return(
+<div style={{position:“fixed”,inset:0,background:”#00000090”,zIndex:50,display:“flex”,alignItems:“flex-end”}} onClick={onClose}>
+<div style={{background:”#0A0F1E”,borderRadius:“20px 20px 0 0”,width:“100%”,maxWidth:430,margin:“0 auto”,maxHeight:“88vh”,overflowY:“auto”,padding:“0 16px 40px”}} onClick={e=>e.stopPropagation()}>
+<div style={{width:36,height:4,background:”#1F2937”,borderRadius:99,margin:“12px auto 16px”}}/>
+<div style={{display:“flex”,justifyContent:“space-between”,alignItems:“center”,marginBottom:16}}>
+<span style={{fontSize:18,fontWeight:700,color:”#E2E8F0”}}>{editTask?“Edit Task”:“New Task”}</span>
+<button style={{background:”#0F1829”,border:“none”,borderRadius:8,color:”#4B5563”,fontSize:16,padding:“6px 10px”,cursor:“pointer”}} onClick={onClose}>✕</button>
+</div>
+
+```
+    <FL label="Category">
+      <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+        {cats.map(c=><button key={c.id} style={{background:"#080C14",border:`1px solid ${form.category===c.id?c.color:"#1F2937"}`,borderRadius:99,color:form.category===c.id?c.color:"#4B5563",fontSize:11,padding:"5px 10px",cursor:"pointer",background:form.category===c.id?c.color+"22":"#080C14"}} onClick={()=>setForm(f=>({...f,category:c.id}))}>{c.icon} {c.label}</button>)}
+      </div>
+    </FL>
+    <FL label="Title *"><input style={S.inp} value={form.title} placeholder="What needs to be done?" onChange={e=>setForm(f=>({...f,title:e.target.value}))}/></FL>
+    <FL label="Notes"><textarea style={{...S.inp,height:68,resize:"none"}} value={form.notes} placeholder="Details…" onChange={e=>setForm(f=>({...f,notes:e.target.value}))}/></FL>
+    <div style={{display:"flex",gap:10,marginBottom:14}}>
+      <div style={{flex:1}}><div style={S.fl}>Priority</div><select style={S.sel} value={form.priority} onChange={e=>setForm(f=>({...f,priority:e.target.value}))}>{PRIORITIES.map(p=><option key={p.id} value={p.id}>{p.label}</option>)}</select></div>
+      <div style={{flex:1}}><div style={S.fl}>Status</div><select style={S.sel} value={form.status} onChange={e=>setForm(f=>({...f,status:e.target.value}))}>{STATUSES.map(s=><option key={s.id} value={s.id}>{s.label}</option>)}</select></div>
+    </div>
+    <FL label="Due Date"><input type="date" style={S.inp} value={form.dueDate} onChange={e=>setForm(f=>({...f,dueDate:e.target.value}))}/></FL>
+    <FL label="Tags">
+      <div style={{display:"flex",gap:6,marginBottom:6}}>
+        <input style={{...S.inp,flex:1}} value={tagInput} placeholder="Add tag…" onChange={e=>setTagInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&addTag()}/>
+        <button style={{background:"#0F1829",border:"none",borderRadius:10,color:"#6B7280",fontSize:13,padding:"10px 14px",cursor:"pointer"}} onClick={addTag}>Add</button>
+      </div>
+      <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+        {(form.tags||[]).map(t=><span key={t} style={{display:"inline-flex",alignItems:"center",gap:4,background:"#4F8EF722",color:"#4F8EF7",borderRadius:6,fontSize:11,padding:"3px 8px"}}>{t}<button style={{background:"none",border:"none",color:"inherit",cursor:"pointer",padding:0,fontSize:14}} onClick={()=>setForm(f=>({...f,tags:f.tags.filter(x=>x!==t)}))}>×</button></span>)}
+      </div>
+    </FL>
+    <button style={{width:"100%",padding:"13px",background:form.title.trim()?"linear-gradient(135deg,#4F8EF7,#A78BFA)":"#1F2937",border:"none",borderRadius:12,color:form.title.trim()?"#fff":"#4B5563",fontSize:15,fontWeight:700,cursor:"pointer",marginTop:8}}
+      disabled={!form.title.trim()} onClick={()=>onSave(form)}>
+      {editTask?"Update Task":"Add Task"}
+    </button>
+  </div>
+</div>
+```
+
+);
+}
+
+// ── LOG ADD (floating button in log view) ──────────────────────────────────────
+function LogFormBtn({onClick}) { return null; } // handled via showLog state toggle
+
+// ── API KEY PANEL ──────────────────────────────────────────────────────────────
+function ApiKeyPanel({apiKey,onSave,onClose}) {
+const [val,setVal]=useState(apiKey);
+return(
+<div style={{background:”#0A0F1E”,borderBottom:“1px solid #1F2937”,padding:“12px 16px”,flexShrink:0}}>
+<div style={{fontSize:11,color:”#6B7280”,marginBottom:8}}>Anthropic API Key — stored locally on your device only</div>
+<div style={{display:“flex”,gap:8}}>
+<input type=“password” style={{…S.inp,flex:1,fontSize:12}} value={val} placeholder=“sk-ant-…” onChange={e=>setVal(e.target.value)}/>
+<button style={{background:”#4F8EF7”,border:“none”,borderRadius:10,color:”#fff”,fontSize:13,padding:“0 14px”,cursor:“pointer”,fontWeight:600}} onClick={()=>onSave(val)}>Save</button>
+<button style={{background:”#0F1829”,border:“none”,borderRadius:10,color:”#6B7280”,fontSize:13,padding:“0 12px”,cursor:“pointer”}} onClick={onClose}>✕</button>
+</div>
+<div style={{fontSize:10,color:”#374151”,marginTop:6}}>Get your key: console.anthropic.com → API Keys</div>
+</div>
+);
+}
+
+// ── CATEGORY MANAGER ───────────────────────────────────────────────────────────
+function CatModal({cats,tasks,tab,setTab,onAdd,onClose}) {
+const [label,setLabel]=useState(””),[icon,setIcon]=useState(“📌”),[color,setColor]=useState(”#8B5CF6”);
+const ICONS=[“📌”,“🎯”,“💡”,“🛒”,“📚”,“🎵”,“🏋️”,“✈️”,“🍕”,“🎮”,“📷”,“🌍”,“🤝”,“🏦”,“🎨”,“🔬”,“⚡”,“🧩”];
+return(
+<div style={{position:“fixed”,inset:0,background:”#00000090”,zIndex:50,display:“flex”,alignItems:“flex-end”}} onClick={onClose}>
+<div style={{background:”#0A0F1E”,borderRadius:“20px 20px 0 0”,width:“100%”,maxWidth:430,margin:“0 auto”,maxHeight:“80vh”,overflowY:“auto”,padding:“0 16px 40px”}} onClick={e=>e.stopPropagation()}>
+<div style={{width:36,height:4,background:”#1F2937”,borderRadius:99,margin:“12px auto 16px”}}/>
+<div style={{display:“flex”,justifyContent:“space-between”,marginBottom:16}}>
+<span style={{fontSize:18,fontWeight:700,color:”#E2E8F0”}}>All Categories</span>
+<button style={{background:”#0F1829”,border:“none”,borderRadius:8,color:”#4B5563”,fontSize:16,padding:“6px 10px”,cursor:“pointer”}} onClick={onClose}>✕</button>
+</div>
+<div style={{display:“flex”,flexDirection:“column”,gap:6,marginBottom:20}}>
+{cats.map(c=>(
+<button key={c.id} style={{display:“flex”,alignItems:“center”,gap:12,padding:“12px”,background:tab===c.id?c.color+“18”:”#080C14”,border:“1px solid #0F1829”,borderRadius:10,cursor:“pointer”,outline:“none”}} onClick={()=>setTab(c.id)}>
+<span style={{fontSize:20}}>{c.icon}</span>
+<span style={{flex:1,color:”#E2E8F0”,fontSize:14,fontWeight:500,textAlign:“left”}}>{c.label}</span>
+<span style={{color:”#4B5563”,fontSize:12,fontFamily:”‘JetBrains Mono’,monospace”}}>{tasks.filter(t=>t.category===c.id).length}</span>
+</button>
+))}
+</div>
+<div style={{background:”#080C14”,border:“1px solid #0F1829”,borderRadius:14,padding:14}}>
+<div style={S.fl}>New Category</div>
+<div style={{display:“flex”,flexWrap:“wrap”,gap:5,marginBottom:10}}>{ICONS.map(ic=><button key={ic} style={{background:icon===ic?”#4F8EF722”:”#0A0F1E”,border:`1px solid ${icon===ic?"#4F8EF7":"#1F2937"}`,borderRadius:8,fontSize:16,padding:“5px 6px”,cursor:“pointer”}} onClick={()=>setIcon(ic)}>{ic}</button>)}</div>
+<input style={{…S.inp,marginBottom:8}} value={label} placeholder=“Category name” onChange={e=>setLabel(e.target.value)}/>
+<div style={{display:“flex”,alignItems:“center”,gap:10,marginBottom:12}}>
+<span style={S.fl}>Color</span>
+<input type=“color” value={color} onChange={e=>setColor(e.target.value)} style={{width:36,height:30,border:“none”,borderRadius:6,cursor:“pointer”,background:“transparent”}}/>
+</div>
+<button style={{width:“100%”,padding:“11px”,background:label.trim()?“linear-gradient(135deg,#4F8EF7,#A78BFA)”:”#1F2937”,border:“none”,borderRadius:12,color:label.trim()?”#fff”:”#4B5563”,fontSize:14,fontWeight:700,cursor:“pointer”}}
+disabled={!label.trim()} onClick={()=>{onAdd(label.trim(),icon,color);setLabel(””);}}>Create Category</button>
+</div>
+</div>
+</div>
+);
+}
+
+// ── NAV TAB ────────────────────────────────────────────────────────────────────
+function NavTab({icon,label,active,onPress,color,badge}) {
+return(
+<button style={{display:“flex”,flexDirection:“column”,alignItems:“center”,gap:2,background:“none”,border:“none”,color:active?(color||”#4F8EF7”):”#1F2937”,cursor:“pointer”,padding:“4px 2px”,position:“relative”,minWidth:44}} onClick={onPress}>
+<span style={{fontSize:18,position:“relative”}}>
+{icon}
+{badge>0&&<span style={{position:“absolute”,top:-1,right:-3,borderRadius:999,fontSize:8,fontWeight:700,color:”#fff”,minWidth:14,height:14,display:“flex”,alignItems:“center”,justifyContent:“center”,padding:“0 3px”,background:color||”#4F8EF7”}}>{badge>9?“9+”:badge}</span>}
+</span>
+<span style={{fontSize:9,fontWeight:500,textTransform:“uppercase”,letterSpacing:“0.04em”}}>{label}</span>
+</button>
+);
+}
+
+function FL({label,children}) {
+return <div style={{marginBottom:14}}><div style={S.fl}>{label}</div>{children}</div>;
+}
+
+const S = {
+hBtn:{background:”#0F1829”,border:“none”,borderRadius:10,color:”#94A3B8”,fontSize:16,padding:“8px 10px”,cursor:“pointer”},
+chip:{background:”#0A0F1E”,border:“1px solid #0F1829”,borderRadius:999,color:”#4B5563”,fontSize:11,padding:“4px 10px”,cursor:“pointer”,whiteSpace:“nowrap”},
+inp:{width:“100%”,background:”#080C14”,border:“1px solid #1F2937”,borderRadius:10,padding:“10px 12px”,color:”#E2E8F0”,fontFamily:“Sora,sans-serif”,fontSize:14,outline:“none”},
+sel:{width:“100%”,background:”#080C14”,border:“1px solid #1F2937”,borderRadius:10,padding:“10px 12px”,color:”#E2E8F0”,fontFamily:“Sora,sans-serif”,fontSize:14,outline:“none”,cursor:“pointer”},
+fl:{fontSize:10,color:”#4B5563”,textTransform:“uppercase”,letterSpacing:“0.1em”,marginBottom:6,fontWeight:600,display:“block”},
+};
+
+ReactDOM.createRoot(document.getElementById(“root”)).render(<App/>);
+</script>
+
+</body>
+</html>
