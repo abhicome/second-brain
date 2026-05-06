@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="theme-color" content="#080C14"/>
 <title>Second Brain</title>
@@ -53,22 +53,6 @@ body{
   justify-content:space-around;
   padding:10px 0 20px;
   border-top:1px solid #1F2937;
-  z-index:10;
-}
-
-#fab{
-  position:fixed;
-  bottom:90px;
-  right:20px;
-  width:54px;
-  height:54px;
-  border-radius:50%;
-  border:none;
-  background:linear-gradient(135deg,#4F8EF7,#A78BFA);
-  color:white;
-  font-size:28px;
-  cursor:pointer;
-  box-shadow:0 4px 16px #4F8EF755;
   z-index:20;
 }
 
@@ -132,6 +116,7 @@ body{
   color:white;
   cursor:pointer;
   position:relative;
+  text-align:left;
 }
 
 .tc{
@@ -151,151 +136,89 @@ body{
   margin-top:6px;
 }
 
-.chips{
-  display:flex;
-  gap:6px;
-  overflow-x:auto;
-  padding-bottom:10px;
-  margin-bottom:8px;
-}
-
-.chipbtn{
-  background:#111827;
-  border:1px solid #1F2937;
-  border-radius:99px;
-  color:#6B7280;
-  font-size:11px;
-  padding:5px 12px;
-  cursor:pointer;
-  white-space:nowrap;
-  flex-shrink:0;
+.fab{
+  position:fixed;
+  right:18px;
+  bottom:90px;
+  width:58px;
+  height:58px;
+  border:none;
+  border-radius:50%;
+  background:linear-gradient(135deg,#4F8EF7,#A78BFA);
+  color:white;
+  font-size:30px;
+  box-shadow:0 8px 24px rgba(79,142,247,.4);
+  z-index:50;
 }
 
 .ovl{
   position:fixed;
   inset:0;
-  background:#00000090;
+  background:rgba(0,0,0,.65);
   display:flex;
   align-items:flex-end;
-  z-index:50;
+  z-index:100;
 }
 
 .mdl{
-  background:#111827;
   width:100%;
   max-width:430px;
   margin:auto;
-  border-radius:20px 20px 0 0;
-  padding:20px;
-  max-height:88vh;
-  overflow-y:auto;
+  background:#111827;
+  border-radius:22px 22px 0 0;
+  padding:18px;
 }
 
-.mhdl{
-  width:36px;
-  height:4px;
-  background:#374151;
-  border-radius:99px;
-  margin:0 auto 16px;
-}
-
-.mhd{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:16px;
-}
-
-.mttl{
-  font-size:18px;
-  font-weight:700;
-}
-
-.mclb{
-  background:none;
-  border:none;
-  color:#94A3B8;
-  font-size:20px;
-  cursor:pointer;
-}
-
-.inp,.sel,.inpta{
+.inp,.sel,.ta{
   width:100%;
   background:#080C14;
   border:1px solid #374151;
   border-radius:10px;
-  padding:11px 12px;
+  padding:12px;
   color:white;
-  font-family:Arial,sans-serif;
-  font-size:14px;
-  outline:none;
-  display:block;
   margin-top:6px;
+  outline:none;
 }
 
-.inpta{
-  height:80px;
+.ta{
+  min-height:90px;
   resize:none;
 }
 
-.svbtn{
-  width:100%;
-  background:linear-gradient(135deg,#4F8EF7,#A78BFA);
-  border:none;
-  border-radius:12px;
-  padding:14px;
-  color:white;
-  font-weight:700;
-  margin-top:16px;
-  cursor:pointer;
-  font-size:15px;
-}
-
-.fld{
-  margin-bottom:14px;
-}
-
-.flbl{
+.lbl{
   font-size:11px;
   color:#94A3B8;
+  margin-top:14px;
   text-transform:uppercase;
 }
 
-.r2{
+.btn{
+  width:100%;
+  border:none;
+  border-radius:12px;
+  padding:14px;
+  margin-top:18px;
+  background:linear-gradient(135deg,#4F8EF7,#A78BFA);
+  color:white;
+  font-weight:700;
+}
+
+.row{
   display:flex;
   gap:10px;
-  margin-bottom:14px;
 }
 
-.r2 > div{
+.row > div{
   flex:1;
-}
-
-.abar{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:8px;
-  margin-bottom:16px;
-}
-
-.lce{
-  background:#111827;
-  border-radius:10px;
-  padding:10px 12px;
-  margin-bottom:6px;
-  display:flex;
-  gap:8px;
-  align-items:flex-start;
 }
 
 pre{
   white-space:pre-wrap;
-  word-wrap:break-word;
+  font-size:11px;
+  line-height:1.7;
+  color:#C8D6E5;
 }
 
-button{
-  font-family:inherit;
-}
 </style>
 </head>
 
@@ -308,40 +231,9 @@ button{
       Second Brain
     </div>
 
-    <div style="display:flex;align-items:center;gap:8px;">
-      <div id="stxt" style="font-size:10px;color:#34D399;">Ready</div>
-
-      <button onclick="toggleApi()" style="background:#111827;border:none;border-radius:8px;color:#94A3B8;font-size:12px;padding:6px 10px;cursor:pointer;">
-        Key
-      </button>
+    <div id="stxt" style="font-size:10px;color:#34D399;">
+      Ready
     </div>
-  </div>
-
-  <div id="apanel" style="display:none;padding:12px 16px;background:#0D1420;border-bottom:1px solid #1F2937;">
-
-    <div style="font-size:11px;color:#6B7280;margin-bottom:8px;">
-      Anthropic API Key
-    </div>
-
-    <div style="display:flex;gap:8px;margin-bottom:6px;">
-
-      <input
-        type="password"
-        id="akey"
-        placeholder="sk-ant-..."
-        style="flex:1;background:#080C14;border:1px solid #374151;border-radius:10px;padding:10px 12px;color:white;font-size:13px;"
-      />
-
-      <button onclick="saveKey()" style="background:#4F8EF7;border:none;border-radius:10px;color:white;padding:0 14px;cursor:pointer;">
-        Save
-      </button>
-
-      <button onclick="toggleApi()" style="background:#1F2937;border:none;border-radius:10px;color:#94A3B8;padding:0 12px;cursor:pointer;">
-        X
-      </button>
-
-    </div>
-
   </div>
 
   <div id="appBody"></div>
@@ -349,7 +241,6 @@ button{
 </div>
 
 <div id="nav">
-
   <button class="ntab on" onclick="setTab('home')">
     <span>🏠</span>
     <span>Home</span>
@@ -374,107 +265,74 @@ button{
     <span>📊</span>
     <span>Report</span>
   </button>
-
 </div>
 
-<button id="fab" onclick="onFab()">+</button>
+<button class="fab" onclick="openTask()">+</button>
 
-<div id="mc"></div>
+<div id="modal"></div>
 
 <script>
 
-var DEFAULT_CATS = [
-  {id:'work',label:'Work',color:'#4F8EF7'},
-  {id:'projects',label:'Projects',color:'#A78BFA'},
-  {id:'personal',label:'Personal',color:'#34D399'},
-  {id:'knowledge',label:'Knowledge',color:'#FBBF24'},
-  {id:'health',label:'Health',color:'#FB923C'}
-];
-
-var PRI = [
-  {id:'urgent',label:'Urgent',color:'#F87171'},
-  {id:'high',label:'High',color:'#FBBF24'},
-  {id:'normal',label:'Normal',color:'#94A3B8'},
-  {id:'low',label:'Low',color:'#475569'}
-];
-
-var STAT = [
-  {id:'todo',label:'To Do',color:'#94A3B8'},
-  {id:'inprogress',label:'In Progress',color:'#FBBF24'},
-  {id:'done',label:'Done',color:'#34D399'},
-  {id:'blocked',label:'Blocked',color:'#F87171'}
-];
-
-var tasks = [
-  {
-    id:'1',
-    title:'DHCP Scope Failover UAT',
-    category:'work',
-    priority:'urgent',
-    status:'inprogress',
-    dueDate:'2026-05-09',
-    notes:'Discuss feasibility with Vikas Maurya'
-  },
-  {
-    id:'2',
-    title:'PacketFence Patching',
-    category:'work',
-    priority:'high',
-    status:'inprogress',
-    dueDate:'2026-05-25',
-    notes:'PFE01 pending'
-  },
-  {
-    id:'3',
-    title:'SailPoint Migration',
-    category:'projects',
-    priority:'urgent',
-    status:'inprogress',
-    dueDate:'2026-05-11',
-    notes:'Replication validation pending'
-  }
-];
-
-var worklog = [];
-
-var cats = JSON.parse(JSON.stringify(DEFAULT_CATS));
+var DRIVE = {
+  tasks:'1OWIXMe5PvrXOZXDVFDxVfylXQ8Kml_IE',
+  worklog:'1w6jQLE48kmnSQ3kXn5TDiafhfYe2y4tQ'
+};
 
 var tab = 'home';
-var fStatus = 'all';
-var report = '';
-var repLoading = false;
-var repCopied = false;
-var expId = null;
 
-function uid(){
-  return Math.random().toString(36).slice(2);
+var tasks = [
+{
+  id:'1',
+  title:'DHCP Scope Failover UAT',
+  category:'work',
+  priority:'urgent',
+  status:'inprogress',
+  dueDate:'2026-05-09',
+  notes:'Discuss feasibility with Vikas Maurya'
+},
+{
+  id:'2',
+  title:'PacketFence Patching',
+  category:'work',
+  priority:'high',
+  status:'inprogress',
+  dueDate:'2026-05-25',
+  notes:'PFE01 pending'
+},
+{
+  id:'3',
+  title:'AD Transformation Roadmap',
+  category:'projects',
+  priority:'high',
+  status:'inprogress',
+  dueDate:'2026-05-08',
+  notes:'Awaiting Microsoft response'
+},
+{
+  id:'4',
+  title:'Arista AGNI Implementation',
+  category:'projects',
+  priority:'high',
+  status:'inprogress',
+  dueDate:'2026-09-30',
+  notes:'Infosec approval pending'
 }
+];
 
-function todayStr(){
-  return new Date().toISOString().slice(0,10);
+var worklog = [
+{
+  id:'1',
+  date:'2026-05-05',
+  text:'AD transformation discussion with Microsoft',
+  type:'project'
+},
+{
+  id:'2',
+  date:'2026-05-04',
+  text:'DHCP incident RCA',
+  type:'investigation'
 }
-
-function toggleApi(){
-
-  var p = document.getElementById('apanel');
-
-  if(p.style.display === 'block'){
-    p.style.display = 'none';
-  }else{
-    p.style.display = 'block';
-  }
-}
-
-function saveKey(){
-
-  var key = document.getElementById('akey').value.trim();
-
-  localStorage.setItem('sb_key',key);
-
-  document.getElementById('stxt').textContent = 'Key Saved';
-
-  toggleApi();
-}
+];
 
 function setTab(t){
 
@@ -482,29 +340,15 @@ function setTab(t){
 
   var tabs = document.querySelectorAll('.ntab');
 
-  tabs.forEach(function(el){
-    el.classList.remove('on');
-  });
-
-  var arr = ['home','work','projects','log','report'];
-
-  var idx = arr.indexOf(t);
-
-  if(idx >= 0){
-    tabs[idx].classList.add('on');
+  for(var i=0;i<tabs.length;i++){
+    tabs[i].classList.remove('on');
   }
+
+  var map = ['home','work','projects','log','report'];
+
+  tabs[map.indexOf(t)].classList.add('on');
 
   render();
-}
-
-function onFab(){
-
-  if(tab === 'log'){
-    showLogModal();
-    return;
-  }
-
-  showTaskModal();
 }
 
 function fdate(iso){
@@ -517,21 +361,16 @@ function fdate(iso){
   var dt = new Date(iso);
   dt.setHours(0,0,0,0);
 
-  var diff = Math.round((dt - today)/86400000);
+  var diff = Math.round((dt-today)/86400000);
 
-  if(diff === 0) return 'Today';
+  if(diff===0) return 'Today';
+  if(diff===1) return 'Tomorrow';
+  if(diff<0) return Math.abs(diff)+'d ago';
 
-  if(diff === 1) return 'Tomorrow';
-
-  if(diff < 0) return Math.abs(diff) + 'd ago';
-
-  return new Date(iso).toLocaleDateString(
-    'en-US',
-    {
-      month:'short',
-      day:'numeric'
-    }
-  );
+  return new Date(iso).toLocaleDateString('en-US',{
+    month:'short',
+    day:'numeric'
+  });
 }
 
 function isOverdue(t){
@@ -543,53 +382,32 @@ function isOverdue(t){
   );
 }
 
-function getC(id){
-
-  return cats.find(function(c){
-    return c.id === id;
-  }) || cats[0];
-}
-
-function getP(id){
-
-  return PRI.find(function(p){
-    return p.id === id;
-  }) || PRI[2];
-}
-
-function getS(id){
-
-  return STAT.find(function(s){
-    return s.id === id;
-  }) || STAT[0];
-}
-
 function render(){
 
   var b = document.getElementById('appBody');
 
-  if(tab === 'home'){
+  if(tab==='home'){
     b.innerHTML = renderHome();
     return;
   }
 
-  if(tab === 'work'){
+  if(tab==='work'){
     b.innerHTML = renderList('work');
     return;
   }
 
-  if(tab === 'projects'){
+  if(tab==='projects'){
     b.innerHTML = renderList('projects');
     return;
   }
 
-  if(tab === 'log'){
+  if(tab==='log'){
     b.innerHTML = renderLog();
     return;
   }
 
-  if(tab === 'report'){
-    b.innerHTML = renderRep();
+  if(tab==='report'){
+    b.innerHTML = renderReport();
     return;
   }
 }
@@ -597,30 +415,23 @@ function render(){
 function renderHome(){
 
   var done = tasks.filter(function(t){
-    return t.status === 'done';
-  }).length;
-
-  var active = tasks.filter(function(t){
-    return t.status === 'inprogress';
+    return t.status==='done';
   }).length;
 
   var overdue = tasks.filter(isOverdue).length;
 
   var html = '';
 
-  html += '<h1 style="font-size:26px;font-weight:700;margin-bottom:4px;">Your Second Brain</h1>';
+  html += '<h1 style="font-size:26px;font-weight:700;margin-bottom:4px;">';
+  html += 'Your Second Brain';
+  html += '</h1>';
 
   html += '<p style="font-size:12px;color:#94A3B8;">';
-
-  html += new Date().toLocaleDateString(
-    'en-US',
-    {
-      weekday:'long',
-      month:'long',
-      day:'numeric'
-    }
-  );
-
+  html += new Date().toLocaleDateString('en-US',{
+    weekday:'long',
+    month:'long',
+    day:'numeric'
+  });
   html += '</p>';
 
   html += '<div class="sg">';
@@ -636,8 +447,8 @@ function renderHome(){
   html += '</div>';
 
   html += '<div class="sc">';
-  html += '<div class="sv" style="color:#FBBF24;">'+active+'</div>';
-  html += '<div class="sl">ACTIVE</div>';
+  html += '<div class="sv" style="color:#FBBF24;">'+worklog.length+'</div>';
+  html += '<div class="sl">LOGS</div>';
   html += '</div>';
 
   html += '<div class="sc">';
@@ -647,25 +458,32 @@ function renderHome(){
 
   html += '</div>';
 
-  html += '<div style="font-size:11px;color:#6B7280;margin-bottom:12px;text-transform:uppercase;">Categories</div>';
+  html += '<div style="font-size:11px;color:#6B7280;text-transform:uppercase;font-weight:600;margin-bottom:12px;">';
+  html += 'Categories';
+  html += '</div>';
 
   html += '<div class="cg">';
 
-  cats.forEach(function(c){
+  html += '<button class="ct" onclick="setTab(\'work\')">';
+  html += '<div style="font-size:14px;font-weight:700;">Work</div>';
+  html += '<div style="font-size:11px;color:#6B7280;margin-top:6px;">';
+  html += tasks.filter(function(t){return t.category==='work';}).length;
+  html += ' tasks</div>';
+  html += '</button>';
 
-    var cnt = tasks.filter(function(t){
-      return t.category === c.id && t.status !== 'done';
-    }).length;
+  html += '<button class="ct" onclick="setTab(\'projects\')">';
+  html += '<div style="font-size:14px;font-weight:700;">Projects</div>';
+  html += '<div style="font-size:11px;color:#6B7280;margin-top:6px;">';
+  html += tasks.filter(function(t){return t.category==='projects';}).length;
+  html += ' tasks</div>';
+  html += '</button>';
 
-    html += '<button class="ct" onclick="setTab(\''+c.id+'\')">';
-
-    html += '<div style="font-size:14px;font-weight:700;">'+c.label+'</div>';
-
-    html += '<div style="font-size:11px;color:#6B7280;margin-top:6px;">'+cnt+' open</div>';
-
-    html += '</button>';
-
-  });
+  html += '<button class="ct" onclick="setTab(\'log\')">';
+  html += '<div style="font-size:14px;font-weight:700;">Worklog</div>';
+  html += '<div style="font-size:11px;color:#6B7280;margin-top:6px;">';
+  html += worklog.length;
+  html += ' entries</div>';
+  html += '</button>';
 
   html += '</div>';
 
@@ -674,56 +492,48 @@ function renderHome(){
 
 function renderList(cat){
 
-  var c = getC(cat);
-
   var list = tasks.filter(function(t){
-    return t.category === cat;
+    return t.category===cat;
   });
 
   var html = '';
 
-  html += '<h2 style="font-size:22px;font-weight:700;margin-bottom:16px;">'+c.label+'</h2>';
+  html += '<h2 style="font-size:22px;font-weight:700;margin-bottom:16px;">';
+  html += cat==='work' ? 'Work' : 'Projects';
+  html += '</h2>';
 
-  if(!list.length){
+  for(var i=0;i<list.length;i++){
 
-    html += '<p style="color:#6B7280;text-align:center;padding:40px 0;">No tasks</p>';
-
-    return html;
-  }
-
-  list.forEach(function(t){
-
-    var p = getP(t.priority);
-    var s = getS(t.status);
-    var ov = isOverdue(t);
+    var t = list[i];
 
     html += '<div class="tc">';
 
-    html += '<div style="font-size:15px;font-weight:700;">'+t.title+'</div>';
+    html += '<div style="font-size:15px;font-weight:700;">';
+    html += t.title;
+    html += '</div>';
 
-    html += '<div style="font-size:12px;color:#94A3B8;margin-top:8px;">'+t.notes+'</div>';
+    html += '<div style="font-size:12px;color:#94A3B8;margin-top:8px;">';
+    html += t.notes;
+    html += '</div>';
 
-    html += '<div style="margin-top:8px;">';
+    html += '<div>';
 
-    html += '<span class="badge" style="color:'+p.color+';">'+p.label+'</span>';
+    html += '<span class="badge">';
+    html += t.priority;
+    html += '</span>';
 
-    html += '<span class="badge" style="color:'+s.color+';">'+s.label+'</span>';
+    html += '<span class="badge">';
+    html += t.status;
+    html += '</span>';
 
-    html += '<span class="badge" style="color:'+(ov ? '#F87171' : '#6B7280')+';">'+fdate(t.dueDate)+'</span>';
+    html += '<span class="badge">';
+    html += fdate(t.dueDate);
+    html += '</span>';
 
     html += '</div>';
 
-    html += '<div style="display:flex;gap:8px;margin-top:12px;">';
-
-    html += '<button onclick="cycleStatus(\''+t.id+'\')" style="flex:1;background:#1F2937;border:none;border-radius:8px;color:#94A3B8;padding:10px;cursor:pointer;">Next Status</button>';
-
-    html += '<button onclick="deleteTask(\''+t.id+'\')" style="background:#F8717120;border:1px solid #F87171;border-radius:8px;color:#F87171;padding:10px 12px;cursor:pointer;">Delete</button>';
-
     html += '</div>';
-
-    html += '</div>';
-
-  });
+  }
 
   return html;
 }
@@ -732,156 +542,140 @@ function renderLog(){
 
   var html = '';
 
-  html += '<h2 style="font-size:22px;font-weight:700;margin-bottom:16px;">Worklog</h2>';
+  html += '<h2 style="font-size:22px;font-weight:700;margin-bottom:16px;">';
+  html += 'Worklog';
+  html += '</h2>';
 
-  if(!worklog.length){
+  for(var i=0;i<worklog.length;i++){
 
-    html += '<p style="color:#6B7280;text-align:center;padding:40px 0;">No entries</p>';
+    var e = worklog[i];
 
-    return html;
+    html += '<div class="tc">';
+
+    html += '<div style="font-size:11px;color:#6B7280;">';
+    html += e.date;
+    html += '</div>';
+
+    html += '<div style="margin-top:8px;font-size:13px;line-height:1.5;">';
+    html += e.text;
+    html += '</div>';
+
+    html += '</div>';
   }
-
-  worklog.forEach(function(e){
-
-    html += '<div class="lce">';
-
-    html += '<div style="flex:1;">';
-
-    html += '<div style="font-size:12px;color:#C8D6E5;">'+e.text+'</div>';
-
-    html += '<div style="font-size:10px;color:#6B7280;margin-top:4px;">'+e.date+'</div>';
-
-    html += '</div>';
-
-    html += '</div>';
-
-  });
 
   return html;
 }
 
-function renderRep(){
+function renderReport(){
 
   var html = '';
 
-  html += '<h2 style="font-size:22px;font-weight:700;margin-bottom:16px;">Weekly Report</h2>';
+  html += '<h2 style="font-size:22px;font-weight:700;margin-bottom:16px;">';
+  html += 'Weekly Report';
+  html += '</h2>';
 
-  html += '<button onclick="buildReport()" style="width:100%;padding:14px;background:linear-gradient(135deg,#4F8EF7,#A78BFA);border:none;border-radius:12px;color:white;font-weight:700;cursor:pointer;">';
+  html += '<div class="tc">';
 
-  html += repLoading ? 'Generating...' : 'Generate Weekly Report';
-
+  html += '<button class="btn" onclick="generateReport()">';
+  html += 'Generate Weekly Report';
   html += '</button>';
 
-  if(report){
+  html += '<div id="reportBox" style="margin-top:18px;"></div>';
 
-    html += '<div style="margin-top:16px;background:#111827;border-radius:12px;padding:14px;">';
-
-    html += '<pre>'+escapeHtml(report)+'</pre>';
-
-    html += '</div>';
-  }
+  html += '</div>';
 
   return html;
 }
 
-function escapeHtml(str){
+function generateReport(){
 
-  return str
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;');
-}
+  var txt = '';
 
-function cycleStatus(id){
+  txt += 'Hi Sir,\n\n';
+  txt += 'Please find below my weekly work update:\n\n';
 
-  var order = ['todo','inprogress','done','blocked'];
+  txt += '---\n\n';
 
-  tasks = tasks.map(function(t){
+  txt += 'Projects\n\n';
 
-    if(t.id !== id){
-      return t;
-    }
+  for(var i=0;i<tasks.length;i++){
 
-    var idx = order.indexOf(t.status);
-
-    return Object.assign({},t,{
-      status:order[(idx + 1) % order.length]
-    });
-
-  });
-
-  render();
-}
-
-function deleteTask(id){
-
-  if(!confirm('Delete task?')){
-    return;
+    txt += '- ';
+    txt += tasks[i].title;
+    txt += ' ('+tasks[i].status+')\n';
   }
 
-  tasks = tasks.filter(function(t){
-    return t.id !== id;
-  });
+  txt += '\n---\n\n';
 
-  render();
+  txt += 'Worklog\n\n';
+
+  for(var j=0;j<worklog.length;j++){
+
+    txt += '- ';
+    txt += worklog[j].text;
+    txt += '\n';
+  }
+
+  txt += '\nThanks,\nAbhi Kapoor';
+
+  document.getElementById('reportBox').innerHTML =
+    '<pre>' +
+    txt
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;') +
+    '</pre>';
 }
 
-function buildReport(){
+function openTask(){
 
-  repLoading = true;
+  document.getElementById('modal').innerHTML =
 
-  render();
-
-  setTimeout(function(){
-
-    report =
-`Hi Sir,
-
-Please find below my weekly work update:
-
-- DHCP Scope Failover UAT ongoing
-- PacketFence patching in progress
-- SailPoint migration activities progressing
-
-Thanks,
-Abhi Kapoor`;
-
-    repLoading = false;
-
-    render();
-
-  },1000);
-}
-
-function showTaskModal(){
-
-  document.getElementById('mc').innerHTML =
-
-  '<div class="ovl" onclick="if(event.target===this)closeModal()">' +
+  '<div class="ovl">' +
 
     '<div class="mdl">' +
 
-      '<div class="mhdl"></div>' +
+      '<div style="font-size:18px;font-weight:700;margin-bottom:16px;">' +
+      'Add Task' +
+      '</div>' +
 
-      '<div class="mhd">' +
+      '<div class="lbl">Title</div>' +
+      '<input class="inp" id="tTitle"/>' +
 
-        '<span class="mttl">New Task</span>' +
+      '<div class="lbl">Notes</div>' +
+      '<textarea class="ta" id="tNotes"></textarea>' +
 
-        '<button class="mclb" onclick="closeModal()">X</button>' +
+      '<div class="row">' +
+
+        '<div>' +
+        '<div class="lbl">Category</div>' +
+        '<select class="sel" id="tCat">' +
+          '<option value="work">Work</option>' +
+          '<option value="projects">Projects</option>' +
+        '</select>' +
+        '</div>' +
+
+        '<div>' +
+        '<div class="lbl">Priority</div>' +
+        '<select class="sel" id="tPri">' +
+          '<option value="urgent">Urgent</option>' +
+          '<option value="high">High</option>' +
+          '<option value="normal">Normal</option>' +
+        '</select>' +
+        '</div>' +
 
       '</div>' +
 
-      '<div class="fld">' +
-        '<div class="flbl">Title</div>' +
-        '<input class="inp" id="newTitle" placeholder="Task title" />' +
-      '</div>' +
+      '<div class="lbl">Due Date</div>' +
+      '<input type="date" class="inp" id="tDate"/>' +
 
-      '<div class="fld">' +
-        '<div class="flbl">Notes</div>' +
-        '<textarea class="inpta" id="newNotes"></textarea>' +
-      '</div>' +
+      '<button class="btn" onclick="saveTask()">' +
+      'Save Task' +
+      '</button>' +
 
-      '<button class="svbtn" onclick="saveTask()">Add Task</button>' +
+      '<button class="btn" style="background:#1F2937;margin-top:8px;" onclick="closeModal()">' +
+      'Cancel' +
+      '</button>' +
 
     '</div>' +
 
@@ -890,7 +684,7 @@ function showTaskModal(){
 
 function saveTask(){
 
-  var title = document.getElementById('newTitle').value.trim();
+  var title = document.getElementById('tTitle').value.trim();
 
   if(!title){
     alert('Title required');
@@ -898,72 +692,25 @@ function saveTask(){
   }
 
   tasks.unshift({
-    id:uid(),
+    id:String(Date.now()),
     title:title,
-    notes:document.getElementById('newNotes').value,
-    category:'work',
-    priority:'normal',
+    notes:document.getElementById('tNotes').value,
+    category:document.getElementById('tCat').value,
+    priority:document.getElementById('tPri').value,
     status:'todo',
-    dueDate:'',
+    dueDate:document.getElementById('tDate').value
   });
 
   closeModal();
 
   render();
-}
 
-function showLogModal(){
-
-  document.getElementById('mc').innerHTML =
-
-  '<div class="ovl" onclick="if(event.target===this)closeModal()">' +
-
-    '<div class="mdl">' +
-
-      '<div class="mhdl"></div>' +
-
-      '<div class="mhd">' +
-
-        '<span class="mttl">Log Entry</span>' +
-
-        '<button class="mclb" onclick="closeModal()">X</button>' +
-
-      '</div>' +
-
-      '<div class="fld">' +
-        '<textarea class="inpta" id="logText" placeholder="What did you work on?"></textarea>' +
-      '</div>' +
-
-      '<button class="svbtn" onclick="saveLog()">Save Entry</button>' +
-
-    '</div>' +
-
-  '</div>';
-}
-
-function saveLog(){
-
-  var text = document.getElementById('logText').value.trim();
-
-  if(!text){
-    alert('Enter worklog');
-    return;
-  }
-
-  worklog.unshift({
-    id:uid(),
-    text:text,
-    date:todayStr()
-  });
-
-  closeModal();
-
-  render();
+  document.getElementById('stxt').textContent =
+    tasks.length + ' tasks';
 }
 
 function closeModal(){
-
-  document.getElementById('mc').innerHTML = '';
+  document.getElementById('modal').innerHTML = '';
 }
 
 render();
