@@ -1,1 +1,123 @@
-{"version":1,"lastUpdated":"2026-05-05T18:12:24.903Z","items":[{"id":"264a2e85-ab20-4945-b217-6aae99bc2924","createdAt":"2026-05-05T18:12:24.903Z","updatedAt":"2026-05-05T18:12:24.903Z","tags":[],"url":"","amount":"","recurrence":"","reminderSynced":false,"priority":"high","status":"inprogress","title":"PacketFence Patching","dueDate":"2026-05-25","notes":"Patching planned for PFE01 server on 25–26 April; rescheduled for 3rd May","category":"work"},{"id":"d886fd56-fa08-4660-9d0d-ab53e6572473","createdAt":"2026-05-05T18:12:24.903Z","updatedAt":"2026-05-05T18:12:24.903Z","tags":[],"url":"","amount":"","recurrence":"","reminderSynced":false,"priority":"high","status":"inprogress","title":"Fix Packet Fence Auto Enrolment Issue","dueDate":"2026-05-06","notes":"","category":"work"},{"id":"e9d93371-2498-4fe7-a9ad-0e24f9fffe71","createdAt":"2026-05-05T18:12:24.903Z","updatedAt":"2026-05-05T18:12:24.903Z","tags":[],"url":"","amount":"","recurrence":"","reminderSynced":false,"priority":"urgent","status":"inprogress","title":"DHCP Scope Failover UAT","dueDate":"2026-05-09","notes":"Network team using solution to assign IP on switch interface, which can exclude DS team involvement. Next: Discuss feasibility and stability with Vikas Maurya","category":"work"},{"id":"1632a132-b148-46ae-95e0-d44573446ea4","createdAt":"2026-05-05T18:12:24.903Z","updatedAt":"2026-05-05T18:12:24.903Z","tags":[],"url":"","amount":"","recurrence":"","reminderSynced":false,"priority":"high","status":"todo","title":"Discuss feasibility and stability with Vikas Maurya","dueDate":"2026-05-06","notes":"Sub-task of DHCP Scope Failover UAT","category":"work"},{"id":"28ce0d96-7ec5-408c-b886-31fe8f22e523","createdAt":"2026-05-05T18:12:24.903Z","updatedAt":"2026-05-05T18:12:24.903Z","tags":[],"url":"","amount":"","recurrence":"","reminderSynced":false,"priority":"normal","status":"todo","title":"Review IP assignment solution on switch interface","dueDate":"2026-05-06","notes":"","category":"work"},{"id":"6c6841aa-6729-444c-8296-544781d74945","createdAt":"2026-05-05T18:12:24.903Z","updatedAt":"2026-05-05T18:12:24.903Z","tags":[],"url":"","amount":"","recurrence":"","reminderSynced":false,"priority":"high","status":"inprogress","title":"Arista AGNI Implementation","dueDate":"2026-09-30","notes":"Port validation for India proxy IPs completed; discussed port allow with Rajesh; license procurement in progress; Infosec approval pending with queries from Don. Next: Share complete sheet with Rajesh including site priority and connectivity; Raise work intake task for Network team","category":"projects"},{"id":"21bf51e4-241c-48d9-ba13-89ce44288315","createdAt":"2026-05-05T18:12:24.903Z","updatedAt":"2026-05-05T18:12:24.903Z","tags":[],"url":"","amount":"","recurrence":"","reminderSynced":false,"priority":"high","status":"inprogress","title":"DNS Block for corp.ad (Zscaler DNS Security)","dueDate":"2026-05-22","notes":"Solution discussion completed with Zscaler vendor; Keshav to align with Vinay on pilot user count. Next: Identify users for pilot testing (public DNS traffic for corp.ad)","category":"projects"},{"id":"97f0e460-60c7-4b2f-b3dd-733b38c10515","createdAt":"2026-05-05T18:12:24.903Z","updatedAt":"2026-05-05T18:12:24.903Z","tags":[],"url":"","amount":"","recurrence":"","reminderSynced":false,"priority":"normal","status":"inprogress","title":"DHCP 50/50 Failover Dashboard","dueDate":"2026-05-11","notes":"PEG team working on dashboard. Next: Review dashboard once ready","category":"projects"},{"id":"47202442-c9dc-4ef2-b965-6caf874e925b","createdAt":"2026-05-05T18:12:24.903Z","updatedAt":"2026-05-05T18:12:24.903Z","tags":[],"url":"","amount":"","recurrence":"","reminderSynced":false,"priority":"high","status":"inprogress","title":"AD Transformation (AD-Less Roadmap)","dueDate":"2026-05-08","notes":"Discussion initiated with Microsoft regarding approach and challenges for AD-less environment. Next: Await Microsoft response","category":"projects"},{"id":"e65f003b-d8cb-4469-9035-42678c5a4b24","createdAt":"2026-05-05T18:12:24.903Z","updatedAt":"2026-05-05T18:12:24.903Z","tags":[],"url":"","amount":"","recurrence":"","reminderSynced":false,"priority":"normal","status":"inprogress","title":"DHCP Scope Creation Automation","dueDate":"2026-06-30","notes":"BRD update in progress to include RITM/Catalogue-based scope creation. Next: Discuss implementation approach with Savreet","category":"projects"},{"id":"6f2033ca-cbff-4f40-a3f8-1e9a5b5063fd","createdAt":"2026-05-05T18:12:24.903Z","updatedAt":"2026-05-05T18:12:24.903Z","tags":[],"url":"","amount":"","recurrence":"","reminderSynced":false,"priority":"normal","status":"inprogress","title":"DNS Catalogue Modification (with Database)","dueDate":"2026-06-30","notes":"DNS database updated with most domain owners; genpact.com ownership pending; additional catalogue fields discussed with Subir. Next: Identify remaining domain owners; Update catalogue with final database and changes","category":"projects"},{"id":"597a3c57-5ccb-4973-993d-78cc1d9c1f40","createdAt":"2026-05-05T18:12:24.903Z","updatedAt":"2026-05-05T18:12:24.903Z","tags":[],"url":"","amount":"","recurrence":"","reminderSynced":false,"priority":"urgent","status":"inprogress","title":"SailPoint Post Migration Activities","dueDate":"2026-05-11","notes":"Prepared required migration scripts and shared with team. Next: Power on DCs, Verify AD replication, Validate group membership, Enable outbound replication","category":"projects"},{"id":"ede1792e-29d8-4cde-96b8-263f08d25336","createdAt":"2026-05-05T18:12:24.903Z","updatedAt":"2026-05-05T18:12:24.903Z","tags":[],"url":"","amount":"","recurrence":"","reminderSynced":false,"priority":"urgent","status":"inprogress","title":"SailPoint Pre Migration Activities","dueDate":"2026-05-08","notes":"Tasks for domain controller resource updates, backups, and replication changes. Outbound replication disable, DC backup, user/group exports pending","category":"projects"},{"id":"a85f25bb-80cf-46d4-82ff-e976b99ae39f","createdAt":"2026-05-05T18:12:24.903Z","updatedAt":"2026-05-05T18:12:24.903Z","tags":[],"url":"","amount":"","recurrence":"","reminderSynced":false,"priority":"normal","status":"done","title":"SailPoint Migration Scripts","dueDate":"2026-05-03","notes":"All scripts prepared, tested and shared with team","category":"projects"}],"remindersSync":{"lastPushAt":"","lastPullAt":"","mappings":[]}}
+{
+  "version": 1,
+  "lastUpdated": "2026-05-06T00:00:00Z",
+  "items": [
+    {
+      "id": "task-001",
+      "title": "DHCP Scope Failover UAT",
+      "category": "work",
+      "priority": "urgent",
+      "status": "inprogress",
+      "dueDate": "2026-05-09",
+      "notes": "Discuss feasibility and stability with Vikas Maurya"
+    },
+    {
+      "id": "task-002",
+      "title": "Fix Packet Fence Auto Enrolment Issue",
+      "category": "work",
+      "priority": "high",
+      "status": "inprogress",
+      "dueDate": "2026-05-06",
+      "notes": ""
+    },
+    {
+      "id": "task-003",
+      "title": "PacketFence Patching",
+      "category": "work",
+      "priority": "high",
+      "status": "inprogress",
+      "dueDate": "2026-05-25",
+      "notes": "PFE01 patching"
+    },
+    {
+      "id": "task-004",
+      "title": "AD Transformation (AD-Less Roadmap)",
+      "category": "projects",
+      "priority": "high",
+      "status": "inprogress",
+      "dueDate": "2026-05-08",
+      "notes": "Discussion with Microsoft"
+    },
+    {
+      "id": "task-005",
+      "title": "Arista AGNI Implementation",
+      "category": "projects",
+      "priority": "high",
+      "status": "inprogress",
+      "dueDate": "2026-09-30",
+      "notes": "Port validation and license procurement"
+    },
+    {
+      "id": "task-006",
+      "title": "DNS Block for corp.ad",
+      "category": "projects",
+      "priority": "high",
+      "status": "inprogress",
+      "dueDate": "2026-05-22",
+      "notes": "Pilot testing preparation"
+    },
+    {
+      "id": "task-007",
+      "title": "DHCP 50/50 Failover Dashboard",
+      "category": "projects",
+      "priority": "normal",
+      "status": "inprogress",
+      "dueDate": "2026-05-11",
+      "notes": "Review dashboard"
+    },
+    {
+      "id": "task-008",
+      "title": "DHCP Scope Creation Automation",
+      "category": "projects",
+      "priority": "normal",
+      "status": "inprogress",
+      "dueDate": "2026-06-30",
+      "notes": "BRD updates"
+    },
+    {
+      "id": "task-009",
+      "title": "DNS Catalogue Modification",
+      "category": "projects",
+      "priority": "normal",
+      "status": "inprogress",
+      "dueDate": "2026-06-30",
+      "notes": "Database updates"
+    },
+    {
+      "id": "task-010",
+      "title": "SailPoint Pre Migration Activities",
+      "category": "projects",
+      "priority": "urgent",
+      "status": "inprogress",
+      "dueDate": "2026-05-08",
+      "notes": "Backups and replication changes"
+    },
+    {
+      "id": "task-011",
+      "title": "SailPoint Post Migration Activities",
+      "category": "projects",
+      "priority": "urgent",
+      "status": "inprogress",
+      "dueDate": "2026-05-11",
+      "notes": "Replication validation"
+    },
+    {
+      "id": "task-012",
+      "title": "SailPoint Migration Scripts",
+      "category": "projects",
+      "priority": "normal",
+      "status": "done",
+      "dueDate": "2026-05-03",
+      "notes": "Completed and shared"
+    },
+    {
+      "id": "task-013",
+      "title": "Kidney Stone Monitoring",
+      "category": "health",
+      "priority": "high",
+      "status": "todo",
+      "dueDate": "2026-05-20",
+      "notes": "Monitor 3.2mm right kidney stone"
+    }
+  ]
+}
