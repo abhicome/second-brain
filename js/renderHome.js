@@ -1,236 +1,128 @@
 function renderHome(){
 
   const tasks =
-    state.data.tasks || [];
+    state.tasks || [];
 
   const projects =
-    state.data.projects || [];
-
-  const knowledge =
-    state.data.knowledge || [];
-
-  const watchlist =
-    state.data.watchlist || [];
-
-  const finance =
-    state.data.finance || [];
-
-  const health =
-    state.data.health || [];
-
-  const total =
-    tasks.length +
-    projects.length;
-
-  const done =
-    tasks.filter(
-      t => t.status === "done"
-    ).length;
-
-  const active =
-    tasks.filter(
-      t => t.status === "inprogress"
-    ).length;
+    state.projects || [];
 
   root.innerHTML = `
 
     <div style="
       padding:24px;
-      padding-bottom:120px;
+      padding-bottom:140px;
+      max-width:1400px;
+      margin:auto;
     ">
 
+      ${renderHeader()}
+
       <div style="
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
         margin-bottom:30px;
       ">
 
         <div style="
-          font-size:64px;
-          font-weight:bold;
+          font-size:20px;
+          color:#64748B;
+          margin-bottom:10px;
+          letter-spacing:2px;
         ">
-          Second Brain
+          YOUR SECOND BRAIN
         </div>
 
         <div style="
-          display:flex;
-          gap:14px;
-          align-items:center;
+          font-size:64px;
+          font-weight:800;
+          line-height:1;
+          margin-bottom:14px;
+        ">
+          Dashboard
+        </div>
+
+        <div style="
+          color:#64748B;
+          font-size:18px;
+        ">
+          ${tasks.filter(t => !t.done).length}
+          open tasks ·
+          ${projects.filter(p => !p.done).length}
+          active projects
+        </div>
+
+      </div>
+
+      ${renderStats(
+        tasks,
+        projects
+      )}
+
+      ${renderPrioritySection(tasks)}
+
+      <div style="
+        margin-top:40px;
+      ">
+
+        <div style="
+          font-size:18px;
+          color:#64748B;
+          margin-bottom:20px;
+          letter-spacing:2px;
+        ">
+          CATEGORIES
+        </div>
+
+        <div style="
+          display:grid;
+          grid-template-columns:
+            repeat(auto-fit,minmax(240px,1fr));
+          gap:20px;
         ">
 
-          <div style="
-            color:#10B981;
-            font-size:18px;
-          ">
-            Ready
-          </div>
+          ${homeCard(
+            "💼",
+            "Work",
+            "#3B82F6",
+            "renderTasks()",
+            tasks.length
+          )}
 
-          <button
-            id="tokenBtn"
-            style="${buttonStyle()}"
-          >
-            Key
-          </button>
+          ${homeCard(
+            "🚀",
+            "Projects",
+            "#8B5CF6",
+            "renderProjects()",
+            projects.length
+          )}
+
+          ${homeCard(
+            "🧠",
+            "Knowledge",
+            "#F59E0B"
+          )}
+
+          ${homeCard(
+            "❤️",
+            "Health",
+            "#EF4444"
+          )}
+
+          ${homeCard(
+            "👁️",
+            "Watchlist",
+            "#06B6D4"
+          )}
+
+          ${homeCard(
+            "🌿",
+            "Personal",
+            "#22C55E"
+          )}
 
         </div>
 
       </div>
 
-      <div style="
-        font-size:72px;
-        font-weight:bold;
-        margin-bottom:10px;
-      ">
-        Your Second Brain
-      </div>
-
-      <div style="
-        color:#94A3B8;
-        font-size:24px;
-        margin-bottom:40px;
-      ">
-        ${new Date().toDateString()}
-      </div>
-
-      <div style="
-        display:grid;
-        grid-template-columns:
-          repeat(4,1fr);
-        gap:20px;
-        margin-bottom:40px;
-      ">
-
-        ${statCard(
-          total,
-          "TOTAL",
-          "#3B82F6"
-        )}
-
-        ${statCard(
-          done,
-          "DONE",
-          "#10B981"
-        )}
-
-        ${statCard(
-          active,
-          "ACTIVE",
-          "#F59E0B"
-        )}
-
-        ${statCard(
-          0,
-          "OVERDUE",
-          "#EF4444"
-        )}
-
-      </div>
-
-      <div style="
-        font-size:32px;
-        font-weight:bold;
-        margin-bottom:20px;
-      ">
-        CATEGORIES
-      </div>
-
-      <div style="
-        display:grid;
-        grid-template-columns:
-          repeat(2,1fr);
-        gap:22px;
-      ">
-
-        ${homeTile(
-          "tasks",
-          "Tasks",
-          "#3B82F6",
-          tasks.length
-        )}
-
-        ${homeTile(
-          "projects",
-          "Projects",
-          "#8B5CF6",
-          projects.length
-        )}
-
-        ${homeTile(
-          "knowledge",
-          "Knowledge",
-          "#2563EB",
-          knowledge.length
-        )}
-
-        ${homeTile(
-          "watchlist",
-          "Watchlist",
-          "#D946EF",
-          watchlist.length
-        )}
-
-        ${homeTile(
-          "finance",
-          "Bills",
-          "#F59E0B",
-          finance.length
-        )}
-
-        ${homeTile(
-          "health",
-          "Health",
-          "#EF4444",
-          health.length
-        )}
-
-      </div>
-
-    </div>
-
-  `;
-
-  document
-    .getElementById(
-      "tokenBtn"
-    )
-    .onclick = setToken;
-
-  bindTile("tasks");
-  bindTile("projects");
-
-}
-
-function statCard(
-  value,
-  label,
-  color
-){
-
-  return `
-
-    <div style="
-      background:#081225;
-      border-radius:28px;
-      padding:26px;
-      text-align:center;
-    ">
-
-      <div style="
-        font-size:52px;
-        font-weight:bold;
-        color:${color};
-      ">
-        ${value}
-      </div>
-
-      <div style="
-        margin-top:10px;
-        color:#94A3B8;
-        font-size:18px;
-      ">
-        ${label}
-      </div>
+      ${renderNavbar()}
 
     </div>
 
@@ -238,60 +130,63 @@ function statCard(
 
 }
 
-function homeTile(
-  id,
+function homeCard(
+  icon,
   title,
   color,
-  count
+  click="",
+  count=""
 ){
 
   return `
 
     <div
-      id="tile-${id}"
+      onclick="${click}"
       style="
         background:#081225;
-        border-radius:32px;
+        border-radius:30px;
         padding:28px;
+        min-height:220px;
+        border:1px solid ${color}55;
         cursor:pointer;
+        position:relative;
+        transition:0.2s;
       "
     >
 
       <div style="
-        font-size:42px;
-        font-weight:bold;
-        color:${color};
-        margin-bottom:16px;
+        position:absolute;
+        top:18px;
+        right:18px;
+        background:${color};
+        width:34px;
+        height:34px;
+        border-radius:999px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:14px;
+        font-weight:700;
       ">
-        ${title}
+        ${count}
       </div>
 
       <div style="
-        color:#94A3B8;
-        font-size:22px;
+        font-size:54px;
+        margin-bottom:22px;
       ">
-        ${count} items
+        ${icon}
+      </div>
+
+      <div style="
+        font-size:34px;
+        font-weight:700;
+      ">
+        ${title}
       </div>
 
     </div>
 
   `;
-
-}
-
-function bindTile(id){
-
-  const el =
-    document.getElementById(
-      `tile-${id}`
-    );
-
-  if(!el) return;
-
-  if(id === "tasks")
-    el.onclick = renderTasks;
-
-  if(id === "projects")
-    el.onclick = renderProjects;
 
 }
