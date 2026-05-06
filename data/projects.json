@@ -1,1 +1,321 @@
-[]
+{
+  "projects": [
+    {
+      "id": "proj-arista-agni",
+      "title": "Project Arista Agni",
+      "status": "inprogress",
+      "priority": "high",
+      "summary": "Port validation for India proxy IPs completed; discussed port allow with Rajesh; license procurement in progress; Infosec approval pending with queries from Don.",
+      "nextSteps": [
+        "Share complete sheet with Rajesh including site priority and connectivity",
+        "Raise work intake task for Network team"
+      ],
+      "dueDate": "2026-09-30",
+      "createdAt": "2026-05-06",
+      "isDeleted": false,
+      "subtasks": [
+        {
+          "id": "arista-sub-1",
+          "title": "Arista AGNI - Raise work intake task for Network team",
+          "status": "todo"
+        },
+        {
+          "id": "arista-sub-2",
+          "title": "Validate ports for India proxy IPs",
+          "status": "done"
+        },
+        {
+          "id": "arista-sub-3",
+          "title": "Send VGO form",
+          "status": "done"
+        },
+        {
+          "id": "arista-sub-4",
+          "title": "Proceed with testing",
+          "status": "done"
+        },
+        {
+          "id": "arista-sub-5",
+          "title": "Allow firewall port for US",
+          "status": "todo"
+        },
+        {
+          "id": "arista-sub-6",
+          "title": "Arista AGNI - Share complete sheet with Rajesh including site priority and connectivity",
+          "status": "todo"
+        },
+        {
+          "id": "arista-sub-7",
+          "title": "Setup call with Rajesh",
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "id": "proj-zscaler-dns",
+      "title": "DNS Block for corp.ad (Zscaler DNS Security)",
+      "status": "inprogress",
+      "priority": "high",
+      "summary": "Solution discussion completed with Zscaler vendor; Keshav to align with Vinay on pilot user count.",
+      "nextSteps": [
+        "Identify users for pilot testing (public DNS traffic for corp.ad)"
+      ],
+      "dueDate": "2026-05-22",
+      "createdAt": "2026-05-06",
+      "isDeleted": false,
+      "subtasks": [
+        {
+          "id": "zscaler-sub-1",
+          "title": "Zscaler testing",
+          "status": "todo"
+        },
+        {
+          "id": "zscaler-sub-2",
+          "title": "Identify alternate DNS blocking approach",
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "id": "proj-dhcp-dashboard",
+      "title": "DHCP 50/50 Failover Dashboard",
+      "status": "inprogress",
+      "priority": "medium",
+      "summary": "PEG team working on dashboard.",
+      "nextSteps": [
+        "Review dashboard once ready"
+      ],
+      "dueDate": "2026-05-11",
+      "createdAt": "2026-05-06",
+      "isDeleted": false,
+      "subtasks": [
+        {
+          "id": "dhcp-dashboard-sub-1",
+          "title": "Review dashboard once ready",
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "id": "proj-ad-transform",
+      "title": "AD Transformation (AD-Less Roadmap)",
+      "status": "inprogress",
+      "priority": "high",
+      "summary": "Discussion initiated with Microsoft regarding approach and challenges for AD-less environment.",
+      "nextSteps": [
+        "Await Microsoft response"
+      ],
+      "dueDate": "2026-05-08",
+      "createdAt": "2026-05-06",
+      "isDeleted": false,
+      "subtasks": [
+        {
+          "id": "ad-transform-sub-1",
+          "title": "Update ppt with one more slide with benefits that we envisage after moving on this path",
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "id": "proj-dhcp-automation",
+      "title": "DHCP Scope Creation Automation",
+      "status": "inprogress",
+      "priority": "high",
+      "summary": "BRD update in progress to include RITM/Catalogue-based scope creation.",
+      "nextSteps": [
+        "Discuss implementation approach with Savreet"
+      ],
+      "dueDate": "2026-06-30",
+      "createdAt": "2026-05-06",
+      "isDeleted": false,
+      "subtasks": [
+        {
+          "id": "dhcp-auto-sub-1",
+          "title": "Discuss scope creation with RITM",
+          "status": "todo"
+        },
+        {
+          "id": "dhcp-auto-sub-2",
+          "title": "Got vinay sir approval",
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "id": "proj-dns-catalogue",
+      "title": "DNS Catalogue Modification (with Database)",
+      "status": "inprogress",
+      "priority": "high",
+      "summary": "DNS database updated with most domain owners; genpact.com ownership pending; additional catalogue fields discussed with Subir.",
+      "nextSteps": [
+        "Identify remaining domain owners",
+        "Update catalogue with final database and changes"
+      ],
+      "dueDate": "2026-06-30",
+      "createdAt": "2026-05-06",
+      "isDeleted": false,
+      "subtasks": [
+        {
+          "id": "dns-cat-sub-1",
+          "title": "Await catalogue update completion",
+          "status": "todo"
+        },
+        {
+          "id": "dns-cat-sub-2",
+          "title": "Email send to global tam to update owner for unknown records",
+          "status": "done"
+        },
+        {
+          "id": "dns-cat-sub-3",
+          "title": "Inform subir to add fields for multiple records",
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "id": "proj-sailpoint-post",
+      "title": "Sailpoint Post migration activities",
+      "status": "inprogress",
+      "priority": "high",
+      "summary": "Prepared required migration scripts and shared with team.",
+      "nextSteps": [
+        "Execute pre-migration backups",
+        "Disable outbound replication",
+        "Validate post-migration state"
+      ],
+      "dueDate": "2026-05-11",
+      "createdAt": "2026-05-06",
+      "isDeleted": false,
+      "subtasks": [
+        {
+          "id": "sp-post-sub-1",
+          "title": "Power on shutdowned DCs",
+          "status": "todo"
+        },
+        {
+          "id": "sp-post-sub-2",
+          "title": "Verify AD replication status",
+          "status": "todo"
+        },
+        {
+          "id": "sp-post-sub-3",
+          "title": "Validate group membership changes",
+          "status": "todo"
+        },
+        {
+          "id": "sp-post-sub-4",
+          "title": "Validate changes for Sailpoint account",
+          "status": "todo"
+        },
+        {
+          "id": "sp-post-sub-5",
+          "title": "Enable outbound replication",
+          "status": "todo"
+        },
+        {
+          "id": "sp-post-sub-6",
+          "title": "Validate GCHcloud host group",
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "id": "proj-sailpoint-pre",
+      "title": "Sailpoint pre migration activities",
+      "status": "inprogress",
+      "priority": "high",
+      "summary": "Tasks for domain controller resource updates, backups, and replication changes.",
+      "nextSteps": [
+        "Complete migration preparation tasks"
+      ],
+      "dueDate": "2026-05-08",
+      "createdAt": "2026-05-06",
+      "isDeleted": false,
+      "subtasks": [
+        {
+          "id": "sp-pre-sub-1",
+          "title": "Outbound replication disable",
+          "status": "todo"
+        },
+        {
+          "id": "sp-pre-sub-2",
+          "title": "Domain controller Backup Comm vault",
+          "status": "todo"
+        },
+        {
+          "id": "sp-pre-sub-3",
+          "title": "All user all attribute export manual",
+          "status": "todo"
+        },
+        {
+          "id": "sp-pre-sub-4",
+          "title": "Group membership export (Sailpoint linked group) on prem",
+          "status": "todo"
+        },
+        {
+          "id": "sp-pre-sub-5",
+          "title": "Domain controller shutdown",
+          "status": "todo"
+        },
+        {
+          "id": "sp-pre-sub-6",
+          "title": "Domain controller system state backup manual",
+          "status": "todo"
+        },
+        {
+          "id": "sp-pre-sub-7",
+          "title": "Entra backup from Comm vault",
+          "status": "todo"
+        },
+        {
+          "id": "sp-pre-sub-8",
+          "title": "Increase resources on Adconnect, ADC08 and ADC09",
+          "status": "done"
+        },
+        {
+          "id": "sp-pre-sub-9",
+          "title": "Schedule password expiry report",
+          "status": "done"
+        },
+        {
+          "id": "sp-pre-sub-10",
+          "title": "Increase resources on Sec corp PDC",
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "id": "proj-sailpoint-scripts",
+      "title": "SailPoint Migration Scripts",
+      "status": "done",
+      "priority": "medium",
+      "summary": "List of scripts required for SailPoint migration.",
+      "nextSteps": [],
+      "dueDate": "2026-05-03",
+      "createdAt": "2026-05-06",
+      "isDeleted": false,
+      "subtasks": [
+        {
+          "id": "sp-script-sub-1",
+          "title": "Prepare final script list",
+          "status": "done"
+        },
+        {
+          "id": "sp-script-sub-2",
+          "title": "Identify required scripts",
+          "status": "done"
+        },
+        {
+          "id": "sp-script-sub-3",
+          "title": "Test migration scripts",
+          "status": "done"
+        },
+        {
+          "id": "sp-script-sub-4",
+          "title": "Develop migration scripts",
+          "status": "done"
+        }
+      ]
+    }
+  ]
+}
