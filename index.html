@@ -11,10 +11,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
-html,body{height:100%;margin:0}#app{height:100%;height:100dvh;background:#080C14;font-family:Sora,sans-serif;color:#E2E8F0;overflow:hidden}
+html,body{height:100%;margin:0}#app{height:100vh;background:#080C14;font-family:Sora,sans-serif;color:#E2E8F0;overflow:hidden;display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:relative}
 button{font-family:Sora,sans-serif;cursor:pointer}
 input,textarea,select{font-family:Sora,sans-serif;color:#E2E8F0;background:#080C14;color-scheme:dark}
-#app{display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:relative}
+
 #hdr{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 10px;border-bottom:1px solid #0F1829;flex-shrink:0}
 .brand{font-weight:700;font-size:17px}
 .sr{display:flex;align-items:center;gap:5px;margin-top:3px}
@@ -29,7 +29,7 @@ input,textarea,select{font-family:Sora,sans-serif;color:#E2E8F0;background:#080C
 .arow input{flex:1}
 .asave{background:#4F8EF7;border:none;border-radius:10px;color:#fff;font-size:13px;padding:0 14px;font-weight:600}
 .acanc{background:#0F1829;border:none;border-radius:10px;color:#6B7280;font-size:13px;padding:0 12px}
-#body{flex:1;overflow-y:auto;padding-bottom:88px;min-height:0}
+#body{flex:1;overflow-y:auto;padding-bottom:88px;min-height:0;position:relative}
 .pg{padding:0 16px 16px}
 .hero{padding:18px 0 14px;border-bottom:1px solid #0F1829;margin-bottom:16px}
 .hdate{font-size:10px;color:#374151;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
@@ -129,6 +129,7 @@ input,textarea,select{font-family:Sora,sans-serif;color:#E2E8F0;background:#080C
 .ibtn{background:#0A0F1E;border:1px solid #1F2937;border-radius:8px;font-size:15px;padding:5px 7px;cursor:pointer}
 .ibtn.picked{background:#4F8EF722;border-color:#4F8EF7}
 </style>
+
 </head>
 <body>
 <div id="app">
