@@ -1,609 +1,431 @@
-const OWNER = "abhicome";
-const REPO = "second-brain";
-const BRANCH = "main";
-
-let GITHUB_TOKEN =
-localStorage.getItem("sb_token") || "";
-
-let tasks = [];
-let worklogs = [];
-let categories = [];
-
-let currentTab = "home";
+const REPO_OWNER = "abhicome";
+const REPO_NAME = "second-brain";
+const DATA_PATH = "data";
 
 const DEFAULT_CATEGORIES = [
-  {id:"work",name:"Work",icon:"💼"},
-  {id:"projects",name:"Projects",icon:"🚀"},
-  {id:"health",name:"Health",icon:"❤️"},
-  {id:"personal",name:"Personal",icon:"👤"}
+  { id: "work", name: "Work", color: "#3B82F6", file: "work.json", icon: "💼" },
+  { id: "projects", name: "Projects", color: "#8B5CF6", file: "projects.json", icon: "🚀" },
+  { id: "personal", name: "Personal", color: "#EF4444", file: "personal.json", icon: "👤" },
+  { id: "knowledge", name: "Knowledge", color: "#2563EB", file: "knowledge.json", icon: "📘" },
+  { id: "bills", name: "Bills", color: "#F59E0B", file: "bills.json", icon: "💳" },
+  { id: "watchlist", name: "Watchlist", color: "#D946EF", file: "watchlist.json", icon: "🎬" }
 ];
 
-function $(id){
-  return document.getElementById(id);
-}
+let state = {
+  categories: [],
+  data: {},
+  current: null,
+  token: localStorage.getItem("github_token") || ""
+};
 
-function statusText(t,c){
-  $("status").innerHTML=t;
-  $("status").style.color=c||"#34D399";
-}
+const app = document.getElementById("app");
 
-function saveToken(){
+init();
 
-  const existing =
-  localStorage.getItem("sb_token") || "";
+async function init() {
+  renderLoading();
 
-  const t =
-  prompt(
-    "Enter GitHub Personal Access Token",
-    existing
-  );
-
-  if(!t) return;
-
-  GITHUB_TOKEN = t.trim();
-
-  localStorage.setItem(
-    "sb_token",
-    GITHUB_TOKEN
-  );
-
-  statusText(
-    "Token Saved",
-    "#34D399"
-  );
-
-  alert(
-    "Token saved successfully"
-  );
-
-}
-
-async function githubRequest(url,options={}){
-
-  if(!GITHUB_TOKEN){
-    throw new Error("No token");
+  try {
+    await loadCategories();
+    await loadAllFiles();
+    renderHome();
+  } catch (e) {
+    console.error(e);
+    app.innerHTML = `
+      <div style="padding:30px;color:white">
+        Failed to load data
+      </div>
+    `;
   }
+}
 
-  const res = await fetch(url,{
-    ...options,
-    headers:{
-      "Authorization":"token "+GITHUB_TOKEN,
-      "Accept":"application/vnd.github+json",
-      ...(options.headers||{})
+function renderLoading() {
+  app.innerHTML = `
+    <div class="loading-screen">
+      Loading...
+    </div>
+  `;
+}
+
+async function loadCategories() {
+  try {
+    const res = await fetch(rawUrl("sb-categories.json"));
+    const data = await res.json();
+    state.categories = data.length ? data : DEFAULT_CATEGORIES;
+  } catch {
+    state.categories = DEFAULT_CATEGORIES;
+  }
+}
+
+async function loadAllFiles() {
+  for (const cat of state.categories) {
+    try {
+      const res = await fetch(rawUrl(cat.file));
+      const json = await res.json();
+      state.data[cat.id] = json;
+    } catch {
+      state.data[cat.id] = [];
     }
+  }
+}
+
+function rawUrl(file) {
+  return `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${DATA_PATH}/${file}?t=${Date.now()}`;
+}
+
+function renderHome() {
+  let total = 0;
+  let done = 0;
+
+  state.categories.forEach(cat => {
+    const tasks = state.data[cat.id] || [];
+    total += tasks.length;
+    done += tasks.filter(t => t.done).length;
   });
 
-  if(!res.ok){
+  app.innerHTML = `
+    <div class="screen">
 
-    const txt = await res.text();
+      <div class="topbar">
+        <div class="logo">Second Brain</div>
 
-    throw new Error(txt);
-  }
+        <div class="top-actions">
+          <button class="btn" onclick="setToken()">Key</button>
+          <button class="btn" onclick="syncAll()">Sync</button>
+        </div>
+      </div>
 
-  return await res.json();
+      <div class="hero">
+        <h1>Your Second Brain</h1>
+        <div class="date">${new Date().toDateString()}</div>
+      </div>
+
+      <div class="stats">
+        <div class="card">
+          <div class="num">${total}</div>
+          <div class="label">TOTAL</div>
+        </div>
+
+        <div class="card">
+          <div class="num green">${done}</div>
+          <div class="label">DONE</div>
+        </div>
+
+        <div class="card">
+          <div class="num yellow">${total - done}</div>
+          <div class="label">ACTIVE</div>
+        </div>
+
+        <div class="card">
+          <div class="num red">0</div>
+          <div class="label">OVERDUE</div>
+        </div>
+      </div>
+
+      <div class="section-title">CATEGORIES</div>
+
+      <div class="categories">
+        ${state.categories.map(cat => {
+          const count = (state.data[cat.id] || []).filter(x => !x.done).length;
+
+          return `
+            <div class="category-card"
+              onclick="openCategory('${cat.id}')"
+              style="border-color:${cat.color}">
+              
+              <div class="cat-icon">${cat.icon}</div>
+
+              <div class="cat-name">${cat.name}</div>
+
+              <div class="cat-count">${count} open</div>
+            </div>
+          `;
+        }).join("")}
+      </div>
+
+      <button class="fab" onclick="addCategory()">+</button>
+
+    </div>
+  `;
 }
 
-async function readJSON(path){
+function openCategory(id) {
+  state.current = id;
 
-  try{
+  const category = state.categories.find(c => c.id === id);
+  const tasks = state.data[id] || [];
 
-    const url =
-    `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/data/${path}`;
+  app.innerHTML = `
+    <div class="screen">
 
-    const res = await fetch(url+"?t="+Date.now());
+      <div class="category-header">
+        <button class="back-btn" onclick="renderHome()">←</button>
 
-    if(!res.ok){
-      return null;
-    }
+        <div class="category-title"
+          style="color:${category.color}">
+          ${category.name}
+        </div>
 
-    return await res.json();
+        <button class="share-btn"
+          onclick="syncCategory('${id}')">
+          ⟳
+        </button>
+      </div>
 
-  }catch(e){
+      <div class="task-list">
 
-    return null;
-  }
+        ${tasks.map((task, index) => `
+          <div class="task-item">
+
+            <div class="task-top">
+
+              <input
+                type="checkbox"
+                ${task.done ? "checked" : ""}
+                onchange="toggleTask('${id}',${index})"
+              >
+
+              <div class="task-main">
+
+                <div class="task-title ${task.done ? "done" : ""}"
+                  onclick="editTask('${id}',${index})">
+                  ${task.title}
+                </div>
+
+                ${task.notes ? `
+                  <div class="task-notes">
+                    ${task.notes}
+                  </div>
+                ` : ""}
+
+                ${task.date ? `
+                  <div class="task-date">
+                    ${task.date}
+                  </div>
+                ` : ""}
+
+                ${task.subtasks ? `
+                  <div class="subtasks">
+                    ${task.subtasks.map((s,si) => `
+                      <div class="subtask">
+                        <input type="checkbox"
+                          ${s.done ? "checked" : ""}
+                          onchange="toggleSubtask('${id}',${index},${si})">
+                        <span>${s.title}</span>
+                      </div>
+                    `).join("")}
+                  </div>
+                ` : ""}
+
+              </div>
+
+            </div>
+
+          </div>
+        `).join("")}
+
+      </div>
+
+      <button class="fab"
+        onclick="addTask('${id}')">
+        +
+      </button>
+
+    </div>
+  `;
 }
 
-async function writeJSON(path,data){
+function toggleTask(cat,index) {
+  state.data[cat][index].done =
+    !state.data[cat][index].done;
 
-  if(!GITHUB_TOKEN){
+  openCategory(cat);
+}
+
+function toggleSubtask(cat,index,si) {
+  const sub =
+    state.data[cat][index].subtasks[si];
+
+  sub.done = !sub.done;
+
+  openCategory(cat);
+}
+
+function addTask(cat) {
+  const title = prompt("Task title");
+
+  if (!title) return;
+
+  const notes = prompt("Notes") || "";
+  const date = prompt("Date") || "";
+
+  const subtasks = [];
+
+  while (true) {
+    const s = prompt("Add subtask (cancel to stop)");
+
+    if (!s) break;
+
+    subtasks.push({
+      title: s,
+      done: false
+    });
+  }
+
+  state.data[cat].push({
+    title,
+    notes,
+    date,
+    done: false,
+    subtasks
+  });
+
+  openCategory(cat);
+}
+
+function editTask(cat,index) {
+  const task = state.data[cat][index];
+
+  const title =
+    prompt("Edit title", task.title);
+
+  if (!title) return;
+
+  task.title = title;
+
+  task.notes =
+    prompt("Edit notes", task.notes || "") || "";
+
+  task.date =
+    prompt("Edit date", task.date || "") || "";
+
+  openCategory(cat);
+}
+
+function addCategory() {
+  const name = prompt("Category name");
+
+  if (!name) return;
+
+  const id =
+    name.toLowerCase().replace(/\s+/g,"-");
+
+  const file = `${id}.json`;
+
+  const color =
+    "#" + Math.floor(Math.random()*16777215)
+      .toString(16);
+
+  const cat = {
+    id,
+    name,
+    color,
+    file,
+    icon: "📁"
+  };
+
+  state.categories.push(cat);
+  state.data[id] = [];
+
+  renderHome();
+}
+
+async function setToken() {
+  const token = prompt(
+    "Enter GitHub Token",
+    state.token || ""
+  );
+
+  if (!token) return;
+
+  state.token = token;
+
+  localStorage.setItem(
+    "github_token",
+    token
+  );
+
+  alert("Token saved");
+}
+
+async function syncAll() {
+  for (const cat of state.categories) {
+    await syncCategory(cat.id);
+  }
+
+  await syncCategories();
+
+  alert("Synced");
+}
+
+async function syncCategories() {
+  await saveFile(
+    "sb-categories.json",
+    state.categories
+  );
+}
+
+async function syncCategory(id) {
+  const cat =
+    state.categories.find(c => c.id === id);
+
+  await saveFile(
+    cat.file,
+    state.data[id]
+  );
+}
+
+async function saveFile(file,data) {
+  if (!state.token) {
+    alert("Add GitHub token first");
     return;
   }
 
-  const api =
-  `https://api.github.com/repos/${OWNER}/${REPO}/contents/data/${path}`;
+  const url =
+    `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_PATH}/${file}`;
 
   let sha = null;
 
-  try{
+  try {
+    const existing = await fetch(url,{
+      headers:{
+        Authorization:`token ${state.token}`
+      }
+    });
 
-    const existing =
-    await githubRequest(api);
+    const json = await existing.json();
 
-    sha = existing.sha;
+    sha = json.sha;
+  } catch {}
 
-  }catch(e){}
-
-  const body = {
-    message:"Update "+path,
-    content:btoa(
-      unescape(
-        encodeURIComponent(
-          JSON.stringify(data,null,2)
-        )
+  const content =
+    btoa(unescape(
+      encodeURIComponent(
+        JSON.stringify(data,null,2)
       )
-    ),
-    branch:BRANCH
-  };
+    ));
 
-  if(sha){
-    body.sha = sha;
-  }
-
-  await githubRequest(api,{
+  await fetch(url,{
     method:"PUT",
-    body:JSON.stringify(body)
+    headers:{
+      Authorization:`token ${state.token}`,
+      "Content-Type":"application/json"
+    },
+    body:JSON.stringify({
+      message:`update ${file}`,
+      content,
+      sha
+    })
   });
 }
 
-async function loadData(){
-
-  statusText("Loading...","#FBBF24");
-
-  let catData =
-  await readJSON("categories.json");
-
-  if(!catData){
-
-    catData = DEFAULT_CATEGORIES;
-
-    if(GITHUB_TOKEN){
-      await writeJSON(
-        "categories.json",
-        catData
-      );
-    }
-  }
-
-  categories = catData;
-
-  tasks = [];
-
-  for(const cat of categories){
-
-    const file =
-    cat.id+".json";
-
-    let data =
-    await readJSON(file);
-
-    if(!data){
-
-      data = [];
-
-      if(GITHUB_TOKEN){
-        await writeJSON(file,data);
-      }
-    }
-
-    data.forEach(x=>{
-      x.category = cat.id;
-    });
-
-    tasks = tasks.concat(data);
-  }
-
-  let wl =
-  await readJSON("worklog.json");
-
-  if(!wl){
-
-    wl = [];
-
-    if(GITHUB_TOKEN){
-      await writeJSON(
-        "worklog.json",
-        wl
-      );
-    }
-  }
-
-  worklogs = wl;
-
-  render();
-
-  statusText(
-    "Synced",
-    "#34D399"
-  );
-}
-
-function saveCategoryTasks(catId){
-
-  const data =
-  tasks.filter(x=>x.category===catId);
-
-  writeJSON(
-    catId+".json",
-    data
-  );
-}
-
-function render(){
-
-  const body = $("body");
-
-  if(currentTab==="home"){
-    renderHome(body);
-  }
-
-  if(currentTab==="work"){
-    renderCategory(body,"work");
-  }
-
-  if(currentTab==="projects"){
-    renderCategory(body,"projects");
-  }
-
-  if(currentTab==="health"){
-    renderCategory(body,"health");
-  }
-
-  if(currentTab==="personal"){
-    renderCategory(body,"personal");
-  }
-
-  if(currentTab==="log"){
-    renderLogs(body);
-  }
-}
-
-function renderHome(body){
-
-  const total = tasks.length;
-
-  const done =
-  tasks.filter(x=>x.done).length;
-
-  body.innerHTML = `
-  <div class="hero">
-    <div class="heroTitle">
-      Your Second Brain
-    </div>
-
-    <div class="heroDate">
-      ${new Date().toLocaleDateString()}
-    </div>
-  </div>
-
-  <div class="stats">
-    <div class="stat">
-      <div class="num">${total}</div>
-      <div class="lbl">TOTAL</div>
-    </div>
-
-    <div class="stat">
-      <div class="num green">${done}</div>
-      <div class="lbl">DONE</div>
-    </div>
-
-    <div class="stat">
-      <div class="num yellow">
-      ${worklogs.length}
-      </div>
-      <div class="lbl">LOGS</div>
-    </div>
-
-    <div class="stat">
-      <div class="num red">
-      ${total-done}
-      </div>
-      <div class="lbl">ACTIVE</div>
-    </div>
-  </div>
-
-  <div class="sectionTitle">
-    Categories
-  </div>
-
-  <div class="catGrid">
-    ${
-      categories.map(c=>`
-
-      <div class="catCard"
-      onclick="openCategory('${c.id}')">
-
-        <div class="catIcon">
-        ${c.icon||"📁"}
-        </div>
-
-        <div class="catName">
-        ${c.name}
-        </div>
-
-        <div class="catCount">
-        ${
-          tasks.filter(
-            x=>x.category===c.id
-          ).length
-        } tasks
-        </div>
-
-      </div>
-
-      `).join("")
-    }
-  </div>
-  `;
-}
-
-function renderCategory(body,catId){
-
-  const cat =
-  categories.find(x=>x.id===catId);
-
-  const list =
-  tasks.filter(x=>x.category===catId);
-
-  body.innerHTML = `
-  <div class="sectionTitle">
-    ${cat.icon} ${cat.name}
-  </div>
-
-  ${
-    list.map(t=>`
-
-    <div class="task">
-
-      <div class="taskTop">
-
-        <div class="taskTitle">
-        ${t.title}
-        </div>
-
-        <div class="taskBtns">
-
-          <button onclick="toggleTask('${t.id}')">
-          ${t.done?"✅":"⭕"}
-          </button>
-
-          <button onclick="editTask('${t.id}')">
-          ✏️
-          </button>
-
-          <button onclick="deleteTask('${t.id}')">
-          🗑️
-          </button>
-
-        </div>
-
-      </div>
-
-      <div class="taskMeta">
-        ${t.priority||"normal"}
-      </div>
-
-    </div>
-
-    `).join("")
-  }
-
-  <div style="height:120px"></div>
-  `;
-}
-
-function renderLogs(body){
-
-  body.innerHTML = `
-  <div class="sectionTitle">
-    📋 Worklog
-  </div>
-
-  ${
-    worklogs.map(w=>`
-
-    <div class="task">
-
-      <div class="taskTitle">
-      ${w.text}
-      </div>
-
-      <div class="taskMeta">
-      ${w.date}
-      </div>
-
-    </div>
-
-    `).join("")
-  }
-  `;
-}
-
-function openCategory(id){
-
-  currentTab = id;
-
-  render();
-}
-
-function toggleTask(id){
-
-  const t =
-  tasks.find(x=>x.id===id);
-
-  if(!t) return;
-
-  t.done = !t.done;
-
-  saveCategoryTasks(
-    t.category
-  );
-
-  render();
-}
-
-function editTask(id){
-
-  const t =
-  tasks.find(x=>x.id===id);
-
-  if(!t) return;
-
-  const nt =
-  prompt(
-    "Edit task",
-    t.title
-  );
-
-  if(!nt) return;
-
-  t.title = nt;
-
-  saveCategoryTasks(
-    t.category
-  );
-
-  render();
-}
-
-function deleteTask(id){
-
-  const t =
-  tasks.find(x=>x.id===id);
-
-  if(!t) return;
-
-  if(!confirm("Delete task?")){
-    return;
-  }
-
-  tasks =
-  tasks.filter(x=>x.id!==id);
-
-  saveCategoryTasks(
-    t.category
-  );
-
-  render();
-}
-
-function addTask(){
-
-  const title =
-  prompt("Task title");
-
-  if(!title) return;
-
-  const cat =
-  prompt(
-    "Category ID (work/projects/health/personal)"
-  );
-
-  if(!cat) return;
-
-  const task = {
-    id:"t"+Date.now(),
-    title:title,
-    done:false,
-    priority:"normal",
-    category:cat
-  };
-
-  tasks.push(task);
-
-  saveCategoryTasks(cat);
-
-  render();
-}
-
-function addCategory(){
-
-  const name =
-  prompt("Category name");
-
-  if(!name) return;
-
-  const id =
-  name.toLowerCase()
-  .replace(/\s+/g,"-");
-
-  const icon =
-  prompt("Emoji icon","📁");
-
-  const cat = {
-    id:id,
-    name:name,
-    icon:icon
-  };
-
-  categories.push(cat);
-
-  writeJSON(
-    "categories.json",
-    categories
-  );
-
-  writeJSON(
-    id+".json",
-    []
-  );
-
-  render();
-}
-
-$("homeBtn").onclick = ()=>{
-  currentTab="home";
-  render();
-};
-
-$("workBtn").onclick = ()=>{
-  currentTab="work";
-  render();
-};
-
-$("projectsBtn").onclick = ()=>{
-  currentTab="projects";
-  render();
-};
-
-$("healthBtn").onclick = ()=>{
-  currentTab="health";
-  render();
-};
-
-$("personalBtn").onclick = ()=>{
-  currentTab="personal";
-  render();
-};
-
-$("logBtn").onclick = ()=>{
-  currentTab="log";
-  render();
-};
-
-$("syncBtn").onclick = ()=>{
-  loadData();
-};
-
-$("tokenBtn").onclick = ()=>{
-  saveToken();
-};
-
-$("addBtn").onclick = ()=>{
-
-  const a =
-  prompt(
-    "1 = Add Task\n2 = Add Category"
-  );
-
-  if(a==="1"){
-    addTask();
-  }
-
-  if(a==="2"){
-    addCategory();
-  }
-
-};
-
-loadData();
+window.openCategory = openCategory;
+window.renderHome = renderHome;
+window.toggleTask = toggleTask;
+window.toggleSubtask = toggleSubtask;
+window.addTask = addTask;
+window.editTask = editTask;
+window.syncAll = syncAll;
+window.syncCategory = syncCategory;
+window.setToken = setToken;
+window.addCategory = addCategory;
