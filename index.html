@@ -5,202 +5,35 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Second Brain</title>
 
-<style>
-*{
-box-sizing:border-box;
-margin:0;
-padding:0;
-}
+<link rel="stylesheet" href="style.css"/>
 
-body{
-background:#080C14;
-color:#E2E8F0;
-font-family:Arial,sans-serif;
-}
-
-#wrap{
-max-width:430px;
-margin:auto;
-min-height:100vh;
-padding-bottom:120px;
-}
-
-#hdr{
-padding:14px 16px;
-border-bottom:1px solid #1F2937;
-display:flex;
-justify-content:space-between;
-align-items:center;
-background:#080C14;
-position:sticky;
-top:0;
-z-index:10;
-}
-
-#app{
-padding:16px;
-}
-
-#nav{
-position:fixed;
-bottom:0;
-left:0;
-right:0;
-background:#111827;
-display:flex;
-justify-content:space-around;
-padding:10px 0 20px;
-border-top:1px solid #1F2937;
-}
-
-.ntab{
-background:none;
-border:none;
-color:#6B7280;
-font-size:11px;
-display:flex;
-flex-direction:column;
-align-items:center;
-gap:4px;
-cursor:pointer;
-}
-
-.ntab.on{
-color:#4F8EF7;
-}
-
-.card{
-background:#111827;
-border-radius:14px;
-padding:14px;
-margin-bottom:12px;
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:10px;
-margin-top:12px;
-}
-
-.stat{
-background:#111827;
-padding:14px;
-border-radius:14px;
-text-align:center;
-}
-
-.sv{
-font-size:24px;
-font-weight:700;
-}
-
-.sl{
-font-size:11px;
-color:#6B7280;
-margin-top:4px;
-}
-
-button{
-font-family:inherit;
-}
-
-.fab{
-position:fixed;
-right:20px;
-bottom:90px;
-width:58px;
-height:58px;
-border:none;
-border-radius:50%;
-background:linear-gradient(135deg,#4F8EF7,#A78BFA);
-color:white;
-font-size:28px;
-cursor:pointer;
-box-shadow:0 4px 18px rgba(79,142,247,.4);
-}
-
-input,textarea,select{
-width:100%;
-background:#080C14;
-border:1px solid #374151;
-border-radius:10px;
-padding:11px;
-color:white;
-margin-top:6px;
-font-size:14px;
-}
-
-.modal{
-position:fixed;
-inset:0;
-background:#00000090;
-display:flex;
-align-items:flex-end;
-z-index:50;
-}
-
-.modalbox{
-background:#111827;
-width:100%;
-max-width:430px;
-margin:auto;
-padding:20px;
-border-radius:20px 20px 0 0;
-}
-
-.savebtn{
-width:100%;
-background:linear-gradient(135deg,#4F8EF7,#A78BFA);
-border:none;
-border-radius:12px;
-padding:14px;
-color:white;
-font-weight:700;
-margin-top:16px;
-}
-
-.badge{
-padding:4px 8px;
-border-radius:6px;
-font-size:10px;
-display:inline-block;
-margin-right:4px;
-margin-top:6px;
-background:#1F2937;
-}
-
-.small{
-font-size:12px;
-color:#94A3B8;
-}
-
-</style>
 </head>
 <body>
 
 <div id="wrap">
 
 <div id="hdr">
-<div style="font-size:18px;font-weight:700;">
+
+<div class="logo">
 Second Brain
 </div>
 
-<div style="display:flex;gap:8px;align-items:center;">
+<div class="topBtns">
 
-<button onclick="showTokenModal()" style="background:#111827;border:none;color:#94A3B8;padding:8px 12px;border-radius:10px;">
+<button id="tokenBtn">
 Token
 </button>
 
-<button onclick="syncData()" style="background:#111827;border:none;color:#94A3B8;padding:8px 12px;border-radius:10px;">
+<button id="syncBtn">
 Sync
 </button>
 
-<div id="status" style="font-size:11px;color:#34D399;">
+<div id="status">
 Ready
 </div>
 
 </div>
+
 </div>
 
 <div id="app"></div>
@@ -208,510 +41,36 @@ Ready
 </div>
 
 <div id="nav">
-<button class="ntab on" onclick="setTab('home')">
+
+<button class="ntab on" data-tab="home">
 <span>🏠</span>
 <span>Home</span>
 </button>
 
-<button class="ntab" onclick="setTab('work')">
+<button class="ntab" data-tab="work">
 <span>💼</span>
 <span>Work</span>
 </button>
 
-<button class="ntab" onclick="setTab('projects')">
+<button class="ntab" data-tab="projects">
 <span>🚀</span>
 <span>Projects</span>
 </button>
 
-<button class="ntab" onclick="setTab('log')">
+<button class="ntab" data-tab="log">
 <span>📋</span>
 <span>Log</span>
 </button>
+
 </div>
 
-<button class="fab" onclick="addTask()">
+<button id="fab">
 +
 </button>
 
 <div id="modal"></div>
 
-<script>
-
-const GH = {
-owner:'abhicome',
-repo:'second-brain',
-branch:'main'
-};
-
-const FILES = {
-tasks:'data/sb-tasks.json',
-worklog:'data/sb-worklog.json',
-categories:'data/sb-categories.json'
-};
-
-let token = localStorage.getItem('sb_gh_token') || '';
-
-let tasks = [];
-let worklog = [];
-let categories = [];
-
-let tab = 'home';
-
-function setStatus(t,c){
-const s=document.getElementById('status');
-s.innerText=t;
-s.style.color=c||'#34D399';
-}
-
-function saveLocal(){
-localStorage.setItem('sb_tasks',JSON.stringify(tasks));
-localStorage.setItem('sb_worklog',JSON.stringify(worklog));
-localStorage.setItem('sb_categories',JSON.stringify(categories));
-}
-
-function loadLocal(){
-tasks=JSON.parse(localStorage.getItem('sb_tasks')||'[]');
-worklog=JSON.parse(localStorage.getItem('sb_worklog')||'[]');
-categories=JSON.parse(localStorage.getItem('sb_categories')||'[]');
-}
-
-async function ghRead(path){
-
-const url=
-'https://raw.githubusercontent.com/'
-+GH.owner+'/'
-+GH.repo+'/'
-+GH.branch+'/'
-+path;
-
-const r=await fetch(url+'?t='+Date.now());
-
-if(!r.ok) throw new Error('Read failed');
-
-return await r.json();
-}
-
-async function ghWrite(path,obj){
-
-if(!token){
-alert('Add GitHub token first');
-return;
-}
-
-const api=
-'https://api.github.com/repos/'
-+GH.owner+'/'+GH.repo+'/contents/'+path;
-
-const current=await fetch(api,{
-headers:{
-Authorization:'token '+token
-}
-});
-
-const cur=await current.json();
-
-const content=btoa(
-unescape(
-encodeURIComponent(
-JSON.stringify(obj,null,2)
-)
-)
-);
-
-const body={
-message:'Second Brain update',
-content:content,
-sha:cur.sha,
-branch:GH.branch
-};
-
-const r=await fetch(api,{
-method:'PUT',
-headers:{
-Authorization:'token '+token,
-'Content-Type':'application/json'
-},
-body:JSON.stringify(body)
-});
-
-if(!r.ok){
-throw new Error('Save failed');
-}
-
-return await r.json();
-}
-
-async function syncData(){
-
-try{
-
-setStatus('Syncing...','#FBBF24');
-
-tasks=await ghRead(FILES.tasks);
-worklog=await ghRead(FILES.worklog);
-categories=await ghRead(FILES.categories);
-
-saveLocal();
-
-setStatus('Synced','#34D399');
-
-render();
-
-}catch(e){
-
-console.log(e);
-
-setStatus('Offline','#F87171');
-
-alert('Sync failed');
-
-}
-}
-
-async function saveTasks(){
-
-saveLocal();
-
-try{
-await ghWrite(FILES.tasks,tasks);
-setStatus('Saved','#34D399');
-}catch(e){
-setStatus('Save failed','#F87171');
-}
-}
-
-async function saveWorklog(){
-
-saveLocal();
-
-try{
-await ghWrite(FILES.worklog,worklog);
-setStatus('Saved','#34D399');
-}catch(e){
-setStatus('Save failed','#F87171');
-}
-}
-
-function setTab(t){
-
-tab=t;
-
-document.querySelectorAll('.ntab').forEach(x=>{
-x.classList.remove('on');
-});
-
-if(t==='home') document.querySelectorAll('.ntab')[0].classList.add('on');
-if(t==='work') document.querySelectorAll('.ntab')[1].classList.add('on');
-if(t==='projects') document.querySelectorAll('.ntab')[2].classList.add('on');
-if(t==='log') document.querySelectorAll('.ntab')[3].classList.add('on');
-
-render();
-}
-
-function render(){
-
-const app=document.getElementById('app');
-
-if(tab==='home'){
-
-const done=tasks.filter(x=>x.status==='done').length;
-
-app.innerHTML='
-<h1 style="font-size:28px;font-weight:700;margin-bottom:6px;">
-Your Second Brain
-</h1>
-
-<div class="small" style="margin-bottom:18px;">
-'+new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})+'
-</div>
-
-<div class="grid">
-
-<div class="stat">
-<div class="sv" style="color:#4F8EF7;">
-'+tasks.length+'
-</div>
-<div class="sl">TOTAL</div>
-</div>
-
-<div class="stat">
-<div class="sv" style="color:#34D399;">
-'+done+'
-</div>
-<div class="sl">DONE</div>
-</div>
-
-<div class="stat">
-<div class="sv" style="color:#FBBF24;">
-'+worklog.length+'
-</div>
-<div class="sl">LOGS</div>
-</div>
-
-<div class="stat">
-<div class="sv" style="color:#F87171;">
-'+tasks.filter(x=>x.status!=="done").length+'
-</div>
-<div class="sl">OPEN</div>
-</div>
-
-</div>
-
-<div style="margin-top:24px;font-size:12px;color:#6B7280;font-weight:700;">
-CATEGORIES
-</div>
-
-<div class="grid">
-
-<div class="card" onclick="setTab('work')">
-<div style="font-size:18px;font-weight:700;">
-Work
-</div>
-<div class="small">
-'+tasks.filter(x=>x.category==="work").length+' tasks
-</div>
-</div>
-
-<div class="card" onclick="setTab('projects')">
-<div style="font-size:18px;font-weight:700;">
-Projects
-</div>
-<div class="small">
-'+tasks.filter(x=>x.category==="projects").length+' tasks
-</div>
-</div>
-
-<div class="card" onclick="setTab('log')">
-<div style="font-size:18px;font-weight:700;">
-Worklog
-</div>
-<div class="small">
-'+worklog.length+' entries
-</div>
-</div>
-
-</div>
-';
-
-return;
-}
-
-if(tab==='work'||tab==='projects'){
-
-const list=tasks.filter(x=>x.category===tab);
-
-app.innerHTML=
-'<h2 style="font-size:24px;margin-bottom:18px;">'
-+(tab==='work'?'Work':'Projects')
-+'</h2>'
-+
-list.map(t=>'
-<div class="card">
-
-<div style="display:flex;justify-content:space-between;gap:10px;">
-
-<div style="flex:1;">
-
-<div style="font-size:15px;font-weight:700;">
-'+t.title+'
-</div>
-
-<div class="small" style="margin-top:6px;">
-'+(t.notes||'')+'
-</div>
-
-<div>
-
-<span class="badge">
-'+(t.priority||'normal')+'
-</span>
-
-<span class="badge">
-'+(t.status||'todo')+'
-</span>
-
-</div>
-
-</div>
-
-<div style="display:flex;flex-direction:column;gap:8px;">
-
-<button onclick="toggleTask(\''+t.id+'\')" style="background:#1F2937;border:none;color:#fff;padding:8px;border-radius:8px;">
-✓
-</button>
-
-<button onclick="deleteTask(\''+t.id+'\')" style="background:#F87171;border:none;color:#fff;padding:8px;border-radius:8px;">
-✕
-</button>
-
-</div>
-
-</div>
-
-</div>
-').join('');
-
-return;
-}
-
-if(tab==='log'){
-
-app.innerHTML=
-'<h2 style="font-size:24px;margin-bottom:18px;">Worklog</h2>'
-+
-worklog.map(l=>'
-<div class="card">
-
-<div style="font-size:14px;">
-'+l.text+'
-</div>
-
-<div class="small" style="margin-top:8px;">
-'+l.date+'
-</div>
-
-</div>
-').join('');
-
-}
-
-}
-
-function addTask(){
-
-document.getElementById('modal').innerHTML='
-<div class="modal">
-
-<div class="modalbox">
-
-<h3 style="margin-bottom:16px;">
-New Task
-</h3>
-
-<input id="ttitle" placeholder="Task title"/>
-
-<textarea id="tnotes" placeholder="Notes"></textarea>
-
-<select id="tcat">
-<option value="work">Work</option>
-<option value="projects">Projects</option>
-</select>
-
-<select id="tpri">
-<option value="urgent">Urgent</option>
-<option value="high">High</option>
-<option value="normal">Normal</option>
-<option value="low">Low</option>
-</select>
-
-<button class="savebtn" onclick="saveTask()">
-Save Task
-</button>
-
-</div>
-
-</div>
-';
-
-}
-
-async function saveTask(){
-
-const obj={
-id:Date.now().toString(),
-title:document.getElementById('ttitle').value,
-notes:document.getElementById('tnotes').value,
-category:document.getElementById('tcat').value,
-priority:document.getElementById('tpri').value,
-status:'todo'
-};
-
-tasks.unshift(obj);
-
-await saveTasks();
-
-closeModal();
-
-render();
-}
-
-async function deleteTask(id){
-
-if(!confirm('Delete task?')) return;
-
-tasks=tasks.filter(x=>x.id!==id);
-
-await saveTasks();
-
-render();
-}
-
-async function toggleTask(id){
-
-tasks=tasks.map(t=>{
-
-if(t.id===id){
-
-t.status=t.status==='done'?'todo':'done';
-
-}
-
-return t;
-
-});
-
-await saveTasks();
-
-render();
-}
-
-function closeModal(){
-document.getElementById('modal').innerHTML='';
-}
-
-function showTokenModal(){
-
-document.getElementById('modal').innerHTML='
-<div class="modal">
-
-<div class="modalbox">
-
-<h3 style="margin-bottom:16px;">
-GitHub Token
-</h3>
-
-<textarea id="ghtoken" placeholder="ghp_xxxxx">'+token+'</textarea>
-
-<button class="savebtn" onclick="saveToken()">
-Save Token
-</button>
-
-</div>
-
-</div>
-';
-
-}
-
-function saveToken(){
-
-token=document.getElementById('ghtoken').value.trim();
-
-localStorage.setItem('sb_gh_token',token);
-
-closeModal();
-
-setStatus('Token saved','#34D399');
-
-}
-
-loadLocal();
-
-render();
-
-syncData();
-
-</script>
+<script src="app.js"></script>
 
 </body>
 </html>
