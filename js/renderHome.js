@@ -1,10 +1,20 @@
 function renderHome(){
 
-  const tasks =
-    state.tasks || [];
+  const tasks = state.tasks || [];
+  const projects = state.projects || [];
 
-  const projects =
-    state.projects || [];
+  const openTasks = tasks.filter(t => t.status !== 'done');
+  const activeProjects = projects.filter(p => p.status !== 'done');
+
+  const urgentTasks = [
+    ...tasks,
+    ...projects
+  ]
+  .filter(item =>
+    item.priority === 'high' ||
+    item.priority === 'urgent'
+  )
+  .slice(0,6);
 
   root.innerHTML = `
 
@@ -17,9 +27,7 @@ function renderHome(){
 
       ${renderHeader()}
 
-      <div style="
-        margin-bottom:30px;
-      ">
+      <div style="margin-bottom:30px;">
 
         <div style="
           font-size:20px;
@@ -43,24 +51,66 @@ function renderHome(){
           color:#64748B;
           font-size:18px;
         ">
-          ${tasks.filter(t => !t.done).length}
+          ${openTasks.length}
           open tasks ·
-          ${projects.filter(p => !p.done).length}
+          ${activeProjects.length}
           active projects
         </div>
 
       </div>
 
-      ${renderStats(
-        tasks,
-        projects
-      )}
+      ${renderStats(tasks, projects)}
 
-      ${renderPrioritySection(tasks)}
+      <div style="margin-top:40px;">
 
-      <div style="
-        margin-top:40px;
-      ">
+        <div style="
+          font-size:18px;
+          color:#64748B;
+          margin-bottom:20px;
+          letter-spacing:2px;
+        ">
+          PRIORITY ITEMS
+        </div>
+
+        <div style="display:grid;gap:16px;">
+          ${urgentTasks.map(task => `
+            <div style="
+              background:#081225;
+              border-radius:22px;
+              padding:22px;
+              border:1px solid #1E293B;
+            ">
+              <div style="font-size:24px;font-weight:700;margin-bottom:10px;">
+                ${task.title}
+              </div>
+
+              <div style="color:#94A3B8;line-height:1.6;">
+                ${task.summary || ''}
+              </div>
+
+              <div style="margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                <span style="
+                  background:${task.priority === 'urgent' ? '#EF444422' : '#F59E0B22'};
+                  color:${task.priority === 'urgent' ? '#EF4444' : '#F59E0B'};
+                  padding:6px 12px;
+                  border-radius:999px;
+                  font-size:12px;
+                  font-weight:700;
+                ">
+                  ${task.priority}
+                </span>
+
+                <span style="color:#64748B;font-size:13px;">
+                  ${task.dueDate || ''}
+                </span>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+      </div>
+
+      <div style="margin-top:40px;">
 
         <div style="
           font-size:18px;
@@ -73,50 +123,16 @@ function renderHome(){
 
         <div style="
           display:grid;
-          grid-template-columns:
-            repeat(auto-fit,minmax(240px,1fr));
+          grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
           gap:20px;
         ">
 
-          ${homeCard(
-            "💼",
-            "Work",
-            "#3B82F6",
-            "renderTasks()",
-            tasks.length
-          )}
-
-          ${homeCard(
-            "🚀",
-            "Projects",
-            "#8B5CF6",
-            "renderProjects()",
-            projects.length
-          )}
-
-          ${homeCard(
-            "🧠",
-            "Knowledge",
-            "#F59E0B"
-          )}
-
-          ${homeCard(
-            "❤️",
-            "Health",
-            "#EF4444"
-          )}
-
-          ${homeCard(
-            "👁️",
-            "Watchlist",
-            "#06B6D4"
-          )}
-
-          ${homeCard(
-            "🌿",
-            "Personal",
-            "#22C55E"
-          )}
+          ${homeCard('💼','Work','#3B82F6','renderTasks()',tasks.length)}
+          ${homeCard('🚀','Projects','#8B5CF6','renderProjects()',projects.length)}
+          ${homeCard('🧠','Knowledge','#F59E0B','',state.knowledge?.length || 0)}
+          ${homeCard('❤️','Health','#EF4444','',state.health?.length || 0)}
+          ${homeCard('👁️','Watchlist','#06B6D4','',state.watchlist?.length || 0)}
+          ${homeCard('🌿','Personal','#22C55E','',state.personal?.length || 0)}
 
         </div>
 
@@ -130,13 +146,7 @@ function renderHome(){
 
 }
 
-function homeCard(
-  icon,
-  title,
-  color,
-  click="",
-  count=""
-){
+function homeCard(icon,title,color,click="",count=""){
 
   return `
 
@@ -171,17 +181,11 @@ function homeCard(
         ${count}
       </div>
 
-      <div style="
-        font-size:54px;
-        margin-bottom:22px;
-      ">
+      <div style="font-size:54px;margin-bottom:22px;">
         ${icon}
       </div>
 
-      <div style="
-        font-size:34px;
-        font-weight:700;
-      ">
+      <div style="font-size:34px;font-weight:700;">
         ${title}
       </div>
 
