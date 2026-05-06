@@ -14,15 +14,17 @@ function renderHome(){
       ">
 
         <div style="
-          font-size:52px;
+          font-size:72px;
           font-weight:bold;
         ">
           Second Brain
         </div>
 
         <button
-          onclick="setToken()"
-          style="${buttonStyle()}"
+          id="tokenBtn"
+          style="
+            ${buttonStyle()}
+          "
         >
           Key
         </button>
@@ -31,23 +33,23 @@ function renderHome(){
 
       <div style="
         display:grid;
-        gap:20px;
+        gap:28px;
       ">
 
         <div
-          onclick="renderTasks()"
+          id="tasksCard"
           style="
             background:#081225;
-            padding:28px;
-            border-radius:28px;
+            padding:40px;
+            border-radius:36px;
             cursor:pointer;
           "
         >
 
           <div style="
-            font-size:42px;
-            color:#3B82F6;
+            font-size:64px;
             font-weight:bold;
+            color:#3B82F6;
           ">
             Tasks
           </div>
@@ -55,19 +57,19 @@ function renderHome(){
         </div>
 
         <div
-          onclick="renderProjects()"
+          id="projectsCard"
           style="
             background:#081225;
-            padding:28px;
-            border-radius:28px;
+            padding:40px;
+            border-radius:36px;
             cursor:pointer;
           "
         >
 
           <div style="
-            font-size:42px;
-            color:#8B5CF6;
+            font-size:64px;
             font-weight:bold;
+            color:#8B5CF6;
           ">
             Projects
           </div>
@@ -79,5 +81,23 @@ function renderHome(){
     </div>
 
   `;
+
+  document
+    .getElementById(
+      "tokenBtn"
+    )
+    .onclick = setToken;
+
+  document
+    .getElementById(
+      "tasksCard"
+    )
+    .onclick = renderTasks;
+
+  document
+    .getElementById(
+      "projectsCard"
+    )
+    .onclick = renderProjects;
 
 }
