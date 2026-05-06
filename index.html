@@ -1,162 +1,534 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Second Brain</title>
+
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#080C14;color:#E2E8F0;font-family:sans-serif}
-#wrap{max-width:430px;margin:auto}
-#hdr{padding:14px 16px;border-bottom:1px solid #1F2937;display:flex;justify-content:space-between;align-items:center;background:#080C14;position:sticky;top:0;z-index:10}
-#body{padding:16px;padding-bottom:120px}
-#nav{position:fixed;bottom:0;left:0;right:0;background:#111827;display:flex;justify-content:space-around;padding:10px 0 20px;border-top:1px solid #1F2937;z-index:10}
-.ntab{background:none;border:none;color:#4B5563;cursor:pointer;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 8px}
-.ntab.on{color:#4F8EF7}
-.ntab span:first-child{font-size:18px}
-.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 0}
-.sc{background:#111827;padding:12px;border-radius:12px;text-align:center}
-.sv{font-size:20px;font-weight:700}
-.sl{font-size:9px;color:#6B7280;margin-top:4px;text-transform:uppercase}
-.cg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
-.ct{background:#111827;border:none;border-radius:14px;padding:16px;cursor:pointer;color:white;text-align:center;width:100%;position:relative}
-.tc{background:#111827;border-radius:14px;padding:14px;margin-bottom:10px}
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  background:#080C14;
+  color:#E2E8F0;
+  font-family:Arial,sans-serif;
+}
+
+#wrap{
+  max-width:430px;
+  margin:auto;
+  min-height:100vh;
+}
+
+#hdr{
+  padding:14px 16px;
+  border-bottom:1px solid #1F2937;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:#080C14;
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+#appBody{
+  padding:16px;
+  padding-bottom:120px;
+}
+
+#nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#111827;
+  display:flex;
+  justify-content:space-around;
+  padding:10px 0 20px;
+  border-top:1px solid #1F2937;
+}
+
+.ntab{
+  background:none;
+  border:none;
+  color:#6B7280;
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  font-size:11px;
+}
+
+.ntab.on{
+  color:#4F8EF7;
+}
+
+.ntab span:first-child{
+  font-size:20px;
+}
+
+.sg{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin:18px 0;
+}
+
+.sc{
+  background:#111827;
+  padding:12px;
+  border-radius:12px;
+  text-align:center;
+}
+
+.sv{
+  font-size:20px;
+  font-weight:700;
+}
+
+.sl{
+  font-size:10px;
+  color:#6B7280;
+  margin-top:4px;
+}
+
+.cg{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:12px;
+}
+
+.ct{
+  background:#111827;
+  border:none;
+  border-radius:14px;
+  padding:16px;
+  color:white;
+  cursor:pointer;
+  position:relative;
+}
+
+.tc{
+  background:#111827;
+  border-radius:14px;
+  padding:14px;
+  margin-bottom:12px;
+}
+
+.badge{
+  background:#1F2937;
+  padding:4px 8px;
+  border-radius:6px;
+  font-size:10px;
+}
+
+button{
+  font-family:inherit;
+}
 </style>
 </head>
+
 <body>
+
 <div id="wrap">
+
   <div id="hdr">
-    <div style="font-size:17px;font-weight:700">Second Brain</div>
-    <div style="font-size:10px;color:#34D399" id="stxt">Ready</div>
+    <div style="font-size:18px;font-weight:700;">
+      Second Brain
+    </div>
+
+    <div id="stxt" style="font-size:11px;color:#34D399;">
+      Ready
+    </div>
   </div>
-  <div id="body"></div>
+
+  <div id="appBody"></div>
+
 </div>
+
 <div id="nav">
-  <button class="ntab on" onclick="setTab('home')"><span>&#127968;</span><span>Home</span></button>
-  <button class="ntab" onclick="setTab('work')"><span>&#128188;</span><span>Work</span></button>
-  <button class="ntab" onclick="setTab('projects')"><span>&#128640;</span><span>Projects</span></button>
-  <button class="ntab" onclick="setTab('log')"><span>&#128203;</span><span>Log</span></button>
-  <button class="ntab" onclick="setTab('report')"><span>&#128202;</span><span>Report</span></button>
+
+  <button class="ntab on" onclick="setTab('home')">
+    <span>🏠</span>
+    <span>Home</span>
+  </button>
+
+  <button class="ntab" onclick="setTab('work')">
+    <span>💼</span>
+    <span>Work</span>
+  </button>
+
+  <button class="ntab" onclick="setTab('projects')">
+    <span>🚀</span>
+    <span>Projects</span>
+  </button>
+
+  <button class="ntab" onclick="setTab('log')">
+    <span>📋</span>
+    <span>Log</span>
+  </button>
+
+  <button class="ntab" onclick="setTab('report')">
+    <span>📊</span>
+    <span>Report</span>
+  </button>
+
 </div>
+
 <script>
+
 var tasks = [
-  {id:'1',title:'DHCP Scope Failover UAT',category:'work',priority:'urgent',status:'inprogress',dueDate:'2026-05-09',notes:'Discuss with Vikas Maurya'},
-  {id:'2',title:'PacketFence Patching',category:'work',priority:'high',status:'inprogress',dueDate:'2026-05-25',notes:'PFE01 pending'},
-  {id:'3',title:'Discuss feasibility with Vikas',category:'work',priority:'high',status:'todo',dueDate:'2026-05-06',notes:'Sub-task of DHCP UAT'},
-  {id:'4',title:'SailPoint Pre Migration',category:'projects',priority:'urgent',status:'inprogress',dueDate:'2026-05-08',notes:'DC updates pending'},
-  {id:'5',title:'SailPoint Post Migration',category:'projects',priority:'urgent',status:'inprogress',dueDate:'2026-05-11',notes:'Power on DCs, verify replication'},
-  {id:'6',title:'AD Transformation Roadmap',category:'projects',priority:'high',status:'inprogress',dueDate:'2026-05-08',notes:'Awaiting Microsoft response'},
-  {id:'7',title:'DHCP 50/50 Failover Dashboard',category:'projects',priority:'normal',status:'inprogress',dueDate:'2026-05-11',notes:'PEG team working on it'},
-  {id:'8',title:'DNS Block for corp.ad',category:'projects',priority:'high',status:'inprogress',dueDate:'2026-05-22',notes:'Zscaler vendor discussion done'},
-  {id:'9',title:'Arista AGNI Implementation',category:'projects',priority:'high',status:'inprogress',dueDate:'2026-09-30',notes:'Infosec approval pending'},
-  {id:'10',title:'DHCP Scope Creation Automation',category:'projects',priority:'normal',status:'inprogress',dueDate:'2026-06-30',notes:'BRD in progress'},
-  {id:'11',title:'DNS Catalogue Modification',category:'projects',priority:'normal',status:'inprogress',dueDate:'2026-06-30',notes:'Most domain owners updated'},
-  {id:'12',title:'SailPoint Migration Scripts',category:'projects',priority:'normal',status:'done',dueDate:'2026-05-03',notes:'All scripts prepared'}
+
+{
+id:'1',
+title:'DHCP Scope Failover UAT',
+category:'work',
+priority:'urgent',
+status:'inprogress',
+dueDate:'2026-05-09',
+notes:'Discuss with Vikas Maurya'
+},
+
+{
+id:'2',
+title:'PacketFence Patching',
+category:'work',
+priority:'high',
+status:'inprogress',
+dueDate:'2026-05-25',
+notes:'PFE01 pending'
+},
+
+{
+id:'3',
+title:'Discuss feasibility with Vikas',
+category:'work',
+priority:'high',
+status:'todo',
+dueDate:'2026-05-06',
+notes:'Sub-task of DHCP UAT'
+},
+
+{
+id:'4',
+title:'SailPoint Pre Migration',
+category:'projects',
+priority:'urgent',
+status:'inprogress',
+dueDate:'2026-05-08',
+notes:'DC updates pending'
+},
+
+{
+id:'5',
+title:'SailPoint Post Migration',
+category:'projects',
+priority:'urgent',
+status:'inprogress',
+dueDate:'2026-05-11',
+notes:'Power on DCs and verify replication'
+},
+
+{
+id:'6',
+title:'AD Transformation Roadmap',
+category:'projects',
+priority:'high',
+status:'inprogress',
+dueDate:'2026-05-08',
+notes:'Awaiting Microsoft response'
+}
+
 ];
 
-var tab = ‘home’;
+var tab = 'home';
 
-function setTab(t) {
-tab = t;
-document.querySelectorAll(’.ntab’).forEach(function(el){ el.classList.remove(‘on’); });
-var idx = [‘home’,‘work’,‘projects’,‘log’,‘report’].indexOf(t);
-if (idx >= 0) document.querySelectorAll(’.ntab’)[idx].classList.add(‘on’);
+function setTab(t){
+
+  tab = t;
+
+  var tabs = document.querySelectorAll('.ntab');
+
+  tabs.forEach(function(el){
+    el.classList.remove('on');
+  });
+
+  var arr = ['home','work','projects','log','report'];
+
+  var idx = arr.indexOf(t);
+
+  if(idx >= 0){
+    tabs[idx].classList.add('on');
+  }
+
+  render();
+}
+
+function fdate(iso){
+
+  if(!iso) return '';
+
+  var today = new Date();
+  today.setHours(0,0,0,0);
+
+  var dt = new Date(iso);
+  dt.setHours(0,0,0,0);
+
+  var diff = Math.round((dt - today)/86400000);
+
+  if(diff === 0) return 'Today';
+
+  if(diff === 1) return 'Tomorrow';
+
+  if(diff < 0) return Math.abs(diff) + 'd ago';
+
+  return new Date(iso).toLocaleDateString(
+    'en-US',
+    {
+      month:'short',
+      day:'numeric'
+    }
+  );
+}
+
+function isOverdue(t){
+
+  return (
+    t.dueDate &&
+    t.status !== 'done' &&
+    new Date(t.dueDate) < new Date(new Date().toDateString())
+  );
+}
+
+function markDone(id){
+
+  tasks = tasks.map(function(t){
+
+    if(t.id !== id){
+      return t;
+    }
+
+    return Object.assign({},t,{
+      status:t.status === 'done' ? 'todo' : 'done'
+    });
+
+  });
+
+  render();
+}
+
+function deleteTask(id){
+
+  if(!confirm('Delete task?')){
+    return;
+  }
+
+  tasks = tasks.filter(function(t){
+    return t.id !== id;
+  });
+
+  render();
+}
+
+function render(){
+
+  var b = document.getElementById('appBody');
+
+  var done = tasks.filter(function(t){
+    return t.status === 'done';
+  }).length;
+
+  var active = tasks.filter(function(t){
+    return t.status === 'inprogress';
+  }).length;
+
+  var overdue = tasks.filter(isOverdue).length;
+
+  if(tab === 'work' || tab === 'projects'){
+
+    var list = tasks.filter(function(t){
+      return t.category === tab;
+    });
+
+    var html = '';
+
+    html += '<h2 style="font-size:22px;margin-bottom:18px;">';
+    html += tab === 'work' ? 'Work Tasks' : 'Project Tasks';
+    html += '</h2>';
+
+    list.forEach(function(t){
+
+      var ov = isOverdue(t);
+
+      html += '<div class="tc">';
+
+      html += '<div style="font-size:15px;font-weight:700;">';
+      html += t.title;
+      html += '</div>';
+
+      html += '<div style="font-size:12px;color:#94A3B8;margin-top:8px;">';
+      html += t.notes;
+      html += '</div>';
+
+      html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">';
+
+      html += '<span class="badge">';
+      html += t.priority;
+      html += '</span>';
+
+      html += '<span class="badge">';
+      html += t.status;
+      html += '</span>';
+
+      html += '<span class="badge" style="color:'+(ov ? '#F87171' : '#94A3B8')+';">';
+      html += fdate(t.dueDate);
+      html += '</span>';
+
+      html += '</div>';
+
+      html += '<div style="display:flex;gap:8px;margin-top:12px;">';
+
+      html += '<button onclick="markDone(\''+t.id+'\')" style="flex:1;padding:10px;border:none;border-radius:10px;background:#34D39920;color:#34D399;cursor:pointer;">';
+
+      html += t.status === 'done' ? 'Undo' : 'Done';
+
+      html += '</button>';
+
+      html += '<button onclick="deleteTask(\''+t.id+'\')" style="padding:10px 14px;border:none;border-radius:10px;background:#F8717120;color:#F87171;cursor:pointer;">';
+
+      html += 'Delete';
+
+      html += '</button>';
+
+      html += '</div>';
+
+      html += '</div>';
+
+    });
+
+    b.innerHTML = html;
+
+    return;
+  }
+
+  if(tab !== 'home'){
+
+    b.innerHTML =
+      '<h2 style="font-size:22px;margin-bottom:16px;">'+tab+'</h2>' +
+      '<p style="color:#6B7280;">Coming soon</p>';
+
+    return;
+  }
+
+  var categories = [
+
+    {id:'work',label:'Work',color:'#4F8EF7'},
+    {id:'projects',label:'Projects',color:'#A78BFA'},
+    {id:'personal',label:'Personal',color:'#34D399'},
+    {id:'knowledge',label:'Knowledge',color:'#FBBF24'},
+    {id:'bills',label:'Bills',color:'#F87171'},
+    {id:'health',label:'Health',color:'#FB923C'}
+
+  ];
+
+  var catHtml = '';
+
+  categories.forEach(function(c){
+
+    var cnt = tasks.filter(function(t){
+
+      return (
+        t.category === c.id &&
+        t.status !== 'done'
+      );
+
+    }).length;
+
+    catHtml += '<button class="ct" onclick="setTab(\''+c.id+'\')" style="border:1px solid '+c.color+'44;">';
+
+    catHtml += '<div style="font-size:14px;font-weight:700;">';
+    catHtml += c.label;
+    catHtml += '</div>';
+
+    catHtml += '<div style="font-size:11px;color:#6B7280;margin-top:6px;">';
+    catHtml += cnt + ' open';
+    catHtml += '</div>';
+
+    if(cnt > 0){
+
+      catHtml += '<div style="position:absolute;top:8px;right:8px;background:'+c.color+';color:white;border-radius:999px;font-size:10px;padding:2px 6px;">';
+
+      catHtml += cnt;
+
+      catHtml += '</div>';
+    }
+
+    catHtml += '</button>';
+
+  });
+
+  b.innerHTML =
+
+    '<h1 style="font-size:28px;font-weight:700;margin-bottom:6px;">Your Second Brain</h1>' +
+
+    '<p style="font-size:12px;color:#94A3B8;">' +
+
+    new Date().toLocaleDateString(
+      'en-US',
+      {
+        weekday:'long',
+        month:'long',
+        day:'numeric'
+      }
+    )
+
+    +
+
+    '</p>' +
+
+    '<div class="sg">' +
+
+      '<div class="sc">' +
+        '<div class="sv" style="color:#4F8EF7;">'+tasks.length+'</div>' +
+        '<div class="sl">TOTAL</div>' +
+      '</div>' +
+
+      '<div class="sc">' +
+        '<div class="sv" style="color:#34D399;">'+done+'</div>' +
+        '<div class="sl">DONE</div>' +
+      '</div>' +
+
+      '<div class="sc">' +
+        '<div class="sv" style="color:#FBBF24;">'+active+'</div>' +
+        '<div class="sl">ACTIVE</div>' +
+      '</div>' +
+
+      '<div class="sc">' +
+        '<div class="sv" style="color:#F87171;">'+overdue+'</div>' +
+        '<div class="sl">OVERDUE</div>' +
+      '</div>' +
+
+    '</div>' +
+
+    '<div style="font-size:11px;color:#6B7280;margin-bottom:12px;text-transform:uppercase;">Categories</div>' +
+
+    '<div class="cg">' +
+      catHtml +
+    '</div>';
+}
+
 render();
-}
 
-function fdate(iso) {
-if (!iso) return ‘’;
-var today = new Date(); today.setHours(0,0,0,0);
-var dt = new Date(iso); dt.setHours(0,0,0,0);
-var d = Math.round((dt-today)/86400000);
-if (d===0) return ‘Today’;
-if (d===1) return ‘Tomorrow’;
-if (d<0) return Math.abs(d)+‘d ago’;
-return new Date(iso).toLocaleDateString(‘en-US’,{month:‘short’,day:‘numeric’});
-}
+document.getElementById('stxt').textContent =
+  tasks.length + ' tasks loaded';
 
-function isOverdue(t) {
-return t.dueDate && t.status!==‘done’ && new Date(t.dueDate) < new Date(new Date().toDateString());
-}
-
-function render() {
-var b = document.getElementById(‘body’);
-var done = tasks.filter(function(t){return t.status===‘done’;}).length;
-var inp  = tasks.filter(function(t){return t.status===‘inprogress’;}).length;
-var ov   = tasks.filter(isOverdue).length;
-
-if (tab === ‘work’ || tab === ‘projects’) {
-var list = tasks.filter(function(t){return t.category===tab;});
-var html = ‘<h2 style="margin-bottom:16px;font-size:20px">’ + (tab===‘work’?‘Work’:‘Projects’) + ‘</h2>’;
-list.forEach(function(t){
-var oc = isOverdue(t);
-html += ‘<div class="tc" style="' + (oc?'border:1px solid #F8717150':'') + '">’
-+ ‘<div style="font-size:14px;font-weight:600">’ + t.title + ‘</div>’
-+ ‘<div style="font-size:12px;color:#94A3B8;margin-top:6px">’ + t.notes + ‘</div>’
-+ ‘<div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">’
-+ ‘<span style="background:#1F2937;padding:3px 8px;border-radius:6px;font-size:10px;color:' + (t.priority==='urgent'?'#F87171':t.priority==='high'?'#FBBF24':'#94A3B8') + '">’ + t.priority + ‘</span>’
-+ ‘<span style="background:#1F2937;padding:3px 8px;border-radius:6px;font-size:10px;color:' + (t.status==='done'?'#34D399':t.status==='inprogress'?'#FBBF24':'#94A3B8') + '">’ + t.status + ‘</span>’
-+ (t.dueDate ? ‘<span style="background:#1F2937;padding:3px 8px;border-radius:6px;font-size:10px;color:' + (oc?'#F87171':'#6B7280') + '">’ + (oc?’! ‘:’’) + fdate(t.dueDate) + ‘</span>’ : ‘’)
-+ ‘</div>’
-+ ‘<div style="display:flex;gap:8px;margin-top:10px">’
-+ ‘<button onclick="markDone(\'' + t.id + '\')" style="flex:1;background:#34D39920;border:1px solid #34D399;border-radius:8px;color:#34D399;padding:8px;cursor:pointer;font-size:12px">’ + (t.status===‘done’?‘Undo’:‘Done’) + ‘</button>’
-+ ‘<button onclick="deleteTask(\'' + t.id + '\')" style="background:#F8717120;border:1px solid #F87171;border-radius:8px;color:#F87171;padding:8px 12px;cursor:pointer;font-size:12px">Del</button>’
-+ ‘</div></div>’;
-});
-if (!list.length) html += ‘<p style="color:#6B7280;text-align:center;padding:40px 0">No tasks here</p>’;
-b.innerHTML = html;
-return;
-}
-
-if (tab !== ‘home’) {
-b.innerHTML = ‘<h2 style="margin-bottom:16px;font-size:20px;text-transform:capitalize">’ + tab + ‘</h2><p style="color:#6B7280">Coming soon</p>’;
-return;
-}
-
-var catHtml = [
-{id:‘work’,label:‘Work’,color:’#4F8EF7’},
-{id:‘projects’,label:‘Projects’,color:’#A78BFA’},
-{id:‘personal’,label:‘Personal’,color:’#34D399’},
-{id:‘knowledge’,label:‘Knowledge’,color:’#FBBF24’},
-{id:‘bills’,label:‘Bills’,color:’#F87171’},
-{id:‘health’,label:‘Health’,color:’#FB923C’}
-].map(function(c){
-var cnt = tasks.filter(function(t){return t.category===c.id&&t.status!==‘done’;}).length;
-return ‘<button class="ct" onclick="setTab(\'' + c.id + '\')" style="border:1px solid ' + c.color + '44">’
-+ ‘<div style="font-size:13px;font-weight:600">’ + c.label + ‘</div>’
-+ ‘<div style="font-size:11px;color:#6B7280;margin-top:4px">’ + cnt + ’ open</div>’
-+ (cnt>0?’<div style="position:absolute;top:6px;right:6px;background:'+c.color+';color:#fff;border-radius:99px;font-size:9px;font-weight:700;min-width:16px;height:16px;display:flex;align-items:center;justify-content:center;padding:0 4px">’+cnt+’</div>’:’’)
-+ ‘</button>’;
-}).join(’’);
-
-b.innerHTML = ‘<h1 style="font-size:24px;font-weight:700;margin-bottom:4px">Your Second Brain</h1>’
-+ ‘<p style="color:#94A3B8;font-size:12px">’ + new Date().toLocaleDateString(‘en-US’,{weekday:‘long’,month:‘long’,day:‘numeric’}) + ‘</p>’
-+ ‘<div class="sg">’
-+ ‘<div class="sc"><div class="sv" style="color:#4F8EF7">’ + tasks.length + ‘</div><div class="sl">Total</div></div>’
-+ ‘<div class="sc"><div class="sv" style="color:#34D399">’ + done + ‘</div><div class="sl">Done</div></div>’
-+ ‘<div class="sc"><div class="sv" style="color:#FBBF24">’ + inp + ‘</div><div class="sl">Active</div></div>’
-+ ‘<div class="sc"><div class="sv" style="color:#F87171">’ + ov + ‘</div><div class="sl">Overdue</div></div>’
-+ ‘</div>’
-+ ‘<div style="font-size:10px;color:#6B7280;text-transform:uppercase;font-weight:600;margin-bottom:10px">Categories</div>’
-+ ‘<div class="cg">’ + catHtml + ‘</div>’;
-}
-
-function markDone(id) {
-tasks = tasks.map(function(t){
-if (t.id!==id) return t;
-return Object.assign({},t,{status:t.status===‘done’?‘todo’:‘done’});
-});
-render();
-}
-
-function deleteTask(id) {
-if (!confirm(‘Delete?’)) return;
-tasks = tasks.filter(function(t){return t.id!==id;});
-render();
-}
-
-render();
-document.getElementById(‘stxt’).textContent = tasks.length + ’ tasks’;
 </script>
 
 </body>
