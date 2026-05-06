@@ -1,1113 +1,660 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<meta name="theme-color" content="#080C14"/>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<meta name="theme-color" content="#080C14" />
 <title>Second Brain</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+
 <style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
-html,body{height:100%;margin:0}#app{height:100vh;background:#080C14;font-family:Sora,sans-serif;color:#E2E8F0;overflow:hidden;display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:relative}
-button{font-family:Sora,sans-serif;cursor:pointer}
-input,textarea,select{font-family:Sora,sans-serif;color:#E2E8F0;background:#080C14;color-scheme:dark}
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  -webkit-tap-highlight-color:transparent;
+}
 
-#hdr{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 10px;border-bottom:1px solid #0F1829;flex-shrink:0}
-.brand{font-weight:700;font-size:17px}
-.sr{display:flex;align-items:center;gap:5px;margin-top:3px}
-#sdot{width:6px;height:6px;border-radius:50%;display:inline-block;background:#34D399}
-#stxt{font-size:10px;color:#374151}
-.hbs{display:flex;gap:6px}
-.hb{background:#0F1829;border:none;border-radius:10px;color:#94A3B8;font-size:14px;padding:8px 12px}
-#apanel{background:#0A0F1E;border-bottom:1px solid #1F2937;padding:12px 16px;display:none;flex-shrink:0}
-#apanel.on{display:block}
-#akey{width:100%;background:#080C14;border:1px solid #1F2937;border-radius:10px;padding:10px 12px;color:#E2E8F0;font-size:13px;outline:none;margin-bottom:6px}
-.arow{display:flex;gap:8px;margin-bottom:6px}
-.arow input{flex:1}
-.asave{background:#4F8EF7;border:none;border-radius:10px;color:#fff;font-size:13px;padding:0 14px;font-weight:600}
-.acanc{background:#0F1829;border:none;border-radius:10px;color:#6B7280;font-size:13px;padding:0 12px}
-#body{flex:1;overflow-y:auto;padding-bottom:88px;min-height:0;position:relative}
-.pg{padding:0 16px 16px}
-.hero{padding:18px 0 14px;border-bottom:1px solid #0F1829;margin-bottom:16px}
-.hdate{font-size:10px;color:#374151;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
-.htitle{font-size:24px;font-weight:700;letter-spacing:-0.03em;margin-bottom:3px}
-.hsub{font-size:12px;color:#4B5563;margin-bottom:10px}
-.bt{height:3px;background:#0F1829;border-radius:99px}
-.bf{height:100%;border-radius:99px;background:linear-gradient(90deg,#4F8EF7,#A78BFA);transition:width .5s}
-.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
-.sc{background:#0A0F1E;border:1px solid #0F1829;border-radius:12px;padding:10px 6px;text-align:center}
-.sv{font-size:20px;font-weight:700;line-height:1}
-.sl{font-size:9px;color:#374151;margin-top:3px;text-transform:uppercase;letter-spacing:.06em}
-.al{background:#F8717112;border:1px solid #F8717133;border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:8px;margin-bottom:14px}
-.ab{background:#F87171;border:none;border-radius:8px;color:#fff;font-size:12px;font-weight:600;padding:4px 10px}
-.stl{color:#374151;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;margin-top:14px;display:block}
-.mc2{display:flex;align-items:center;gap:8px;background:#0A0F1E;border:1px solid #0F1829;border-radius:10px;padding:9px 12px;margin-bottom:6px;cursor:pointer}
-.ma{width:3px;height:24px;border-radius:99px;flex-shrink:0}
-.wb{background:linear-gradient(135deg,#4F8EF715,#A78BFA15);border:1px solid #4F8EF733;border-radius:14px;padding:14px 16px;margin:14px 0;display:flex;align-items:center;justify-content:space-between}
-.wl{font-size:13px;font-weight:600}
-.ws{color:#4B5563;font-size:11px;margin-top:2px}
-.wbtn{background:transparent;border:none;color:#4F8EF7;font-size:12px;font-weight:600;padding:0}
-.cg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
-.ct{background:#0A0F1E;border:1px solid #0F1829;border-radius:14px;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;position:relative;outline:none}
-.cba{position:absolute;top:6px;right:6px;border-radius:999px;font-size:9px;font-weight:700;color:#fff;min-width:16px;height:16px;display:flex;align-items:center;justify-content:center;padding:0 4px}
-.lh{display:flex;align-items:center;gap:10px;padding:14px 0 10px}
-.lt{font-size:19px;font-weight:700;flex:1;letter-spacing:-0.02em}
-.lc2{font-size:11px;color:#374151;background:#0F1829;border-radius:99px;padding:2px 10px}
-.chips{display:flex;gap:5px;overflow-x:auto;padding:0 0 10px}
-.chip{background:#0A0F1E;border:1px solid #0F1829;border-radius:999px;color:#4B5563;font-size:11px;padding:4px 10px;cursor:pointer;white-space:nowrap}
-.tc{background:#0A0F1E;border:1px solid #0F1829;border-radius:13px;margin-bottom:7px;display:flex;overflow:hidden;cursor:pointer}
-.tc.ov{border-color:#F8717155}
-.tac{width:3px;flex-shrink:0}
-.tb{flex:1;padding:11px 12px 9px;min-width:0}
-.tr2{display:flex;gap:9px;align-items:flex-start;margin-bottom:7px}
-.sbtn{width:26px;height:26px;border-radius:7px;border:none;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0;cursor:pointer}
-.tt{font-size:13px;font-weight:500;line-height:1.4}
-.tt.dn{text-decoration:line-through;opacity:.4}
-.tn{font-size:11px;color:#4B5563;margin-top:4px;line-height:1.5}
-.td{font-size:10px;flex-shrink:0;color:#6B7280}
-.td.ov{color:#F87171}
-.mr{display:flex;flex-wrap:wrap;gap:4px}
-.bdg{font-size:10px;padding:2px 6px;border-radius:5px;font-weight:500}
-.tact{display:flex;gap:8px;margin-top:10px}
-.eb{background:#0F1829;border:none;border-radius:8px;color:#6B7280;font-size:12px;padding:5px 12px}
-.db{background:transparent;border:none;color:#F87171;font-size:12px}
-.abar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
-.ap{border-radius:10px;padding:10px 6px;text-align:center}
-.dh{display:flex;align-items:center;gap:8px;margin-bottom:7px;padding:4px 0}
-.dlb{font-size:12px;font-weight:600}
-.ddt{font-size:10px;color:#374151;flex:1}
-.dc{background:#0F1829;color:#4B5563;font-size:10px;border-radius:99px;padding:1px 7px}
-.lce{background:#0A0F1E;border:1px solid #0F1829;border-radius:10px;padding:9px 12px;margin-bottom:5px;display:flex;gap:9px;align-items:flex-start}
-.la{width:3px;min-height:22px;border-radius:99px;flex-shrink:0;margin-top:1px}
-.ltx{font-size:12px;color:#C8D6E5;line-height:1.5;margin-bottom:4px}
-.ldel{background:transparent;border:none;color:#374151;font-size:14px;cursor:pointer;padding:0 2px;flex-shrink:0}
-.rh{background:linear-gradient(135deg,#4F8EF715,#A78BFA15);border:1px solid #4F8EF733;border-radius:14px;padding:16px;margin-bottom:16px}
-.rw{font-size:13px;font-weight:600;margin-bottom:4px}
-.rs{font-size:12px;color:#4B5563;margin-bottom:14px}
-.gbtn{width:100%;padding:12px;background:linear-gradient(135deg,#4F8EF7,#A78BFA);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px}
-.gbtn:disabled{opacity:.6}
-.racts{display:flex;gap:8px;margin-bottom:12px}
-.rab{flex:1;padding:10px;background:#0A0F1E;border:1px solid #1F2937;border-radius:10px;color:#94A3B8;font-size:13px}
-.rbox{background:#0A0F1E;border:1px solid #1F2937;border-radius:12px;padding:14px;overflow-x:auto}
-.rpre{margin:0;color:#C8D6E5;font-size:11px;line-height:1.8;white-space:pre-wrap;font-family:monospace}
-#nav{position:absolute;bottom:0;left:0;right:0;background:#080C14;border-top:1px solid #0F1829;display:flex;justify-content:space-around;padding:8px 0 22px;z-index:30}
-.ntab{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:#1F2937;padding:4px 2px;position:relative;min-width:44px}
-.ntab.on{color:#4F8EF7}
-.niw{font-size:18px;position:relative;display:inline-block}
-.nbdg{position:absolute;top:-1px;right:-3px;border-radius:999px;font-size:8px;font-weight:700;color:#fff;min-width:14px;height:14px;display:none;align-items:center;justify-content:center;padding:0 3px}
-.nlbl{font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
-#fab{position:absolute;bottom:78px;right:16px;width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#4F8EF7,#A78BFA);border:none;color:#fff;font-size:24px;box-shadow:0 4px 18px #4F8EF755;display:flex;align-items:center;justify-content:center;z-index:31}
-.ovl{position:fixed;inset:0;background:#00000090;z-index:50;display:flex;align-items:flex-end}
-.mdl{background:#0A0F1E;border-radius:20px 20px 0 0;width:100%;max-width:430px;margin:0 auto;max-height:88vh;overflow-y:auto;padding:0 16px 40px}
-.mhdl{width:36px;height:4px;background:#1F2937;border-radius:99px;margin:12px auto 16px}
-.mhd{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.mttl{font-size:18px;font-weight:700}
-.mclb{background:#0F1829;border:none;border-radius:8px;color:#4B5563;font-size:16px;padding:6px 10px}
-.fld{margin-bottom:14px}
-.flbl{font-size:10px;color:#4B5563;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;font-weight:600;display:block}
-.inp{width:100%;background:#080C14;border:1px solid #1F2937;border-radius:10px;padding:10px 12px;color:#E2E8F0;font-size:14px;outline:none}
-.inpta{width:100%;background:#080C14;border:1px solid #1F2937;border-radius:10px;padding:10px 12px;color:#E2E8F0;font-size:14px;outline:none;height:68px;resize:none;display:block}
-.sel{width:100%;background:#080C14;border:1px solid #1F2937;border-radius:10px;padding:10px 12px;color:#E2E8F0;font-size:14px;outline:none;cursor:pointer;display:block}
-.r2{display:flex;gap:10px;margin-bottom:14px}
-.r2>div{flex:1}
-.ccs{display:flex;flex-wrap:wrap;gap:6px}
-.cc{background:#080C14;border:1px solid #1F2937;border-radius:99px;color:#4B5563;font-size:11px;padding:5px 10px;cursor:pointer}
-.tagrow{display:flex;gap:6px;margin-bottom:6px}
-.tadd{background:#0F1829;border:none;border-radius:10px;color:#6B7280;font-size:13px;padding:10px 14px}
-.tw{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
-.tb2{display:inline-flex;align-items:center;gap:4px;background:#4F8EF722;color:#4F8EF7;border-radius:6px;font-size:11px;padding:3px 8px}
-.tx{background:none;border:none;color:inherit;cursor:pointer;padding:0;font-size:14px;line-height:1}
-.svbtn{width:100%;padding:13px;background:linear-gradient(135deg,#4F8EF7,#A78BFA);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;margin-top:8px;display:block}
-.svbtn:disabled{background:#1F2937;color:#4B5563}
-.crow{display:flex;flex-direction:column;gap:6px;margin-bottom:20px}
-.crb{display:flex;align-items:center;gap:12px;padding:12px;background:#080C14;border:1px solid #0F1829;border-radius:10px;cursor:pointer;outline:none;width:100%;text-align:left}
-.acb{background:#080C14;border:1px solid #0F1829;border-radius:14px;padding:14px}
-.igrid{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
-.ibtn{background:#0A0F1E;border:1px solid #1F2937;border-radius:8px;font-size:15px;padding:5px 7px;cursor:pointer}
-.ibtn.picked{background:#4F8EF722;border-color:#4F8EF7}
+body{
+  background:#080C14;
+  color:#E2E8F0;
+  font-family:Sora,sans-serif;
+}
+
+#app{
+  max-width:430px;
+  margin:auto;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+}
+
+#hdr{
+  padding:16px;
+  border-bottom:1px solid #1F2937;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.brand{
+  font-size:20px;
+  font-weight:700;
+}
+
+#body{
+  flex:1;
+  overflow:auto;
+  padding:16px;
+  padding-bottom:100px;
+}
+
+.hero{
+  margin-bottom:20px;
+}
+
+.hero h1{
+  font-size:28px;
+  margin-bottom:6px;
+}
+
+.hero p{
+  color:#94A3B8;
+  font-size:13px;
+}
+
+.sg{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin:20px 0;
+}
+
+.sc{
+  background:#111827;
+  padding:12px;
+  border-radius:12px;
+  text-align:center;
+}
+
+.sv{
+  font-size:20px;
+  font-weight:700;
+}
+
+.sl{
+  font-size:10px;
+  color:#94A3B8;
+  margin-top:4px;
+}
+
+.stl{
+  display:block;
+  margin:20px 0 10px;
+  color:#94A3B8;
+  font-size:11px;
+  text-transform:uppercase;
+}
+
+.cg{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+.ct{
+  background:#111827;
+  border:none;
+  border-radius:14px;
+  padding:16px;
+  cursor:pointer;
+  color:white;
+}
+
+.tc{
+  background:#111827;
+  border-radius:14px;
+  padding:14px;
+  margin-bottom:10px;
+}
+
+.tt{
+  font-size:14px;
+  font-weight:600;
+}
+
+.tn{
+  font-size:12px;
+  color:#94A3B8;
+  margin-top:6px;
+}
+
+.bdg{
+  display:inline-block;
+  margin-top:8px;
+  padding:4px 8px;
+  border-radius:6px;
+  font-size:10px;
+}
+
+#fab{
+  position:fixed;
+  bottom:90px;
+  right:20px;
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  border:none;
+  background:#4F8EF7;
+  color:white;
+  font-size:28px;
+  cursor:pointer;
+}
+
+#nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  max-width:430px;
+  background:#111827;
+  display:flex;
+  justify-content:space-around;
+  padding:12px 0;
+  border-top:1px solid #1F2937;
+}
+
+.ntab{
+  background:none;
+  border:none;
+  color:#94A3B8;
+  cursor:pointer;
+  font-size:12px;
+}
+
+.ntab.on{
+  color:#4F8EF7;
+}
+
+.ovl{
+  position:fixed;
+  inset:0;
+  background:#00000090;
+  display:flex;
+  align-items:flex-end;
+}
+
+.mdl{
+  background:#111827;
+  width:100%;
+  max-width:430px;
+  margin:auto;
+  border-radius:20px 20px 0 0;
+  padding:20px;
+}
+
+.inp,.sel,.inpta{
+  width:100%;
+  background:#080C14;
+  border:1px solid #374151;
+  border-radius:10px;
+  padding:12px;
+  color:white;
+  margin-top:6px;
+}
+
+.inpta{
+  height:90px;
+  resize:none;
+}
+
+.svbtn{
+  width:100%;
+  background:#4F8EF7;
+  border:none;
+  border-radius:12px;
+  padding:14px;
+  color:white;
+  font-weight:700;
+  margin-top:16px;
+  cursor:pointer;
+}
+
+.fld{
+  margin-bottom:14px;
+}
+
+.flbl{
+  font-size:12px;
+  color:#94A3B8;
+}
+
+.r2{
+  display:flex;
+  gap:10px;
+}
+
+.r2>div{
+  flex:1;
+}
+
+.mhd{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.mclb{
+  background:none;
+  border:none;
+  color:white;
+  font-size:18px;
+  cursor:pointer;
+}
 </style>
-
 </head>
+
 <body>
+
 <div id="app">
-  <div id="hdr">
-    <div>
-      <div class="brand">&#9001; Second Brain</div>
-      <div class="sr"><span id="sdot"></span><span id="stxt">Starting...</span></div>
-    </div>
-    <div class="hbs">
-      <button class="hb" id="keyBtn">&#128273; Key</button>
-      <button class="hb" id="logBtn">&#128203; Log</button>
-    </div>
-  </div>
-  <div id="apanel">
-    <div style="font-size:11px;color:#6B7280;margin-bottom:8px">Anthropic API Key (saved on device only)</div>
-    <div class="arow">
-      <input type="password" id="akey" placeholder="sk-ant-api03-..."/>
-      <button class="asave" id="aSaveBtn">Save</button>
-      <button class="acanc" id="aCancBtn">X</button>
-    </div>
-    <div style="font-size:10px;color:#374151">Get key: console.anthropic.com &rarr; API Keys</div>
-  </div>
-  <div id="body"></div>
-  <div id="nav">
-    <button class="ntab on" id="nt0"><span class="niw">&#127968;</span><span class="nlbl">Home</span></button>
-    <button class="ntab" id="nt1"><span class="niw">&#128188;<span class="nbdg" id="nb1" style="background:#4F8EF7"></span></span><span class="nlbl">Work</span></button>
-    <button class="ntab" id="nt2"><span class="niw">&#128640;<span class="nbdg" id="nb2" style="background:#A78BFA"></span></span><span class="nlbl">Projects</span></button>
-    <button class="ntab" id="nt3"><span class="niw">&#128203;<span class="nbdg" id="nb3" style="background:#34D399"></span></span><span class="nlbl">Log</span></button>
-    <button class="ntab" id="nt4"><span class="niw">&#128202;</span><span class="nlbl">Report</span></button>
-    <button class="ntab" id="nt5"><span class="niw">&#8230;</span><span class="nlbl">More</span></button>
-  </div>
-  <button id="fab">+</button>
+
+<div id="hdr">
+  <div class="brand">Second Brain</div>
+  <button onclick="showTaskModal()" style="background:#4F8EF7;border:none;color:white;padding:10px 14px;border-radius:10px;cursor:pointer;">
+    Add Task
+  </button>
 </div>
+
+<div id="body"></div>
+
+<div id="nav">
+  <button class="ntab on" onclick="setTab('home')">Home</button>
+  <button class="ntab" onclick="setTab('work')">Work</button>
+  <button class="ntab" onclick="setTab('projects')">Projects</button>
+  <button class="ntab" onclick="setTab('log')">Log</button>
+</div>
+
+<button id="fab" onclick="showTaskModal()">+</button>
+
+</div>
+
 <div id="mc"></div>
+
 <script>
-// ── DATA ──────────────────────────────────────────────────────────────────────
-var CATS = [
-  {id:'work',      label:'Work',      icon:'W',  color:'#4F8EF7'},
-  {id:'projects',  label:'Projects',  icon:'P',  color:'#A78BFA'},
-  {id:'personal',  label:'Personal',  icon:'Me', color:'#34D399'},
-  {id:'knowledge', label:'Knowledge', icon:'K',  color:'#FBBF24'},
-  {id:'bills',     label:'Bills',     icon:'$',  color:'#F87171'},
-  {id:'watchlist', label:'Watchlist', icon:'TV', color:'#38BDF8'},
-  {id:'health',    label:'Health',    icon:'H',  color:'#FB923C'}
+
+const CATS = [
+  {id:'work',label:'Work',icon:'💼',color:'#4F8EF7'},
+  {id:'projects',label:'Projects',icon:'🚀',color:'#A78BFA'},
+  {id:'personal',label:'Personal',icon:'👤',color:'#34D399'}
 ];
 
-var PRI = [
-{id:‘urgent’, label:‘Urgent’,    color:’#F87171’},
-{id:‘high’,   label:‘High’,      color:’#FBBF24’},
-{id:‘normal’, label:‘Normal’,    color:’#94A3B8’},
-{id:‘low’,    label:‘Low’,       color:’#475569’}
-];
-
-var STAT = [
-{id:‘todo’,       label:‘To Do’,       color:’#94A3B8’},
-{id:‘inprogress’, label:‘In Progress’, color:’#FBBF24’},
-{id:‘done’,       label:‘Done’,        color:’#34D399’},
-{id:‘blocked’,    label:‘Blocked’,     color:’#F87171’},
-{id:‘someday’,    label:‘Someday’,     color:’#A78BFA’}
-];
-
-var TC = {bau:’#94A3B8’, project:’#A78BFA’, investigation:’#F87171’, agentic:’#34D399’};
-var TL = {bau:‘BAU’, project:‘Project’, investigation:‘Investigation’, agentic:‘Agentic’};
-
-var DRIVE_IDS = {
-tasks:      ‘1OWIXMe5PvrXOZXDVFDxVfylXQ8Kml_IE’,
-worklog:    ‘1w6jQLE48kmnSQ3kXn5TDiafhfYe2y4tQ’,
-categories: ‘14zFd-GoGYRGdbjr76ySlRNb-pqZrNSyK’
+let S = {
+  tab:'home',
+  expId:null,
+  tasks:[
+    {
+      id:'1',
+      title:'DHCP Scope Failover UAT',
+      category:'work',
+      priority:'urgent',
+      status:'inprogress',
+      dueDate:'2026-05-09',
+      notes:'Discuss feasibility with Vikas Maurya'
+    },
+    {
+      id:'2',
+      title:'PacketFence Patching',
+      category:'work',
+      priority:'high',
+      status:'todo',
+      dueDate:'2026-05-25',
+      notes:'PFE01 patching pending'
+    },
+    {
+      id:'3',
+      title:'AD Transformation Roadmap',
+      category:'projects',
+      priority:'high',
+      status:'inprogress',
+      dueDate:'2026-05-20',
+      notes:'Awaiting Microsoft response'
+    }
+  ]
 };
 
-var DMCP  = ‘https://drivemcp.googleapis.com/mcp/v1’;
-var MODEL = ‘claude-sonnet-4-20250514’;
-
-var ITASKS = [
-{id:‘1’,  title:‘DHCP Scope Failover UAT’,               category:‘work’,     priority:‘urgent’, status:‘inprogress’, dueDate:‘2026-05-09’, notes:‘Network team using solution to assign IP on switch interface. Next: Discuss feasibility with Vikas Maurya’,        tags:[], updatedAt:‘2026-05-05T18:00:00Z’, createdAt:‘2026-05-05T18:00:00Z’},
-{id:‘2’,  title:‘Fix Packet Fence Auto Enrolment Issue’,  category:‘work’,     priority:‘high’,   status:‘inprogress’, dueDate:‘2026-05-06’, notes:’’,                                                                                                               tags:[], updatedAt:‘2026-05-05T18:00:00Z’, createdAt:‘2026-05-05T18:00:00Z’},
-{id:‘3’,  title:‘Discuss feasibility with Vikas Maurya’,  category:‘work’,     priority:‘high’,   status:‘todo’,       dueDate:‘2026-05-06’, notes:‘Sub-task of DHCP Scope Failover UAT’,                                                                            tags:[], updatedAt:‘2026-05-05T18:00:00Z’, createdAt:‘2026-05-05T18:00:00Z’},
-{id:‘4’,  title:‘PacketFence Patching’,                   category:‘work’,     priority:‘high’,   status:‘inprogress’, dueDate:‘2026-05-25’, notes:‘Patching planned for PFE01; rescheduled for 3rd May’,                                                             tags:[], updatedAt:‘2026-05-05T18:00:00Z’, createdAt:‘2026-05-05T18:00:00Z’},
-{id:‘5’,  title:‘SailPoint Pre Migration Activities’,     category:‘projects’, priority:‘urgent’, status:‘inprogress’, dueDate:‘2026-05-08’, notes:‘DC resource updates, backups, replication changes pending’,                                                       tags:[], updatedAt:‘2026-05-05T18:00:00Z’, createdAt:‘2026-05-05T18:00:00Z’},
-{id:‘6’,  title:‘SailPoint Post Migration Activities’,    category:‘projects’, priority:‘urgent’, status:‘inprogress’, dueDate:‘2026-05-11’, notes:‘Next: Power on DCs, Verify AD replication, Validate group membership’,                                            tags:[], updatedAt:‘2026-05-05T18:00:00Z’, createdAt:‘2026-05-05T18:00:00Z’},
-{id:‘7’,  title:‘AD Transformation (AD-Less Roadmap)’,    category:‘projects’, priority:‘high’,   status:‘inprogress’, dueDate:‘2026-05-08’, notes:‘Discussion initiated with Microsoft. Await response.’,                                                             tags:[], updatedAt:‘2026-05-05T18:00:00Z’, createdAt:‘2026-05-05T18:00:00Z’},
-{id:‘8’,  title:‘DHCP 50/50 Failover Dashboard’,         category:‘projects’, priority:‘normal’, status:‘inprogress’, dueDate:‘2026-05-11’, notes:‘PEG team working on dashboard.’,                                                                                   tags:[], updatedAt:‘2026-05-05T18:00:00Z’, createdAt:‘2026-05-05T18:00:00Z’},
-{id:‘9’,  title:‘DNS Block for corp.ad (Zscaler)’,        category:‘projects’, priority:‘high’,   status:‘inprogress’, dueDate:‘2026-05-22’, notes:‘Solution discussion completed with Zscaler vendor.’,                                                               tags:[], updatedAt:‘2026-05-05T18:00:00Z’, createdAt:‘2026-05-05T18:00:00Z’},
-{id:‘10’, title:‘Arista AGNI Implementation’,             category:‘projects’, priority:‘high’,   status:‘inprogress’, dueDate:‘2026-09-30’, notes:‘Port validation done; Infosec approval pending.’,                                                                  tags:[], updatedAt:‘2026-05-05T18:00:00Z’, createdAt:‘2026-05-05T18:00:00Z’},
-{id:‘11’, title:‘DHCP Scope Creation Automation’,         category:‘projects’, priority:‘normal’, status:‘inprogress’, dueDate:‘2026-06-30’, notes:‘BRD update in progress.’,                                                                                          tags:[], updatedAt:‘2026-05-05T18:00:00Z’, createdAt:‘2026-05-05T18:00:00Z’},
-{id:‘12’, title:‘DNS Catalogue Modification’,             category:‘projects’, priority:‘normal’, status:‘inprogress’, dueDate:‘2026-06-30’, notes:‘DNS database updated with most domain owners.’,                                                                    tags:[], updatedAt:‘2026-05-05T18:00:00Z’, createdAt:‘2026-05-05T18:00:00Z’},
-{id:‘13’, title:‘SailPoint Migration Scripts’,            category:‘projects’, priority:‘normal’, status:‘done’,       dueDate:‘2026-05-03’, notes:‘All scripts prepared and shared.’,                                                                                 tags:[], updatedAt:‘2026-05-05T18:00:00Z’, createdAt:‘2026-05-05T18:00:00Z’}
-];
-
-var IWL = [
-{id:‘w1’,  date:‘2026-05-05’, text:‘AD transformation discussion with MS’,                        category:‘projects’, type:‘project’},
-{id:‘w2’,  date:‘2026-05-01’, text:‘DHCP incident RCA’,                                           category:‘projects’, type:‘investigation’},
-{id:‘w3’,  date:‘2026-05-01’, text:‘Arista Agni port allow discussion with Rajesh’,               category:‘projects’, type:‘project’},
-{id:‘w4’,  date:‘2026-05-01’, text:‘DNS database update’,                                         category:‘work’,     type:‘bau’},
-{id:‘w5’,  date:‘2026-04-30’, text:‘Prepared all scripts for SailPoint migration’,                category:‘projects’, type:‘project’},
-{id:‘w6’,  date:‘2026-04-30’, text:‘DHCP scope mismatch script’,                                 category:‘projects’, type:‘bau’},
-{id:‘w7’,  date:‘2026-04-30’, text:‘KB article for DHCP INC’,                                    category:‘projects’, type:‘bau’},
-{id:‘w8’,  date:‘2026-04-29’, text:‘AD replication script’,                                      category:‘work’,     type:‘bau’},
-{id:‘w9’,  date:‘2026-04-28’, text:‘Password expiry report for SP migration’,                    category:‘work’,     type:‘project’},
-{id:‘w10’, date:‘2026-04-28’, text:‘DHCP 50/50 failover dashboard use cases’,                    category:‘projects’, type:‘project’},
-{id:‘w11’, date:‘2026-04-28’, text:‘Discussed agentic use cases with HA’,                        category:‘work’,     type:‘agentic’},
-{id:‘w12’, date:‘2026-04-26’, text:‘Updated agentic AI use case with manual and proposed steps’, category:‘work’,     type:‘agentic’},
-{id:‘w13’, date:‘2026-04-26’, text:‘DNS catalog discussion with Subir’,                          category:‘work’,     type:‘bau’},
-{id:‘w14’, date:‘2026-04-25’, text:‘Training on AI builder’,                                     category:‘work’,     type:‘bau’},
-{id:‘w15’, date:‘2026-04-24’, text:‘Arista AGNI explaining to PM’,                               category:‘projects’, type:‘project’},
-{id:‘w16’, date:‘2026-04-22’, text:‘DNS leakage solutioning with Zscaler vendor’,                category:‘projects’, type:‘bau’},
-{id:‘w17’, date:‘2026-04-16’, text:‘Cloud AD architecture review’,                               category:‘work’,     type:‘bau’},
-{id:‘w18’, date:‘2026-04-15’, text:‘DNS database creation’,                                      category:‘work’,     type:‘bau’},
-{id:‘w19’, date:‘2026-04-14’, text:‘Troubleshooting cloud.ad account issue’,                     category:‘work’,     type:‘investigation’},
-{id:‘w20’, date:‘2026-04-13’, text:‘SSL 3.0 disable vulnerability’,                              category:‘work’,     type:‘investigation’},
-{id:‘w21’, date:‘2026-04-09’, text:‘DHCP 50/50 failover use case discussion’,                    category:‘projects’, type:‘project’},
-{id:‘w22’, date:‘2026-04-07’, text:‘DHCP scope creation BRD’,                                    category:‘projects’, type:‘bau’},
-{id:‘w23’, date:‘2026-04-06’, text:‘AD less road map transformation’,                            category:‘work’,     type:‘project’}
-];
-
-// ── STATE ─────────────────────────────────────────────────────────────────────
-var S = {
-tasks:      null,
-worklog:    null,
-cats:       null,
-apiKey:     ‘’,
-tab:        ‘home’,
-showLog:    false,
-fStatus:    ‘all’,
-expId:      null,
-report:     ‘’,
-repLoading: false,
-copied:     false
-};
-
-var saveTimers = {};
-
-// ── UTILS ─────────────────────────────────────────────────────────────────────
-function uid()    { return Math.random().toString(36).slice(2) + Date.now().toString(36); }
-function nowISO() { return new Date().toISOString(); }
-function todayStr(){ return new Date().toISOString().slice(0,10); }
-
-function esc(s) {
-return (s || ‘’)
-.replace(/&/g, ‘&’)
-.replace(/</g, ‘<’)
-.replace(/>/g, ‘>’)
-.replace(/”/g, ‘"’);
+function saveData(){
+  localStorage.setItem('sb_tasks',JSON.stringify(S.tasks));
 }
 
-function setSyncDot(color, msg) {
-document.getElementById(‘sdot’).style.background = color;
-document.getElementById(‘stxt’).textContent = msg;
+function loadData(){
+  const t = localStorage.getItem('sb_tasks');
+  if(t){
+    S.tasks = JSON.parse(t);
+  }
 }
 
-function weekRange() {
-var d = new Date(), day = d.getDay();
-var mon = new Date(d);
-mon.setDate(d.getDate() - ((day + 6) % 7));
-var sun = new Date(mon);
-sun.setDate(mon.getDate() + 6);
-function fmt(x) {
-return x.toLocaleDateString(‘en-GB’, {day:‘2-digit’, month:‘short’, year:‘numeric’});
-}
-return {
-start: mon.toISOString().slice(0,10),
-end:   sun.toISOString().slice(0,10),
-label: fmt(mon) + ’ - ’ + fmt(sun)
-};
+function setTab(tab){
+  S.tab = tab;
+
+  document.querySelectorAll('.ntab').forEach(x=>{
+    x.classList.remove('on');
+  });
+
+  if(tab==='home') document.querySelectorAll('.ntab')[0].classList.add('on');
+  if(tab==='work') document.querySelectorAll('.ntab')[1].classList.add('on');
+  if(tab==='projects') document.querySelectorAll('.ntab')[2].classList.add('on');
+  if(tab==='log') document.querySelectorAll('.ntab')[3].classList.add('on');
+
+  render();
 }
 
-function fdate(iso) {
-if (!iso) return ‘’;
-var today = new Date(); today.setHours(0,0,0,0);
-var dt    = new Date(iso); dt.setHours(0,0,0,0);
-var diff  = Math.round((dt - today) / 86400000);
-if (diff === 0)  return ‘Today’;
-if (diff === 1)  return ‘Tomorrow’;
-if (diff === -1) return ‘Yesterday’;
-if (diff < 0)   return Math.abs(diff) + ‘d ago’;
-if (diff < 8)   return new Date(iso).toLocaleDateString(‘en-US’, {weekday:‘short’});
-return new Date(iso).toLocaleDateString(‘en-US’, {month:‘short’, day:‘numeric’});
+function render(){
+
+  const body = document.getElementById('body');
+
+  if(S.tab === 'home'){
+    renderHome();
+    return;
+  }
+
+  if(S.tab === 'work'){
+    renderList('work');
+    return;
+  }
+
+  if(S.tab === 'projects'){
+    renderList('projects');
+    return;
+  }
+
+  if(S.tab === 'log'){
+    renderLog();
+    return;
+  }
 }
 
-function isOv(t) {
-return t.dueDate && t.status !== ‘done’ && new Date(t.dueDate) < new Date(new Date().toDateString());
+function renderHome(){
+
+  const total = S.tasks.length;
+  const done = S.tasks.filter(t=>t.status==='done').length;
+  const active = S.tasks.filter(t=>t.status==='inprogress').length;
+  const overdue = S.tasks.filter(t=>new Date(t.dueDate)<new Date() && t.status!=='done').length;
+
+  let catHtml = '';
+
+  CATS.forEach(c=>{
+    const cnt = S.tasks.filter(t=>t.category===c.id).length;
+
+    catHtml += `
+      <button class="ct" onclick="setTab('${c.id}')">
+        <div style="font-size:24px">${c.icon}</div>
+        <div style="margin-top:8px">${c.label}</div>
+        <div style="font-size:12px;color:#94A3B8;margin-top:4px">${cnt} tasks</div>
+      </button>
+    `;
+  });
+
+  document.getElementById('body').innerHTML = `
+    <div class="hero">
+      <h1>Your Second Brain</h1>
+      <p>Track work, projects and ideas</p>
+    </div>
+
+    <div class="sg">
+      <div class="sc">
+        <div class="sv">${total}</div>
+        <div class="sl">TOTAL</div>
+      </div>
+
+      <div class="sc">
+        <div class="sv">${done}</div>
+        <div class="sl">DONE</div>
+      </div>
+
+      <div class="sc">
+        <div class="sv">${active}</div>
+        <div class="sl">ACTIVE</div>
+      </div>
+
+      <div class="sc">
+        <div class="sv">${overdue}</div>
+        <div class="sl">OVERDUE</div>
+      </div>
+    </div>
+
+    <span class="stl">Categories</span>
+
+    <div class="cg">
+      ${catHtml}
+    </div>
+  `;
 }
 
-function getC(id) { return S.cats.find(function(c){ return c.id === id; }) || S.cats[0]; }
-function getP(id) { return PRI.find(function(p){ return p.id === id; }) || PRI[2]; }
-function getS(id) { return STAT.find(function(s){ return s.id === id; }) || STAT[0]; }
+function renderList(cat){
 
-// ── LOCAL STORAGE ─────────────────────────────────────────────────────────────
-function lsave() {
-try {
-localStorage.setItem(‘sb_t’, JSON.stringify(S.tasks));
-localStorage.setItem(‘sb_w’, JSON.stringify(S.worklog));
-localStorage.setItem(‘sb_c’, JSON.stringify(S.cats));
-} catch(e) {}
-}
+  const list = S.tasks.filter(t=>t.category===cat);
 
-function lload() {
-try {
-var t = localStorage.getItem(‘sb_t’);
-var w = localStorage.getItem(‘sb_w’);
-var c = localStorage.getItem(‘sb_c’);
-var k = localStorage.getItem(‘sb_k’);
-if (t) S.tasks   = JSON.parse(t);
-if (w) S.worklog = JSON.parse(w);
-if (c) S.cats    = JSON.parse(c);
-if (k) S.apiKey  = k;
-} catch(e) {}
-if (!S.tasks   || !S.tasks.length)   S.tasks   = ITASKS;
-if (!S.worklog || !S.worklog.length) S.worklog = IWL;
-if (!S.cats    || !S.cats.length)    S.cats    = JSON.parse(JSON.stringify(CATS));
-}
+  let html = `
+    <h2 style="margin-bottom:20px;text-transform:capitalize">${cat}</h2>
+  `;
 
-// ── API KEY ───────────────────────────────────────────────────────────────────
-function toggleApi() {
-var p = document.getElementById(‘apanel’);
-if (p.classList.contains(‘on’)) {
-p.classList.remove(‘on’);
-} else {
-p.classList.add(‘on’);
-document.getElementById(‘akey’).value = S.apiKey;
-}
-}
+  if(list.length===0){
+    html += `<p style="color:#94A3B8">No tasks found</p>`;
+  }
 
-function saveKey() {
-var k = document.getElementById(‘akey’).value.trim();
-S.apiKey = k;
-try { localStorage.setItem(‘sb_k’, k); } catch(e) {}
-toggleApi();
-if (k) syncDrive();
-}
+  list.forEach(t=>{
 
-// ── DRIVE API ─────────────────────────────────────────────────────────────────
-async function callAI(sys, usr, mx, useMCP) {
-var body = {
-model:      MODEL,
-max_tokens: mx || 1000,
-system:     sys,
-messages:   [{role:‘user’, content:usr}]
-};
-if (useMCP) {
-body.mcp_servers = [{type:‘url’, url:DMCP, name:‘gdrive’}];
-}
-var r = await fetch(‘https://api.anthropic.com/v1/messages’, {
-method:  ‘POST’,
-headers: {
-‘Content-Type’:    ‘application/json’,
-‘x-api-key’:       S.apiKey,
-‘anthropic-version’: ‘2023-06-01’,
-‘anthropic-beta’:  ‘mcp-client-2025-04-04’
-},
-body: JSON.stringify(body)
-});
-return r.json();
+    html += `
+      <div class="tc">
+
+        <div class="tt">${t.title}</div>
+
+        <div class="tn">${t.notes || ''}</div>
+
+        <div style="margin-top:10px">
+          <span class="bdg" style="background:#1F2937">
+            ${t.priority}
+          </span>
+
+          <span class="bdg" style="background:#1F2937">
+            ${t.status}
+          </span>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:12px">
+
+          <button onclick="toggleDone('${t.id}')" style="flex:1;background:#34D399;border:none;padding:10px;border-radius:8px;cursor:pointer;">
+            Done
+          </button>
+
+          <button onclick="editTask('${t.id}')" style="flex:1;background:#4F8EF7;border:none;padding:10px;border-radius:8px;cursor:pointer;color:white;">
+            Edit
+          </button>
+
+          <button onclick="deleteTask('${t.id}')" style="background:#F87171;border:none;padding:10px 14px;border-radius:8px;cursor:pointer;color:white;">
+            X
+          </button>
+
+        </div>
+
+      </div>
+    `;
+  });
+
+  document.getElementById('body').innerHTML = html;
 }
 
-async function driveRead(fid) {
-if (!S.apiKey) return null;
-try {
-var d = await callAI(
-‘You have Google Drive access. Read file ID “’ + fid + ‘”. Return ONLY raw JSON, no markdown.’,
-‘Read file, return JSON only.’,
-4000, true
-);
-var blocks = d.content || [];
-for (var i = 0; i < blocks.length; i++) {
-if (blocks[i].type === ‘mcp_tool_result’) {
-var t = (blocks[i].content && blocks[i].content[0] && blocks[i].content[0].text) || ‘’;
-try { return JSON.parse(t); } catch(e) {}
-}
-}
-for (var j = 0; j < blocks.length; j++) {
-if (blocks[j].type === ‘text’) {
-var m = blocks[j].text.match(/{[\s\S]*}/);
-if (m) { try { return JSON.parse(m[0]); } catch(e) {} }
-}
-}
-} catch(e) {}
-return null;
+function renderLog(){
+
+  document.getElementById('body').innerHTML = `
+    <h2>Work Log</h2>
+
+    <div class="tc">
+      <div class="tt">Weekly tracking enabled</div>
+      <div class="tn">Add logs in future version</div>
+    </div>
+  `;
 }
 
-async function driveWrite(fid, obj) {
-if (!S.apiKey) return;
-try {
-obj.lastUpdated = nowISO();
-await callAI(
-‘You have Google Drive access. Overwrite file ID “’ + fid + ‘” with exact JSON provided. Reply: saved’,
-‘Save:\n’ + JSON.stringify(obj, null, 2),
-200, true
-);
-} catch(e) {}
+function toggleDone(id){
+
+  S.tasks = S.tasks.map(t=>{
+
+    if(t.id===id){
+      t.status = t.status==='done' ? 'todo' : 'done';
+    }
+
+    return t;
+  });
+
+  saveData();
+  render();
 }
 
-function debSave(key, fid, data) {
-clearTimeout(saveTimers[key]);
-saveTimers[key] = setTimeout(async function() {
-setSyncDot(’#FBBF24’, ‘Saving…’);
-await driveWrite(fid, data);
-setSyncDot(’#34D399’, ‘Saved’);
-}, 1200);
+function deleteTask(id){
+
+  if(!confirm('Delete task?')) return;
+
+  S.tasks = S.tasks.filter(t=>t.id!==id);
+
+  saveData();
+  render();
 }
 
-function saveTasks()  { lsave(); debSave(‘t’, DRIVE_IDS.tasks,   {version:1, items:   S.tasks});   }
-function saveWL()     { lsave(); debSave(‘w’, DRIVE_IDS.worklog, {version:1, entries: S.worklog}); }
+function editTask(id){
 
-async function syncDrive() {
-setSyncDot(’#FBBF24’, ‘Syncing…’);
-try {
-var res = await Promise.all([
-driveRead(DRIVE_IDS.tasks),
-driveRead(DRIVE_IDS.worklog),
-driveRead(DRIVE_IDS.categories)
-]);
-if (res[0] && res[0].items   && res[0].items.length)      S.tasks   = res[0].items;
-if (res[1] && res[1].entries && res[1].entries.length)    S.worklog = res[1].entries;
-if (res[2] && res[2].categories && res[2].categories.length) S.cats = res[2].categories;
-lsave();
-setSyncDot(’#34D399’, ‘Synced with Drive’);
-} catch(e) {
-setSyncDot(’#F87171’, ‘Sync failed’);
+  const t = S.tasks.find(x=>x.id===id);
+
+  showTaskModal(t);
 }
+
+function showTaskModal(task=null){
+
+  const isEdit = !!task;
+
+  const t = task || {
+    id:Date.now().toString(),
+    title:'',
+    notes:'',
+    category:'work',
+    priority:'normal',
+    status:'todo',
+    dueDate:''
+  };
+
+  document.getElementById('mc').innerHTML = `
+
+    <div class="ovl">
+
+      <div class="mdl">
+
+        <div class="mhd">
+          <h2>${isEdit ? 'Edit Task' : 'New Task'}</h2>
+
+          <button class="mclb" onclick="closeModal()">✕</button>
+        </div>
+
+        <div class="fld">
+          <div class="flbl">Title</div>
+          <input class="inp" id="ftitle" value="${t.title}">
+        </div>
+
+        <div class="fld">
+          <div class="flbl">Notes</div>
+          <textarea class="inpta" id="fnotes">${t.notes}</textarea>
+        </div>
+
+        <div class="r2">
+
+          <div>
+            <div class="flbl">Category</div>
+
+            <select class="sel" id="fcat">
+              <option value="work" ${t.category==='work'?'selected':''}>Work</option>
+              <option value="projects" ${t.category==='projects'?'selected':''}>Projects</option>
+              <option value="personal" ${t.category==='personal'?'selected':''}>Personal</option>
+            </select>
+          </div>
+
+          <div>
+            <div class="flbl">Priority</div>
+
+            <select class="sel" id="fpri">
+              <option value="urgent" ${t.priority==='urgent'?'selected':''}>Urgent</option>
+              <option value="high" ${t.priority==='high'?'selected':''}>High</option>
+              <option value="normal" ${t.priority==='normal'?'selected':''}>Normal</option>
+            </select>
+          </div>
+
+        </div>
+
+        <div class="fld">
+          <div class="flbl">Due Date</div>
+          <input type="date" class="inp" id="fdate" value="${t.dueDate}">
+        </div>
+
+        <button class="svbtn" onclick="saveTask('${t.id}')">
+          ${isEdit ? 'Update Task' : 'Add Task'}
+        </button>
+
+      </div>
+
+    </div>
+  `;
+}
+
+function saveTask(id){
+
+  const title = document.getElementById('ftitle').value.trim();
+
+  if(!title){
+    alert('Title required');
+    return;
+  }
+
+  const obj = {
+    id:id,
+    title:title,
+    notes:document.getElementById('fnotes').value,
+    category:document.getElementById('fcat').value,
+    priority:document.getElementById('fpri').value,
+    status:'todo',
+    dueDate:document.getElementById('fdate').value
+  };
+
+  const existing = S.tasks.find(t=>t.id===id);
+
+  if(existing){
+
+    S.tasks = S.tasks.map(t=>{
+      if(t.id===id){
+        obj.status = t.status;
+        return obj;
+      }
+      return t;
+    });
+
+  } else {
+
+    S.tasks.unshift(obj);
+
+  }
+
+  saveData();
+  closeModal();
+  render();
+}
+
+function closeModal(){
+  document.getElementById('mc').innerHTML = '';
+}
+
+loadData();
 render();
-}
-
-// ── NAV ───────────────────────────────────────────────────────────────────────
-function setTab(t)   { S.tab = t; S.showLog = false; S.fStatus = ‘all’; render(); }
-function toggleLog() { S.showLog = !S.showLog; render(); }
-function onFab()     { if (S.showLog || S.tab === ‘home’) showLogModal(); else showTaskModal(null, S.tab); }
-
-// ── TASK CRUD ─────────────────────────────────────────────────────────────────
-function cycleStatus(id) {
-var ord = [‘todo’,‘inprogress’,‘done’,‘blocked’,‘someday’];
-S.tasks = S.tasks.map(function(t) {
-if (t.id !== id) return t;
-var next = ord[(ord.indexOf(t.status) + 1) % ord.length];
-return Object.assign({}, t, {status:next, updatedAt:nowISO()});
-});
-saveTasks(); render();
-}
-
-function delTask(id) {
-if (!confirm(‘Delete this task?’)) return;
-S.tasks = S.tasks.filter(function(t){ return t.id !== id; });
-saveTasks(); render();
-}
-
-function togExp(id) { S.expId = (S.expId === id) ? null : id; render(); }
-function editTask(id) { showTaskModal(S.tasks.find(function(t){ return t.id === id; })); }
-
-function delLog(id) {
-S.worklog = S.worklog.filter(function(e){ return e.id !== id; });
-saveWL(); render();
-}
-
-// ── WEEKLY REPORT ─────────────────────────────────────────────────────────────
-async function buildReport() {
-if (!S.apiKey) { alert(‘Add your API key first (Key button)’); return; }
-S.repLoading = true; S.report = ‘’; render();
-var wk   = weekRange();
-var logs = S.worklog.filter(function(e){ return e.date >= wk.start && e.date <= wk.end; });
-var wt   = S.tasks.filter(function(t){ return t.category === ‘work’ || t.category === ‘projects’; });
-var prompt = [
-‘Generate weekly work update email in this EXACT format:’,
-‘’,
-‘Hi Sir,’,
-‘’,
-‘Please find below my weekly work update:’,
-‘’,
-‘—’,
-‘’,
-‘Agentic Solutions / Ideas’,
-‘’,
-‘| Issue | Summary | Next Steps |’,
-‘|——|———|————|’,
-‘[agentic rows]’,
-‘’,
-‘—’,
-‘’,
-‘Projects’,
-‘’,
-‘| Project | Status | Summary | Next Steps |’,
-‘|––––|––––|———|————|’,
-‘[project rows]’,
-‘’,
-‘—’,
-‘’,
-‘Troubleshooting / Investigation’,
-‘’,
-‘| Issue | Summary | Next Steps |’,
-‘|——|———|————|’,
-‘[investigation rows]’,
-‘’,
-‘—’,
-‘’,
-‘Please let me know if you would like additional details.’,
-‘’,
-‘Thanks,’,
-‘Abhi Kapoor’,
-‘’,
-‘WEEK: ’ + wk.label,
-‘’,
-‘WORKLOG:’,
-logs.map(function(e){ return ‘[’ + e.date + ‘][’ + e.type + ‘] ’ + e.text; }).join(’\n’) || ‘(none)’,
-‘’,
-‘TASKS:’,
-wt.map(function(t){ return ‘[’ + t.category + ‘][’ + t.status + ‘] ’ + t.title + (t.notes ? ’ - ’ + t.notes : ‘’); }).join(’\n’) || ‘(none)’
-].join(’\n’);
-
-try {
-var d = await callAI(
-‘You are a professional email writer. Follow the format exactly. Return ONLY the email text.’,
-prompt, 2000, false
-);
-S.report = (d.content || [])
-.filter(function(b){ return b.type === ‘text’; })
-.map(function(b){ return b.text; })
-.join(’’) || ‘Error generating report.’;
-} catch(e) {
-S.report = ’Error: ’ + e.message;
-}
-S.repLoading = false; render();
-}
-
-function copyRep() {
-navigator.clipboard.writeText(S.report).then(function() {
-S.copied = true; render();
-setTimeout(function(){ S.copied = false; render(); }, 2000);
-});
-}
-
-function dlRep() {
-var a = document.createElement(‘a’);
-a.href     = ‘data:text/plain;charset=utf-8,’ + encodeURIComponent(S.report);
-a.download = ‘Report-’ + todayStr() + ‘.txt’;
-a.click();
-}
-
-// ── TASK MODAL ────────────────────────────────────────────────────────────────
-var tmd = null;
-
-function showTaskModal(task, dc) {
-tmd = task
-? JSON.parse(JSON.stringify(task))
-: {id:uid(), createdAt:nowISO(), updatedAt:nowISO(), title:’’, notes:’’, category:dc||‘personal’, priority:‘normal’, status:‘todo’, dueDate:’’, tags:[]};
-renderTM();
-}
-
-function renderTM() {
-var t   = tmd;
-var isE = S.tasks.some(function(x){ return x.id === t.id; });
-
-var ccsHtml = S.cats.map(function(c) {
-var sel = t.category === c.id;
-var style = sel ? (‘background:’ + c.color + ‘22;border-color:’ + c.color + ‘;color:’ + c.color) : ‘’;
-return ‘<button class="cc" data-catid="' + c.id + '" style="' + style + '">’ + esc(c.label) + ‘</button>’;
-}).join(’’);
-
-var tagsHtml = (t.tags || []).map(function(tg) {
-return ‘<span class="tb2">’ + esc(tg) + ‘<button class="tx" data-rmtag="' + esc(tg) + '">x</button></span>’;
-}).join(’’);
-
-var priOpts = PRI.map(function(p) {
-return ‘<option value=”’ + p.id + ‘”’ + (t.priority === p.id ? ’ selected’ : ‘’) + ‘>’ + p.label + ‘</option>’;
-}).join(’’);
-
-var statOpts = STAT.map(function(s) {
-return ‘<option value=”’ + s.id + ‘”’ + (t.status === s.id ? ’ selected’ : ‘’) + ‘>’ + s.label + ‘</option>’;
-}).join(’’);
-
-var html = ‘<div class="ovl" id="tmovl">’
-+ ‘<div class="mdl">’
-+ ‘<div class="mhdl"></div>’
-+ ‘<div class="mhd"><span class="mttl">’ + (isE ? ‘Edit Task’ : ‘New Task’) + ‘</span>’
-+ ‘<button class="mclb" id="tmClose">X</button></div>’
-+ ‘<div class="fld"><span class="flbl">Category</span><div class="ccs" id="tmCats">’ + ccsHtml + ‘</div></div>’
-+ ‘<div class="fld"><span class="flbl">Title</span><input class="inp" id="ft" value="' + esc(t.title) + '" placeholder="What needs to be done?"/></div>’
-+ ‘<div class="fld"><span class="flbl">Notes</span><textarea class="inpta" id="fn" placeholder="Details...">’ + esc(t.notes || ‘’) + ‘</textarea></div>’
-+ ‘<div class="r2"><div><span class="flbl">Priority</span><select class="sel" id="fp">’ + priOpts + ‘</select></div>’
-+ ‘<div><span class="flbl">Status</span><select class="sel" id="fs">’ + statOpts + ‘</select></div></div>’
-+ ‘<div class="fld"><span class="flbl">Due Date</span><input type="date" class="inp" id="fd" value="' + (t.dueDate || '') + '"/></div>’
-+ ‘<div class="fld"><span class="flbl">Tags</span>’
-+ ‘<div class="tagrow"><input class="inp" id="ftag" placeholder="Add tag..." style="flex:1"/>’
-+ ‘<button class="tadd" id="tmAddTag">Add</button></div>’
-+ ‘<div class="tw" id="tmTags">’ + tagsHtml + ‘</div></div>’
-+ ‘<button class="svbtn" id="tmSave">’ + (isE ? ‘Update Task’ : ‘Add Task’) + ‘</button>’
-+ ‘</div></div>’;
-
-showM(html);
-
-// Wire events using addEventListener — no inline handlers
-document.getElementById(‘tmClose’).addEventListener(‘click’, closeM);
-document.getElementById(‘tmovl’).addEventListener(‘click’, function(e) {
-if (e.target === document.getElementById(‘tmovl’)) closeM();
-});
-document.getElementById(‘tmAddTag’).addEventListener(‘click’, function() {
-var v = document.getElementById(‘ftag’).value.trim();
-if (v && !(tmd.tags || []).includes(v)) { tmd.tags = (tmd.tags || []).concat([v]); }
-renderTM();
-});
-document.getElementById(‘tmSave’).addEventListener(‘click’, function() { subTask(isE); });
-
-// Category chips
-document.getElementById(‘tmCats’).addEventListener(‘click’, function(e) {
-var btn = e.target.closest(’[data-catid]’);
-if (btn) { tmd.category = btn.dataset.catid; renderTM(); }
-});
-
-// Tag remove
-document.getElementById(‘tmTags’).addEventListener(‘click’, function(e) {
-var btn = e.target.closest(’[data-rmtag]’);
-if (btn) {
-var tg = btn.dataset.rmtag;
-tmd.tags = (tmd.tags || []).filter(function(x){ return x !== tg; });
-renderTM();
-}
-});
-}
-
-function subTask(isE) {
-var title = document.getElementById(‘ft’).value.trim();
-if (!title) { alert(‘Title is required’); return; }
-tmd.title    = title;
-tmd.notes    = document.getElementById(‘fn’).value;
-tmd.priority = document.getElementById(‘fp’).value;
-tmd.status   = document.getElementById(‘fs’).value;
-tmd.dueDate  = document.getElementById(‘fd’).value;
-tmd.updatedAt = nowISO();
-if (isE) {
-S.tasks = S.tasks.map(function(x){ return x.id === tmd.id ? tmd : x; });
-} else {
-S.tasks = [tmd].concat(S.tasks);
-}
-saveTasks(); closeM(); render();
-}
-
-// ── LOG MODAL ─────────────────────────────────────────────────────────────────
-var lmd = null;
-
-function showLogModal() {
-lmd = {id:uid(), date:todayStr(), text:’’, category:‘work’, type:‘bau’, taskId:’’};
-renderLM();
-}
-
-function renderLM() {
-var f = lmd;
-var catOpts = S.cats.map(function(c) {
-return ‘<option value=”’ + c.id + ‘”’ + (f.category === c.id ? ’ selected’ : ‘’) + ‘>’ + esc(c.label) + ‘</option>’;
-}).join(’’);
-var typeOpts = [[‘bau’,‘BAU’],[‘project’,‘Project’],[‘investigation’,‘Investigation’],[‘agentic’,‘Agentic’]].map(function(x) {
-return ‘<option value=”’ + x[0] + ‘”’ + (f.type === x[0] ? ’ selected’ : ‘’) + ‘>’ + x[1] + ‘</option>’;
-}).join(’’);
-var wt = S.tasks.filter(function(t){ return t.category === ‘work’ || t.category === ‘projects’; });
-var taskOpts = ‘<option value="">– None –</option>’ + wt.map(function(t) {
-return ‘<option value="' + t.id + '">’ + esc(t.title.slice(0,45)) + ‘</option>’;
-}).join(’’);
-
-var html = ‘<div class="ovl" id="lmovl">’
-+ ‘<div class="mdl">’
-+ ‘<div class="mhdl"></div>’
-+ ‘<div class="mhd"><span class="mttl">Log Work Entry</span>’
-+ ‘<button class="mclb" id="lmClose">X</button></div>’
-+ ‘<div class="fld"><span class="flbl">Date</span><input type="date" class="inp" id="ld" value="' + f.date + '"/></div>’
-+ ‘<div class="fld"><span class="flbl">What did you work on?</span>’
-+ ‘<textarea class="inpta" id="lt" style="height:90px" placeholder="e.g. Worked on DHCP failover UAT...">’ + esc(f.text) + ‘</textarea></div>’
-+ ‘<div class="r2"><div><span class="flbl">Category</span><select class="sel" id="lc">’ + catOpts + ‘</select></div>’
-+ ‘<div><span class="flbl">Type</span><select class="sel" id="ltp">’ + typeOpts + ‘</select></div></div>’
-+ ‘<div class="fld"><span class="flbl">Link to Task (optional)</span><select class="sel" id="ltk">’ + taskOpts + ‘</select></div>’
-+ ‘<button class="svbtn" id="lmSave">Save Entry</button>’
-+ ‘</div></div>’;
-
-showM(html);
-
-document.getElementById(‘lmClose’).addEventListener(‘click’, closeM);
-document.getElementById(‘lmovl’).addEventListener(‘click’, function(e) {
-if (e.target === document.getElementById(‘lmovl’)) closeM();
-});
-document.getElementById(‘lmSave’).addEventListener(‘click’, subLog);
-}
-
-function subLog() {
-var text = document.getElementById(‘lt’).value.trim();
-if (!text) { alert(‘Please describe what you worked on’); return; }
-lmd.date    = document.getElementById(‘ld’).value;
-lmd.text    = text;
-lmd.category = document.getElementById(‘lc’).value;
-lmd.type    = document.getElementById(‘ltp’).value;
-lmd.taskId  = document.getElementById(‘ltk’).value;
-lmd.createdAt = nowISO();
-S.worklog = [lmd].concat(S.worklog);
-saveWL(); closeM(); render();
-}
-
-// ── CATEGORY MODAL ────────────────────────────────────────────────────────────
-var ncd  = {label:’’, icon:‘Pin’, color:’#8B5CF6’};
-var ICONS = [‘Pin’,‘Goal’,‘Idea’,‘Shop’,‘Book’,‘Music’,‘Gym’,‘Travel’,‘Food’,‘Game’,‘Photo’,‘World’,‘Team’,‘Bank’,‘Art’];
-
-function showCats() {
-ncd = {label:’’, icon:‘Pin’, color:’#8B5CF6’};
-renderCM();
-}
-
-function renderCM() {
-var rows = S.cats.map(function(c) {
-var cnt = S.tasks.filter(function(t){ return t.category === c.id; }).length;
-var bg  = S.tab === c.id ? ‘background:’ + c.color + ‘18’ : ‘’;
-return ‘<button class="crb" data-goto="' + c.id + '" style="' + bg + '">’
-+ ‘<span style="font-size:18px">’ + esc(c.icon) + ‘</span>’
-+ ‘<span style="flex:1;color:#E2E8F0;font-size:14px;font-weight:500">’ + esc(c.label) + ‘</span>’
-+ ‘<span style="color:#4B5563;font-size:12px">’ + cnt + ‘</span>’
-+ ‘</button>’;
-}).join(’’);
-
-var igrid = ICONS.map(function(ic) {
-return ‘<button class="ibtn' + (ncd.icon === ic ? ' picked' : '') + '" data-icon="' + ic + '">’ + ic + ‘</button>’;
-}).join(’’);
-
-var html = ‘<div class="ovl" id="cmovl">’
-+ ‘<div class="mdl">’
-+ ‘<div class="mhdl"></div>’
-+ ‘<div class="mhd"><span class="mttl">All Categories</span>’
-+ ‘<button class="mclb" id="cmClose">X</button></div>’
-+ ‘<div class="crow" id="cmRows">’ + rows + ‘</div>’
-+ ‘<div class="acb">’
-+ ‘<span class="flbl">New Category</span>’
-+ ‘<div class="igrid" id="cmIcons">’ + igrid + ‘</div>’
-+ ‘<input class="inp" id="ncl" value="' + esc(ncd.label) + '" placeholder="Category name" style="margin-bottom:8px"/>’
-+ ‘<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">’
-+ ‘<span class="flbl" style="margin:0">Color</span>’
-+ ‘<input type="color" id="nccolor" value="' + ncd.color + '" style="width:36px;height:30px;border:none;border-radius:6px;cursor:pointer"/>’
-+ ‘</div>’
-+ ‘<button class="svbtn" id="cmSave">Create Category</button>’
-+ ‘</div></div></div>’;
-
-showM(html);
-
-document.getElementById(‘cmClose’).addEventListener(‘click’, closeM);
-document.getElementById(‘cmovl’).addEventListener(‘click’, function(e) {
-if (e.target === document.getElementById(‘cmovl’)) closeM();
-});
-document.getElementById(‘cmRows’).addEventListener(‘click’, function(e) {
-var btn = e.target.closest(’[data-goto]’);
-if (btn) { setTab(btn.dataset.goto); closeM(); }
-});
-document.getElementById(‘cmIcons’).addEventListener(‘click’, function(e) {
-var btn = e.target.closest(’[data-icon]’);
-if (btn) { ncd.icon = btn.dataset.icon; renderCM(); }
-});
-document.getElementById(‘nccolor’).addEventListener(‘input’, function(e) {
-ncd.color = e.target.value;
-});
-document.getElementById(‘ncl’).addEventListener(‘input’, function(e) {
-ncd.label = e.target.value;
-});
-document.getElementById(‘cmSave’).addEventListener(‘click’, subCat);
-}
-
-function subCat() {
-var l = document.getElementById(‘ncl’).value.trim();
-if (!l) { alert(‘Name required’); return; }
-var nc = {
-id:    l.toLowerCase().replace(/\s+/g, ‘-’) + ‘-’ + Date.now().toString(36),
-label: l,
-icon:  ncd.icon,
-color: ncd.color
-};
-S.cats = S.cats.concat([nc]);
-lsave();
-if (S.apiKey) driveWrite(DRIVE_IDS.categories, {version:1, categories:S.cats});
-closeM(); render();
-}
-
-// ── MODAL HELPERS ─────────────────────────────────────────────────────────────
-function showM(html)  { document.getElementById(‘mc’).innerHTML = html; }
-function closeM()     { document.getElementById(‘mc’).innerHTML = ‘’; }
-
-// ── NAV UPDATE ────────────────────────────────────────────────────────────────
-function updNav() {
-var tabs = [‘home’,‘work’,‘projects’,‘log’,‘report’];
-tabs.forEach(function(t, i) {
-var el = document.getElementById(‘nt’ + i);
-if (!el) return;
-var active = (t === ‘log’ && S.showLog) || (t !== ‘log’ && S.tab === t && !S.showLog);
-el.className = ‘ntab’ + (active ? ’ on’ : ‘’);
-});
-
-function setBdg(id, cnt) {
-var el = document.getElementById(id);
-if (!el) return;
-el.textContent = cnt > 9 ? ‘9+’ : String(cnt);
-el.style.display = cnt > 0 ? ‘flex’ : ‘none’;
-}
-setBdg(‘nb1’, S.tasks.filter(function(t){ return t.category === ‘work’     && t.status !== ‘done’; }).length);
-setBdg(‘nb2’, S.tasks.filter(function(t){ return t.category === ‘projects’ && t.status !== ‘done’; }).length);
-setBdg(‘nb3’, S.worklog.filter(function(e){ return e.date === todayStr(); }).length);
-}
-
-// ── RENDER ────────────────────────────────────────────────────────────────────
-function render() {
-updNav();
-var b = document.getElementById(‘body’);
-if (!b) { alert(‘body element not found!’); return; }
-try {
-var content = ‘’;
-if (S.showLog)          { content = renderLog();  }
-else if (S.tab === ‘home’)   { content = renderHome(); }
-else if (S.tab === ‘report’) { content = renderRep();  }
-else                         { content = renderList(); }
-b.innerHTML = content;
-// Debug: show what happened
-document.getElementById(‘stxt’).textContent = ‘Rendered ’ + S.tab + ’ (’ + content.length + ’ chars)’;
-} catch(e) {
-b.innerHTML = ’<div style="padding:20px;color:#F87171;font-size:13px">Render error: ’ + e.message + ‘<br>’ + e.stack + ‘</div>’;
-document.getElementById(‘stxt’).textContent = ’ERROR: ’ + e.message;
-}
-}
-
-// ── HOME ──────────────────────────────────────────────────────────────────────
-function renderHome() {
-var tasks  = S.tasks;
-var done   = tasks.filter(function(t){ return t.status === ‘done’; }).length;
-var ovList = tasks.filter(isOv);
-var inp    = tasks.filter(function(t){ return t.status === ‘inprogress’; }).length;
-var pct    = tasks.length ? Math.round(done / tasks.length * 100) : 0;
-var wk     = weekRange();
-var urg    = tasks.filter(function(t){ return (t.priority===‘urgent’||t.priority===‘high’) && t.status!==‘done’; }).slice(0,3);
-
-var oal = ovList.length
-? ‘<div class="al"><span style="color:#F87171;font-size:15px">!</span>’
-+ ‘<span style="flex:1;color:#F87171;font-size:13px;font-weight:600">’ + ovList.length + ’ overdue task’ + (ovList.length > 1 ? ‘s’ : ‘’) + ‘</span>’
-+ ‘<button class="ab" data-action="goto" data-tab="work">View</button></div>’
-: ‘’;
-
-var uc = urg.map(function(t) {
-var c = getC(t.category), p = getP(t.priority), ov = isOv(t);
-return ‘<div class="mc2" data-action="goto" data-tab="' + t.category + '">’
-+ ‘<div class="ma" style="background:' + c.color + '"></div>’
-+ ‘<span style="flex:1;font-size:13px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">’ + esc(t.title) + ‘</span>’
-+ ‘<span class="bdg" style="background:' + p.color + '22;color:' + p.color + '">’ + p.label + ‘</span>’
-+ (t.dueDate ? ‘<span style="font-size:10px;color:' + (ov ? '#F87171' : '#6B7280') + '">’ + fdate(t.dueDate) + ‘</span>’ : ‘’)
-+ ‘</div>’;
-}).join(’’);
-
-var cg = S.cats.map(function(c) {
-var cnt = tasks.filter(function(t){ return t.category === c.id && t.status !== ‘done’; }).length;
-return ‘<button class="ct" data-action="goto" data-tab="' + c.id + '" style="border-color:' + c.color + '44">’
-+ ‘<span style="font-size:20px">’ + esc(c.icon) + ‘</span>’
-+ ‘<span style="font-size:11px;color:#6B7280;font-weight:500">’ + esc(c.label) + ‘</span>’
-+ (cnt > 0 ? ‘<span class="cba" style="background:' + c.color + '">’ + cnt + ‘</span>’ : ‘’)
-+ ‘</button>’;
-}).join(’’);
-
-return ‘<div class="pg">’
-+ ‘<div class="hero">’
-+ ‘<div class="hdate">’ + new Date().toLocaleDateString(‘en-US’,{weekday:‘long’,month:‘long’,day:‘numeric’}) + ‘</div>’
-+ ‘<div class="htitle">Your Second Brain</div>’
-+ ‘<div class="hsub">’ + (tasks.length - done) + ’ open - ’ + pct + ‘% complete</div>’
-+ ‘<div class="bt"><div class="bf" style="width:' + pct + '%"></div></div>’
-+ ‘</div>’
-+ ‘<div class="sg">’
-+ ‘<div class="sc"><div class="sv" style="color:#4F8EF7">’ + tasks.length + ‘</div><div class="sl">Total</div></div>’
-+ ‘<div class="sc"><div class="sv" style="color:#34D399">’ + done + ‘</div><div class="sl">Done</div></div>’
-+ ‘<div class="sc"><div class="sv" style="color:#FBBF24">’ + inp + ‘</div><div class="sl">Active</div></div>’
-+ ‘<div class="sc"><div class="sv" style="color:#F87171">’ + ovList.length + ‘</div><div class="sl">Overdue</div></div>’
-+ ‘</div>’
-+ oal
-+ (urg.length ? ‘<span class="stl">Urgent & High Priority</span>’ + uc : ‘’)
-+ ‘<div class="wb">’
-+ ‘<div><div class="wl">’ + wk.label + ‘</div><div class="ws">Tap to generate report</div></div>’
-+ ‘<button class="wbtn" data-action="goto" data-tab="report">Generate</button>’
-+ ‘</div>’
-+ ‘<span class="stl">Categories</span>’
-+ ‘<div class="cg">’ + cg + ‘</div>’
-+ ‘</div>’;
-}
-
-// ── LIST ──────────────────────────────────────────────────────────────────────
-function renderList() {
-var c    = getC(S.tab);
-var list = S.tasks.filter(function(t){ return t.category === S.tab; });
-if (S.fStatus !== ‘all’) list = list.filter(function(t){ return t.status === S.fStatus; });
-list = list.sort(function(a, b) {
-var p = [‘urgent’,‘high’,‘normal’,‘low’];
-return p.indexOf(a.priority) - p.indexOf(b.priority) || new Date(b.updatedAt) - new Date(a.updatedAt);
-});
-
-var chips = [{id:‘all’,label:‘All’}].concat(STAT).map(function(s) {
-var sc  = STAT.find(function(x){ return x.id === s.id; });
-var on  = S.fStatus === s.id;
-var sty = on && sc ? (‘background:’ + sc.color + ‘22;color:’ + sc.color + ‘;border-color:’ + sc.color) : ‘’;
-return ‘<button class="chip" data-action="filter" data-status="' + s.id + '" style="' + sty + '">’ + s.label + ‘</button>’;
-}).join(’’);
-
-var cards = list.length
-? list.map(renderTC).join(’’)
-: ‘<div style="text-align:center;padding:40px 0;color:#374151">Nothing here - tap + to add</div>’;
-
-return ‘<div class="pg">’
-+ ‘<div class="lh">’
-+ ‘<span style="font-size:20px">’ + esc(c.icon) + ‘</span>’
-+ ‘<span class="lt">’ + esc(c.label) + ‘</span>’
-+ ‘<span class="lc2">’ + list.filter(function(t){ return t.status !== ‘done’; }).length + ’ open</span>’
-+ ‘</div>’
-+ ‘<div class="chips">’ + chips + ‘</div>’
-+ cards
-+ ‘<div style="height:20px"></div>’
-+ ‘</div>’;
-}
-
-function renderTC(t) {
-var c   = getC(t.category), p = getP(t.priority), s = getS(t.status);
-var ov  = isOv(t), exp = S.expId === t.id;
-var ic  = {todo:‘O’, inprogress:’>’, done:‘OK’, blocked:‘X’, someday:’~’}[t.status] || ‘O’;
-var tags = (t.tags || []).map(function(tg){
-return ‘<span class="bdg" style="background:#0F1829;color:#4B5563">#’ + esc(tg) + ‘</span>’;
-}).join(’’);
-
-return ‘<div class="tc' + (ov ? ' ov' : '') + '" data-action="expand" data-id="' + t.id + '">’
-+ ‘<div class="tac" style="background:' + c.color + '"></div>’
-+ ‘<div class="tb">’
-+ ‘<div class="tr2">’
-+ ‘<button class="sbtn" data-action="cycle" data-id="' + t.id + '" style="background:' + s.color + '22;color:' + s.color + '">’ + ic + ‘</button>’
-+ ‘<div style="flex:1;min-width:0">’
-+ ‘<div class="tt' + (t.status === 'done' ? ' dn' : '') + '">’ + esc(t.title) + ‘</div>’
-+ (exp && t.notes ? ‘<div class="tn">’ + esc(t.notes) + ‘</div>’ : ‘’)
-+ ‘</div>’
-+ (t.dueDate ? ‘<span class="td' + (ov ? ' ov' : '') + '">’ + fdate(t.dueDate) + ‘</span>’ : ‘’)
-+ ‘</div>’
-+ ‘<div class="mr">’
-+ ‘<span class="bdg" style="background:' + p.color + '22;color:' + p.color + '">’ + p.label + ‘</span>’
-+ ‘<span class="bdg" style="background:' + s.color + '22;color:' + s.color + '">’ + s.label + ‘</span>’
-+ ‘<span class="bdg" style="background:' + c.color + '22;color:' + c.color + '">’ + esc(c.label) + ‘</span>’
-+ tags
-+ ‘</div>’
-+ (exp ? ‘<div class="tact"><button class="eb" data-action="edit" data-id="' + t.id + '">Edit</button><button class="db" data-action="del" data-id="' + t.id + '">Delete</button></div>’ : ‘’)
-+ ‘</div></div>’;
-}
-
-// ── WORKLOG ───────────────────────────────────────────────────────────────────
-function renderLog() {
-var grouped = {};
-S.worklog.forEach(function(e) {
-if (!grouped[e.date]) grouped[e.date] = [];
-grouped[e.date].push(e);
-});
-var days = Object.keys(grouped).sort(function(a,b){ return b.localeCompare(a); });
-var cnt  = {bau:0, project:0, investigation:0, agentic:0};
-S.worklog.forEach(function(e){ if (cnt[e.type] !== undefined) cnt[e.type]++; });
-
-var abar = ‘<div class="abar">’
-+ [[‘project’,’#A78BFA’,‘Project’],[‘bau’,’#94A3B8’,‘BAU’],[‘investigation’,’#F87171’,‘Invest.’],[‘agentic’,’#34D399’,‘Agentic’]]
-.map(function(x) {
-return ‘<div class="ap" style="background:' + x[1] + '18">’
-+ ‘<div style="font-size:18px;font-weight:700;color:' + x[1] + '">’ + cnt[x[0]] + ‘</div>’
-+ ‘<div style="font-size:9px;color:' + x[1] + '">’ + x[2] + ‘</div>’
-+ ‘</div>’;
-}).join(’’)
-+ ‘</div>’;
-
-var dh = days.map(function(date) {
-var es = grouped[date];
-var eh = es.map(function(e) {
-var c  = getC(e.category);
-var tc = TC[e.type] || ‘#94A3B8’;
-var tl = TL[e.type] || e.type;
-return ‘<div class="lce">’
-+ ‘<div class="la" style="background:' + c.color + '"></div>’
-+ ‘<div style="flex:1;min-width:0">’
-+ ‘<div class="ltx">’ + esc(e.text) + ‘</div>’
-+ ‘<div style="display:flex;gap:5px;flex-wrap:wrap">’
-+ ‘<span class="bdg" style="background:' + c.color + '22;color:' + c.color + '">’ + esc(c.label) + ‘</span>’
-+ ‘<span class="bdg" style="background:' + tc + '22;color:' + tc + '">’ + tl + ‘</span>’
-+ ‘</div></div>’
-+ ‘<button class="ldel" data-action="dellog" data-id="' + e.id + '">x</button>’
-+ ‘</div>’;
-}).join(’’);
-return ‘<div style="margin-bottom:16px">’
-+ ‘<div class="dh"><span class="dlb">’ + fdate(date) + ‘</span><span class="ddt">’ + date + ‘</span><span class="dc">’ + es.length + ‘</span></div>’
-+ eh
-+ ‘</div>’;
-}).join(’’);
-
-var html = ‘<div class="pg">’
-+ ‘<div class="lh"><span style="font-size:20px">Log</span><span class="lt">Worklog</span>’
-+ ‘<span class="lc2">’ + S.worklog.length + ’ entries</span></div>’
-+ abar
-+ (days.length ? dh : ‘<div style="text-align:center;padding:40px 0;color:#374151">No entries - tap + to log</div>’)
-+ ‘<div style="height:20px"></div></div>’;
-
-return html;
-}
-
-// ── REPORT ────────────────────────────────────────────────────────────────────
-function renderRep() {
-var wk = weekRange();
-var rbody = S.report
-? ‘<div class="racts">’
-+ ‘<button class="rab" data-action="copyreport">’ + (S.copied ? ‘Copied!’ : ‘Copy Email’) + ‘</button>’
-+ ‘<button class="rab" data-action="dlreport">Download</button>’
-+ ‘</div>’
-+ ‘<div class="rbox"><pre class="rpre">’ + esc(S.report) + ‘</pre></div>’
-: ‘<div style="text-align:center;padding:32px 0;color:#374151;font-size:13px">’
-+ (S.apiKey ? ‘Tap Generate to build your weekly report’ : ‘Add API key first (Key button)’) + ‘</div>’;
-
-return ‘<div class="pg">’
-+ ‘<div class="lh"><span style="font-size:20px">Report</span><span class="lt">Weekly Report</span></div>’
-+ ‘<div class="rh">’
-+ ‘<div class="rw">’ + wk.label + ‘</div>’
-+ ‘<div class="rs">AI reads your worklog and tasks to draft your email</div>’
-+ ‘<button class=“gbtn” data-action=“genreport”’ + (S.repLoading ? ’ disabled’ : ‘’) + ‘>’
-+ (S.repLoading ? ‘Generating…’ : ‘Generate Weekly Report’) + ‘</button>’
-+ ‘</div>’
-+ rbody
-+ ‘<div style="height:20px"></div></div>’;
-}
-
-// ── INIT ──────────────────────────────────────────────────────────────────────
-function init() {
-// Wire static buttons
-document.getElementById(‘keyBtn’).addEventListener(‘click’,  toggleApi);
-document.getElementById(‘logBtn’).addEventListener(‘click’,  toggleLog);
-document.getElementById(‘aSaveBtn’).addEventListener(‘click’, saveKey);
-document.getElementById(‘aCancBtn’).addEventListener(‘click’, toggleApi);
-document.getElementById(‘fab’).addEventListener(‘click’,     onFab);
-document.getElementById(‘nt0’).addEventListener(‘click’, function(){ setTab(‘home’); });
-document.getElementById(‘nt1’).addEventListener(‘click’, function(){ setTab(‘work’); });
-document.getElementById(‘nt2’).addEventListener(‘click’, function(){ setTab(‘projects’); });
-document.getElementById(‘nt3’).addEventListener(‘click’, toggleLog);
-document.getElementById(‘nt4’).addEventListener(‘click’, function(){ setTab(‘report’); });
-document.getElementById(‘nt5’).addEventListener(‘click’, showCats);
-
-// Load data
-lload();
-
-// Show status
-if (S.apiKey) {
-setSyncDot(’#FBBF24’, ‘Syncing with Drive…’);
-} else {
-setSyncDot(’#F87171’, ‘Tap Key to add API key’);
-}
-
-// Single delegated event listener handles ALL body clicks
-var bodyEl = document.getElementById(‘body’);
-bodyEl.addEventListener(‘click’, function(e) {
-var el = e.target.closest(’[data-action]’);
-if (!el) return;
-var action = el.dataset.action;
-var tab    = el.dataset.tab;
-var id     = el.dataset.id;
-if (action === ‘goto’)       { e.stopPropagation(); setTab(tab); }
-else if (action === ‘filter’)     { e.stopPropagation(); S.fStatus = el.dataset.status; render(); }
-else if (action === ‘cycle’)      { e.stopPropagation(); cycleStatus(id); }
-else if (action === ‘edit’)       { e.stopPropagation(); editTask(id); }
-else if (action === ‘del’)        { e.stopPropagation(); delTask(id); }
-else if (action === ‘expand’)     { togExp(id); }
-else if (action === ‘dellog’)     { e.stopPropagation(); delLog(id); }
-else if (action === ‘genreport’)  { buildReport(); }
-else if (action === ‘copyreport’) { copyRep(); }
-else if (action === ‘dlreport’)   { dlRep(); }
-else if (action === ‘tmcat’)      { if(tmd){tmd.category=el.dataset.catid;renderTM();} }
-else if (action === ‘rmtag’)      { if(tmd){tmd.tags=(tmd.tags||[]).filter(function(x){return x!==el.dataset.tag;});renderTM();} }
-else if (action === ‘addtag’)     { addTag(); }
-else if (action === ‘tmsave’)     { subTask(el.dataset.ise===‘true’); }
-else if (action === ‘lmsave’)     { subLog(); }
-else if (action === ‘cmsave’)     { subCat(); }
-else if (action === ‘tmclose’)    { closeM(); }
-else if (action === ‘catgoto’)    { setTab(el.dataset.catid); closeM(); }
-else if (action === ‘caticon’)    { ncd.icon=el.dataset.icon; renderCM(); }
-});
-
-// Render immediately
-render();
-
-// Sync drive in background
-if (S.apiKey) syncDrive();
-}
-
-// Run immediately - script is at end of body
-init();
 
 </script>
+
 </body>
 </html>
