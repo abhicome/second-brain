@@ -1,535 +1,580 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="theme-color" content="#080C14"/>
 <title>Second Brain</title>
-
 <style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
-
-body{
-  background:#080C14;
-  color:#E2E8F0;
-  font-family:Arial,sans-serif;
-}
-
-#wrap{
-  max-width:430px;
-  margin:auto;
-  min-height:100vh;
-}
-
-#hdr{
-  padding:14px 16px;
-  border-bottom:1px solid #1F2937;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:#080C14;
-  position:sticky;
-  top:0;
-  z-index:10;
-}
-
-#appBody{
-  padding:16px;
-  padding-bottom:120px;
-}
-
-#nav{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  background:#111827;
-  display:flex;
-  justify-content:space-around;
-  padding:10px 0 20px;
-  border-top:1px solid #1F2937;
-}
-
-.ntab{
-  background:none;
-  border:none;
-  color:#6B7280;
-  cursor:pointer;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:4px;
-  font-size:11px;
-}
-
-.ntab.on{
-  color:#4F8EF7;
-}
-
-.ntab span:first-child{
-  font-size:20px;
-}
-
-.sg{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:8px;
-  margin:18px 0;
-}
-
-.sc{
-  background:#111827;
-  padding:12px;
-  border-radius:12px;
-  text-align:center;
-}
-
-.sv{
-  font-size:20px;
-  font-weight:700;
-}
-
-.sl{
-  font-size:10px;
-  color:#6B7280;
-  margin-top:4px;
-}
-
-.cg{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-  margin-top:12px;
-}
-
-.ct{
-  background:#111827;
-  border:none;
-  border-radius:14px;
-  padding:16px;
-  color:white;
-  cursor:pointer;
-  position:relative;
-}
-
-.tc{
-  background:#111827;
-  border-radius:14px;
-  padding:14px;
-  margin-bottom:12px;
-}
-
-.badge{
-  background:#1F2937;
-  padding:4px 8px;
-  border-radius:6px;
-  font-size:10px;
-}
-
-button{
-  font-family:inherit;
-}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#080C14;color:#E2E8F0;font-family:Arial,sans-serif}
+#wrap{max-width:430px;margin:auto;min-height:100vh}
+#hdr{padding:14px 16px;border-bottom:1px solid #1F2937;display:flex;justify-content:space-between;align-items:center;background:#080C14;position:sticky;top:0;z-index:10}
+#appBody{padding:16px;padding-bottom:120px}
+#nav{position:fixed;bottom:0;left:0;right:0;background:#111827;display:flex;justify-content:space-around;padding:10px 0 20px;border-top:1px solid #1F2937}
+#apanel{background:#0D1420;border-bottom:1px solid #1F2937;padding:12px 16px;display:none}
+.ntab{background:none;border:none;color:#6B7280;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px}
+.ntab.on{color:#4F8EF7}
+.ntab span:first-child{font-size:20px}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:18px 0}
+.sc{background:#111827;padding:12px;border-radius:12px;text-align:center}
+.sv{font-size:20px;font-weight:700}
+.sl{font-size:10px;color:#6B7280;margin-top:4px}
+.cg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.ct{background:#111827;border:none;border-radius:14px;padding:16px;color:white;cursor:pointer;position:relative;width:100%;text-align:left}
+.tc{background:#111827;border-radius:14px;padding:14px;margin-bottom:12px}
+.badge{background:#1F2937;padding:4px 8px;border-radius:6px;font-size:10px;display:inline-block;margin-top:6px;margin-right:4px}
+.wb{background:linear-gradient(135deg,#4F8EF715,#A78BFA15);border:1px solid #4F8EF733;border-radius:14px;padding:14px 16px;margin:14px 0;display:flex;align-items:center;justify-content:space-between}
+.al{background:#F8717115;border:1px solid #F8717130;border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.abar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.ap{border-radius:10px;padding:10px 6px;text-align:center}
+.lce{background:#111827;border-radius:10px;padding:10px 12px;margin-bottom:6px;display:flex;gap:8px;align-items:flex-start}
+.chip{display:inline-block;padding:3px 8px;border-radius:6px;font-size:10px;margin-right:4px;margin-top:4px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;margin-bottom:8px}
+.chipbtn{background:#111827;border:1px solid #1F2937;border-radius:99px;color:#6B7280;font-size:11px;padding:5px 12px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.inp{width:100%;background:#080C14;border:1px solid #374151;border-radius:10px;padding:11px 12px;color:white;font-family:Arial,sans-serif;font-size:14px;outline:none;display:block;margin-top:6px}
+.sel{width:100%;background:#080C14;border:1px solid #374151;border-radius:10px;padding:11px 12px;color:white;font-family:Arial,sans-serif;font-size:14px;outline:none;cursor:pointer;display:block;margin-top:6px}
+.inpta{width:100%;background:#080C14;border:1px solid #374151;border-radius:10px;padding:11px 12px;color:white;font-family:Arial,sans-serif;font-size:14px;outline:none;height:80px;resize:none;display:block;margin-top:6px}
+.svbtn{width:100%;background:linear-gradient(135deg,#4F8EF7,#A78BFA);border:none;border-radius:12px;padding:14px;color:white;font-weight:700;margin-top:16px;cursor:pointer;font-size:15px;font-family:Arial,sans-serif}
+.fld{margin-bottom:14px}
+.flbl{font-size:11px;color:#94A3B8;text-transform:uppercase;letter-spacing:.06em}
+.r2{display:flex;gap:10px;margin-bottom:14px}
+.r2>div{flex:1}
+.ovl{position:fixed;inset:0;background:#00000090;display:flex;align-items:flex-end;z-index:50}
+.mdl{background:#111827;width:100%;max-width:430px;margin:auto;border-radius:20px 20px 0 0;padding:20px;max-height:88vh;overflow-y:auto}
+.mhdl{width:36px;height:4px;background:#374151;border-radius:99px;margin:0 auto 16px}
+.mhd{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.mttl{font-size:18px;font-weight:700}
+.mclb{background:none;border:none;color:#94A3B8;font-size:20px;cursor:pointer}
+.rh{background:linear-gradient(135deg,#4F8EF715,#A78BFA15);border:1px solid #4F8EF730;border-radius:14px;padding:16px;margin-bottom:16px}
+.gbtn{width:100%;padding:13px;background:linear-gradient(135deg,#4F8EF7,#A78BFA);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;margin-top:10px;font-family:Arial,sans-serif}
+.rbox{background:#080C14;border-radius:12px;padding:14px;margin-top:12px;overflow-x:auto}
+.rpre{margin:0;color:#C8D6E5;font-size:11px;line-height:1.8;white-space:pre-wrap;font-family:monospace}
+button{font-family:inherit}
 </style>
 </head>
-
 <body>
-
 <div id="wrap">
-
   <div id="hdr">
-    <div style="font-size:18px;font-weight:700;">
-      Second Brain
-    </div>
-
-    <div id="stxt" style="font-size:11px;color:#34D399;">
-      Ready
+    <div style="font-size:18px;font-weight:700">Second Brain</div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div id="stxt" style="font-size:10px;color:#34D399">Ready</div>
+      <button onclick="toggleApi()" style="background:#111827;border:none;border-radius:8px;color:#94A3B8;font-size:12px;padding:6px 10px;cursor:pointer">Key</button>
+      <button onclick="toggleLog()" style="background:#111827;border:none;border-radius:8px;color:#94A3B8;font-size:12px;padding:6px 10px;cursor:pointer">Log</button>
     </div>
   </div>
-
+  <div id="apanel">
+    <div style="font-size:11px;color:#6B7280;margin-bottom:8px">Anthropic API Key (saved on device)</div>
+    <div style="display:flex;gap:8px;margin-bottom:6px">
+      <input type="password" id="akey" placeholder="sk-ant-..." style="flex:1;background:#080C14;border:1px solid #374151;border-radius:10px;padding:10px 12px;color:white;font-size:13px;outline:none"/>
+      <button onclick="saveKey()" style="background:#4F8EF7;border:none;border-radius:10px;color:white;font-size:13px;padding:0 14px;font-weight:600;cursor:pointer">Save</button>
+      <button onclick="toggleApi()" style="background:#1F2937;border:none;border-radius:10px;color:#94A3B8;font-size:13px;padding:0 12px;cursor:pointer">X</button>
+    </div>
+    <div style="font-size:10px;color:#374151">console.anthropic.com - API Keys</div>
+  </div>
   <div id="appBody"></div>
-
 </div>
 
 <div id="nav">
-
-  <button class="ntab on" onclick="setTab('home')">
-    <span>🏠</span>
-    <span>Home</span>
-  </button>
-
-  <button class="ntab" onclick="setTab('work')">
-    <span>💼</span>
-    <span>Work</span>
-  </button>
-
-  <button class="ntab" onclick="setTab('projects')">
-    <span>🚀</span>
-    <span>Projects</span>
-  </button>
-
-  <button class="ntab" onclick="setTab('log')">
-    <span>📋</span>
-    <span>Log</span>
-  </button>
-
-  <button class="ntab" onclick="setTab('report')">
-    <span>📊</span>
-    <span>Report</span>
-  </button>
-
+  <button class="ntab on" id="nt0" onclick="setTab('home')"><span>&#127968;</span><span>Home</span></button>
+  <button class="ntab" id="nt1" onclick="setTab('work')"><span>&#128188;</span><span>Work</span></button>
+  <button class="ntab" id="nt2" onclick="setTab('projects')"><span>&#128640;</span><span>Projects</span></button>
+  <button class="ntab" id="nt3" onclick="showLog()"><span>&#128203;</span><span>Log</span></button>
+  <button class="ntab" id="nt4" onclick="setTab('report')"><span>&#128202;</span><span>Report</span></button>
+  <button class="ntab" id="nt5" onclick="showCatModal()"><span>&#8230;</span><span>More</span></button>
 </div>
 
+<div id="mc"></div>
+
 <script>
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+var DRIVE = {
+  tasks:      '1OWIXMe5PvrXOZXDVFDxVfylXQ8Kml_IE',
+  worklog:    '1w6jQLE48kmnSQ3kXn5TDiafhfYe2y4tQ',
+  categories: '14zFd-GoGYRGdbjr76ySlRNb-pqZrNSyK'
+};
+var DMCP  = 'https://drivemcp.googleapis.com/mcp/v1';
+var MODEL = 'claude-sonnet-4-20250514';
 
-var tasks = [
+// ── DATA ──────────────────────────────────────────────────────────────────────
+var DEFAULT_CATS = [
+  {id:'work',label:'Work',color:'#4F8EF7'},
+  {id:'projects',label:'Projects',color:'#A78BFA'},
+  {id:'personal',label:'Personal',color:'#34D399'},
+  {id:'knowledge',label:'Knowledge',color:'#FBBF24'},
+  {id:'bills',label:'Bills',color:'#F87171'},
+  {id:'watchlist',label:'Watchlist',color:'#38BDF8'},
+  {id:'health',label:'Health',color:'#FB923C'}
+];
+var PRI  = [{id:'urgent',label:'Urgent',color:'#F87171'},{id:'high',label:'High',color:'#FBBF24'},{id:'normal',label:'Normal',color:'#94A3B8'},{id:'low',label:'Low',color:'#475569'}];
+var STAT = [{id:'todo',label:'To Do',color:'#94A3B8'},{id:'inprogress',label:'In Progress',color:'#FBBF24'},{id:'done',label:'Done',color:'#34D399'},{id:'blocked',label:'Blocked',color:'#F87171'},{id:'someday',label:'Someday',color:'#A78BFA'}];
+var TC   = {bau:'#94A3B8',project:'#A78BFA',investigation:'#F87171',agentic:'#34D399'};
+var TL   = {bau:'BAU',project:'Project',investigation:'Investigation',agentic:'Agentic'};
 
-{
-id:'1',
-title:'DHCP Scope Failover UAT',
-category:'work',
-priority:'urgent',
-status:'inprogress',
-dueDate:'2026-05-09',
-notes:'Discuss with Vikas Maurya'
-},
-
-{
-id:'2',
-title:'PacketFence Patching',
-category:'work',
-priority:'high',
-status:'inprogress',
-dueDate:'2026-05-25',
-notes:'PFE01 pending'
-},
-
-{
-id:'3',
-title:'Discuss feasibility with Vikas',
-category:'work',
-priority:'high',
-status:'todo',
-dueDate:'2026-05-06',
-notes:'Sub-task of DHCP UAT'
-},
-
-{
-id:'4',
-title:'SailPoint Pre Migration',
-category:'projects',
-priority:'urgent',
-status:'inprogress',
-dueDate:'2026-05-08',
-notes:'DC updates pending'
-},
-
-{
-id:'5',
-title:'SailPoint Post Migration',
-category:'projects',
-priority:'urgent',
-status:'inprogress',
-dueDate:'2026-05-11',
-notes:'Power on DCs and verify replication'
-},
-
-{
-id:'6',
-title:'AD Transformation Roadmap',
-category:'projects',
-priority:'high',
-status:'inprogress',
-dueDate:'2026-05-08',
-notes:'Awaiting Microsoft response'
-}
-
+var ITASKS = [
+  {id:'1',title:'DHCP Scope Failover UAT',category:'work',priority:'urgent',status:'inprogress',dueDate:'2026-05-09',notes:'Network team using solution to assign IP on switch interface. Next: Discuss feasibility with Vikas Maurya',tags:[]},
+  {id:'2',title:'Fix Packet Fence Auto Enrolment Issue',category:'work',priority:'high',status:'inprogress',dueDate:'2026-05-06',notes:'',tags:[]},
+  {id:'3',title:'Discuss feasibility with Vikas Maurya',category:'work',priority:'high',status:'todo',dueDate:'2026-05-06',notes:'Sub-task of DHCP Scope Failover UAT',tags:[]},
+  {id:'4',title:'PacketFence Patching',category:'work',priority:'high',status:'inprogress',dueDate:'2026-05-25',notes:'Patching planned for PFE01; rescheduled for 3rd May',tags:[]},
+  {id:'5',title:'SailPoint Pre Migration Activities',category:'projects',priority:'urgent',status:'inprogress',dueDate:'2026-05-08',notes:'DC resource updates, backups, replication changes pending',tags:[]},
+  {id:'6',title:'SailPoint Post Migration Activities',category:'projects',priority:'urgent',status:'inprogress',dueDate:'2026-05-11',notes:'Next: Power on DCs, Verify AD replication, Validate group membership',tags:[]},
+  {id:'7',title:'AD Transformation (AD-Less Roadmap)',category:'projects',priority:'high',status:'inprogress',dueDate:'2026-05-08',notes:'Discussion initiated with Microsoft. Await response.',tags:[]},
+  {id:'8',title:'DHCP 50/50 Failover Dashboard',category:'projects',priority:'normal',status:'inprogress',dueDate:'2026-05-11',notes:'PEG team working on dashboard.',tags:[]},
+  {id:'9',title:'DNS Block for corp.ad (Zscaler)',category:'projects',priority:'high',status:'inprogress',dueDate:'2026-05-22',notes:'Solution discussion completed with Zscaler vendor.',tags:[]},
+  {id:'10',title:'Arista AGNI Implementation',category:'projects',priority:'high',status:'inprogress',dueDate:'2026-09-30',notes:'Port validation done; Infosec approval pending.',tags:[]},
+  {id:'11',title:'DHCP Scope Creation Automation',category:'projects',priority:'normal',status:'inprogress',dueDate:'2026-06-30',notes:'BRD update in progress.',tags:[]},
+  {id:'12',title:'DNS Catalogue Modification',category:'projects',priority:'normal',status:'inprogress',dueDate:'2026-06-30',notes:'DNS database updated with most domain owners.',tags:[]},
+  {id:'13',title:'SailPoint Migration Scripts',category:'projects',priority:'normal',status:'done',dueDate:'2026-05-03',notes:'All scripts prepared and shared.',tags:[]}
 ];
 
-var tab = 'home';
+var IWL = [
+  {id:'w1',date:'2026-05-05',text:'AD transformation discussion with MS',category:'projects',type:'project'},
+  {id:'w2',date:'2026-05-01',text:'DHCP incident RCA',category:'projects',type:'investigation'},
+  {id:'w3',date:'2026-05-01',text:'Arista Agni port allow discussion with Rajesh',category:'projects',type:'project'},
+  {id:'w4',date:'2026-05-01',text:'DNS database update',category:'work',type:'bau'},
+  {id:'w5',date:'2026-04-30',text:'Prepared all scripts for SailPoint migration',category:'projects',type:'project'},
+  {id:'w6',date:'2026-04-30',text:'DHCP scope mismatch script',category:'projects',type:'bau'},
+  {id:'w7',date:'2026-04-29',text:'AD replication script',category:'work',type:'bau'},
+  {id:'w8',date:'2026-04-28',text:'Password expiry report for SP migration',category:'work',type:'project'},
+  {id:'w9',date:'2026-04-28',text:'Discussed agentic use cases with HA',category:'work',type:'agentic'},
+  {id:'w10',date:'2026-04-26',text:'Updated agentic AI use case with manual steps',category:'work',type:'agentic'},
+  {id:'w11',date:'2026-04-25',text:'Training on AI builder',category:'work',type:'bau'},
+  {id:'w12',date:'2026-04-24',text:'Arista AGNI explaining to PM',category:'projects',type:'project'},
+  {id:'w13',date:'2026-04-22',text:'DNS leakage solutioning with Zscaler vendor',category:'projects',type:'bau'},
+  {id:'w14',date:'2026-04-16',text:'Cloud AD architecture review',category:'work',type:'bau'},
+  {id:'w15',date:'2026-04-15',text:'DNS database creation',category:'work',type:'bau'},
+  {id:'w16',date:'2026-04-14',text:'Troubleshooting cloud.ad account issue',category:'work',type:'investigation'},
+  {id:'w17',date:'2026-04-13',text:'SSL 3.0 disable vulnerability',category:'work',type:'investigation'},
+  {id:'w18',date:'2026-04-09',text:'DHCP 50/50 failover use case discussion',category:'projects',type:'project'},
+  {id:'w19',date:'2026-04-07',text:'DHCP scope creation BRD',category:'projects',type:'bau'},
+  {id:'w20',date:'2026-04-06',text:'AD less road map transformation',category:'work',type:'project'}
+];
 
-function setTab(t){
+// ── STATE ─────────────────────────────────────────────────────────────────────
+var tasks   = [];
+var worklog = [];
+var cats    = [];
+var apiKey  = '';
+var tab     = 'home';
+var showingLog = false;
+var fStatus = 'all';
+var expId   = null;
+var report  = '';
+var repLoading = false;
+var repCopied  = false;
+var saveTimers = {};
+var _formTags  = [];
+var _newCat    = {label:'',icon:'Pin',color:'#8B5CF6'};
 
-  tab = t;
+// ── UTILS ─────────────────────────────────────────────────────────────────────
+function uid()    { return Math.random().toString(36).slice(2)+Date.now().toString(36); }
+function nowISO() { return new Date().toISOString(); }
+function todayStr(){ return new Date().toISOString().slice(0,10); }
 
-  var tabs = document.querySelectorAll('.ntab');
-
-  tabs.forEach(function(el){
-    el.classList.remove('on');
-  });
-
-  var arr = ['home','work','projects','log','report'];
-
-  var idx = arr.indexOf(t);
-
-  if(idx >= 0){
-    tabs[idx].classList.add('on');
-  }
-
-  render();
-}
-
-function fdate(iso){
-
+function fdate(iso) {
   if(!iso) return '';
-
-  var today = new Date();
-  today.setHours(0,0,0,0);
-
-  var dt = new Date(iso);
-  dt.setHours(0,0,0,0);
-
-  var diff = Math.round((dt - today)/86400000);
-
-  if(diff === 0) return 'Today';
-
-  if(diff === 1) return 'Tomorrow';
-
-  if(diff < 0) return Math.abs(diff) + 'd ago';
-
-  return new Date(iso).toLocaleDateString(
-    'en-US',
-    {
-      month:'short',
-      day:'numeric'
-    }
-  );
+  var today=new Date(); today.setHours(0,0,0,0);
+  var dt=new Date(iso); dt.setHours(0,0,0,0);
+  var d=Math.round((dt-today)/86400000);
+  if(d===0) return 'Today'; if(d===1) return 'Tomorrow';
+  if(d<0) return Math.abs(d)+'d ago';
+  if(d<8) return new Date(iso).toLocaleDateString('en-US',{weekday:'short'});
+  return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric'});
 }
 
-function isOverdue(t){
+function isOv(t) { return t.dueDate&&t.status!=='done'&&new Date(t.dueDate)<new Date(new Date().toDateString()); }
+function getC(id){ return cats.find(function(c){return c.id===id;})||{id:'work',label:'Work',color:'#4F8EF7'}; }
+function getP(id){ return PRI.find(function(p){return p.id===id;})||PRI[2]; }
+function getS(id){ return STAT.find(function(s){return s.id===id;})||STAT[0]; }
 
-  return (
-    t.dueDate &&
-    t.status !== 'done' &&
-    new Date(t.dueDate) < new Date(new Date().toDateString())
-  );
+function weekRange() {
+  var d=new Date(),day=d.getDay();
+  var mon=new Date(d); mon.setDate(d.getDate()-((day+6)%7));
+  var sun=new Date(mon); sun.setDate(mon.getDate()+6);
+  function fmt(x){ return x.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}); }
+  return {start:mon.toISOString().slice(0,10),end:sun.toISOString().slice(0,10),label:fmt(mon)+' - '+fmt(sun)};
 }
 
-function markDone(id){
+function setSyncDot(color,msg) {
+  document.getElementById('stxt').style.color=color;
+  document.getElementById('stxt').textContent=msg;
+}
 
-  tasks = tasks.map(function(t){
+// ── STORAGE ───────────────────────────────────────────────────────────────────
+function lsave() {
+  try{localStorage.setItem('sb_t',JSON.stringify(tasks));localStorage.setItem('sb_w',JSON.stringify(worklog));localStorage.setItem('sb_c',JSON.stringify(cats));}catch(e){}
+}
+function lload() {
+  try{
+    var t=localStorage.getItem('sb_t'),w=localStorage.getItem('sb_w'),c=localStorage.getItem('sb_c'),k=localStorage.getItem('sb_k');
+    if(t) tasks=JSON.parse(t); if(w) worklog=JSON.parse(w); if(c) cats=JSON.parse(c); if(k) apiKey=k;
+  }catch(e){}
+  if(!tasks||!tasks.length) tasks=JSON.parse(JSON.stringify(ITASKS));
+  if(!worklog||!worklog.length) worklog=JSON.parse(JSON.stringify(IWL));
+  if(!cats||!cats.length) cats=JSON.parse(JSON.stringify(DEFAULT_CATS));
+}
 
-    if(t.id !== id){
-      return t;
-    }
+// ── API KEY ───────────────────────────────────────────────────────────────────
+function toggleApi() {
+  var p=document.getElementById('apanel');
+  p.style.display=p.style.display==='block'?'none':'block';
+  if(p.style.display==='block') document.getElementById('akey').value=apiKey;
+}
+function saveKey() {
+  apiKey=document.getElementById('akey').value.trim();
+  try{localStorage.setItem('sb_k',apiKey);}catch(e){}
+  document.getElementById('apanel').style.display='none';
+  if(apiKey) syncDrive();
+}
 
-    return Object.assign({},t,{
-      status:t.status === 'done' ? 'todo' : 'done'
-    });
-
-  });
-
+// ── DRIVE ─────────────────────────────────────────────────────────────────────
+async function callAI(sys,usr,mx,useMCP) {
+  var body={model:MODEL,max_tokens:mx||1000,system:sys,messages:[{role:'user',content:usr}]};
+  if(useMCP) body.mcp_servers=[{type:'url',url:DMCP,name:'gdrive'}];
+  var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-beta':'mcp-client-2025-04-04'},body:JSON.stringify(body)});
+  return r.json();
+}
+async function driveRead(fid) {
+  if(!apiKey) return null;
+  try{
+    var d=await callAI('You have Google Drive access. Read file ID "'+fid+'". Return ONLY raw JSON.','Read file.',4000,true);
+    var bl=d.content||[];
+    for(var i=0;i<bl.length;i++){if(bl[i].type==='mcp_tool_result'){var t=(bl[i].content&&bl[i].content[0]&&bl[i].content[0].text)||'';try{return JSON.parse(t);}catch(e){}}}
+    for(var j=0;j<bl.length;j++){if(bl[j].type==='text'){var m=bl[j].text.match(/\{[\s\S]*\}/);if(m){try{return JSON.parse(m[0]);}catch(e){}}}}
+  }catch(e){}
+  return null;
+}
+async function driveWrite(fid,obj) {
+  if(!apiKey) return;
+  try{obj.lastUpdated=nowISO();await callAI('You have Google Drive access. Overwrite file ID "'+fid+'" with exact JSON. Reply: saved','Save:\n'+JSON.stringify(obj,null,2),200,true);}catch(e){}
+}
+function debSave(key,fid,data) {
+  clearTimeout(saveTimers[key]);
+  saveTimers[key]=setTimeout(async function(){setSyncDot('#FBBF24','Saving...');await driveWrite(fid,data);setSyncDot('#34D399','Saved');},1200);
+}
+function saveTasks() { lsave(); debSave('t',DRIVE.tasks,{version:1,items:tasks}); }
+function saveWL()    { lsave(); debSave('w',DRIVE.worklog,{version:1,entries:worklog}); }
+async function syncDrive() {
+  setSyncDot('#FBBF24','Syncing...');
+  try{
+    var res=await Promise.all([driveRead(DRIVE.tasks),driveRead(DRIVE.worklog),driveRead(DRIVE.categories)]);
+    if(res[0]&&res[0].items&&res[0].items.length) tasks=res[0].items;
+    if(res[1]&&res[1].entries&&res[1].entries.length) worklog=res[1].entries;
+    if(res[2]&&res[2].categories&&res[2].categories.length) cats=res[2].categories;
+    lsave(); setSyncDot('#34D399','Synced');
+  }catch(e){setSyncDot('#F87171','Sync failed');}
   render();
 }
 
-function deleteTask(id){
-
-  if(!confirm('Delete task?')){
-    return;
-  }
-
-  tasks = tasks.filter(function(t){
-    return t.id !== id;
-  });
-
+// ── NAV ───────────────────────────────────────────────────────────────────────
+function setTab(t) {
+  tab=t; showingLog=false; fStatus='all'; expId=null;
+  document.querySelectorAll('.ntab').forEach(function(el){el.classList.remove('on');});
+  var m={home:'nt0',work:'nt1',projects:'nt2',report:'nt4'};
+  if(m[t]) document.getElementById(m[t]).classList.add('on');
   render();
 }
 
-function render(){
-
-  var b = document.getElementById('appBody');
-
-  var done = tasks.filter(function(t){
-    return t.status === 'done';
-  }).length;
-
-  var active = tasks.filter(function(t){
-    return t.status === 'inprogress';
-  }).length;
-
-  var overdue = tasks.filter(isOverdue).length;
-
-  if(tab === 'work' || tab === 'projects'){
-
-    var list = tasks.filter(function(t){
-      return t.category === tab;
-    });
-
-    var html = '';
-
-    html += '<h2 style="font-size:22px;margin-bottom:18px;">';
-    html += tab === 'work' ? 'Work Tasks' : 'Project Tasks';
-    html += '</h2>';
-
-    list.forEach(function(t){
-
-      var ov = isOverdue(t);
-
-      html += '<div class="tc">';
-
-      html += '<div style="font-size:15px;font-weight:700;">';
-      html += t.title;
-      html += '</div>';
-
-      html += '<div style="font-size:12px;color:#94A3B8;margin-top:8px;">';
-      html += t.notes;
-      html += '</div>';
-
-      html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">';
-
-      html += '<span class="badge">';
-      html += t.priority;
-      html += '</span>';
-
-      html += '<span class="badge">';
-      html += t.status;
-      html += '</span>';
-
-      html += '<span class="badge" style="color:'+(ov ? '#F87171' : '#94A3B8')+';">';
-      html += fdate(t.dueDate);
-      html += '</span>';
-
-      html += '</div>';
-
-      html += '<div style="display:flex;gap:8px;margin-top:12px;">';
-
-      html += '<button onclick="markDone(\''+t.id+'\')" style="flex:1;padding:10px;border:none;border-radius:10px;background:#34D39920;color:#34D399;cursor:pointer;">';
-
-      html += t.status === 'done' ? 'Undo' : 'Done';
-
-      html += '</button>';
-
-      html += '<button onclick="deleteTask(\''+t.id+'\')" style="padding:10px 14px;border:none;border-radius:10px;background:#F8717120;color:#F87171;cursor:pointer;">';
-
-      html += 'Delete';
-
-      html += '</button>';
-
-      html += '</div>';
-
-      html += '</div>';
-
-    });
-
-    b.innerHTML = html;
-
-    return;
-  }
-
-  if(tab !== 'home'){
-
-    b.innerHTML =
-      '<h2 style="font-size:22px;margin-bottom:16px;">'+tab+'</h2>' +
-      '<p style="color:#6B7280;">Coming soon</p>';
-
-    return;
-  }
-
-  var categories = [
-
-    {id:'work',label:'Work',color:'#4F8EF7'},
-    {id:'projects',label:'Projects',color:'#A78BFA'},
-    {id:'personal',label:'Personal',color:'#34D399'},
-    {id:'knowledge',label:'Knowledge',color:'#FBBF24'},
-    {id:'bills',label:'Bills',color:'#F87171'},
-    {id:'health',label:'Health',color:'#FB923C'}
-
-  ];
-
-  var catHtml = '';
-
-  categories.forEach(function(c){
-
-    var cnt = tasks.filter(function(t){
-
-      return (
-        t.category === c.id &&
-        t.status !== 'done'
-      );
-
-    }).length;
-
-    catHtml += '<button class="ct" onclick="setTab(\''+c.id+'\')" style="border:1px solid '+c.color+'44;">';
-
-    catHtml += '<div style="font-size:14px;font-weight:700;">';
-    catHtml += c.label;
-    catHtml += '</div>';
-
-    catHtml += '<div style="font-size:11px;color:#6B7280;margin-top:6px;">';
-    catHtml += cnt + ' open';
-    catHtml += '</div>';
-
-    if(cnt > 0){
-
-      catHtml += '<div style="position:absolute;top:8px;right:8px;background:'+c.color+';color:white;border-radius:999px;font-size:10px;padding:2px 6px;">';
-
-      catHtml += cnt;
-
-      catHtml += '</div>';
-    }
-
-    catHtml += '</button>';
-
-  });
-
-  b.innerHTML =
-
-    '<h1 style="font-size:28px;font-weight:700;margin-bottom:6px;">Your Second Brain</h1>' +
-
-    '<p style="font-size:12px;color:#94A3B8;">' +
-
-    new Date().toLocaleDateString(
-      'en-US',
-      {
-        weekday:'long',
-        month:'long',
-        day:'numeric'
-      }
-    )
-
-    +
-
-    '</p>' +
-
-    '<div class="sg">' +
-
-      '<div class="sc">' +
-        '<div class="sv" style="color:#4F8EF7;">'+tasks.length+'</div>' +
-        '<div class="sl">TOTAL</div>' +
-      '</div>' +
-
-      '<div class="sc">' +
-        '<div class="sv" style="color:#34D399;">'+done+'</div>' +
-        '<div class="sl">DONE</div>' +
-      '</div>' +
-
-      '<div class="sc">' +
-        '<div class="sv" style="color:#FBBF24;">'+active+'</div>' +
-        '<div class="sl">ACTIVE</div>' +
-      '</div>' +
-
-      '<div class="sc">' +
-        '<div class="sv" style="color:#F87171;">'+overdue+'</div>' +
-        '<div class="sl">OVERDUE</div>' +
-      '</div>' +
-
-    '</div>' +
-
-    '<div style="font-size:11px;color:#6B7280;margin-bottom:12px;text-transform:uppercase;">Categories</div>' +
-
-    '<div class="cg">' +
-      catHtml +
-    '</div>';
+function showLog() {
+  showingLog=true;
+  document.querySelectorAll('.ntab').forEach(function(el){el.classList.remove('on');});
+  document.getElementById('nt3').classList.add('on');
+  render();
 }
 
+function toggleLog() {
+  if(showingLog){setTab('home');}else{showLog();}
+}
+
+// ── TASK CRUD ─────────────────────────────────────────────────────────────────
+function cycleStatus(id) {
+  var ord=['todo','inprogress','done','blocked','someday'];
+  tasks=tasks.map(function(t){if(t.id!==id)return t;return Object.assign({},t,{status:ord[(ord.indexOf(t.status)+1)%ord.length],updatedAt:nowISO()});});
+  saveTasks(); render();
+}
+function deleteTask(id) {
+  if(!confirm('Delete this task?')) return;
+  tasks=tasks.filter(function(t){return t.id!==id;}); saveTasks(); render();
+}
+function togExp(id) { expId=(expId===id)?null:id; render(); }
+function deleteLog(id) { worklog=worklog.filter(function(e){return e.id!==id;}); saveWL(); render(); }
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function render() {
+  var b=document.getElementById('appBody');
+  if(showingLog)       { b.innerHTML=renderLog();  return; }
+  if(tab==='home')     { b.innerHTML=renderHome(); return; }
+  if(tab==='report')   { b.innerHTML=renderRep();  return; }
+  b.innerHTML=renderList();
+}
+
+// ── HOME ──────────────────────────────────────────────────────────────────────
+function renderHome() {
+  var done=tasks.filter(function(t){return t.status==='done';}).length;
+  var inp=tasks.filter(function(t){return t.status==='inprogress';}).length;
+  var ovList=tasks.filter(isOv);
+  var wk=weekRange();
+  var urg=tasks.filter(function(t){return(t.priority==='urgent'||t.priority==='high')&&t.status!=='done';}).slice(0,3);
+
+  var urgHtml='';
+  urg.forEach(function(t){
+    var c=getC(t.category),p=getP(t.priority),ov=isOv(t);
+    urgHtml+='<div style="display:flex;align-items:center;gap:8px;background:#111827;border-radius:10px;padding:10px 12px;margin-bottom:6px">';
+    urgHtml+='<div style="width:3px;height:24px;border-radius:99px;background:'+c.color+';flex-shrink:0"></div>';
+    urgHtml+='<span style="flex:1;font-size:13px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">'+t.title+'</span>';
+    urgHtml+='<span class="chip" style="background:'+p.color+'22;color:'+p.color+'">'+p.label+'</span>';
+    if(t.dueDate) urgHtml+='<span style="font-size:10px;color:'+(ov?'#F87171':'#6B7280')+'">'+fdate(t.dueDate)+'</span>';
+    urgHtml+='</div>';
+  });
+
+  var catHtml='';
+  cats.forEach(function(c){
+    var cnt=tasks.filter(function(t){return t.category===c.id&&t.status!=='done';}).length;
+    catHtml+='<button class="ct" onclick="setTab(\''+c.id+'\')" style="border:1px solid '+c.color+'44">';
+    catHtml+='<div style="font-size:14px;font-weight:700">'+c.label+'</div>';
+    catHtml+='<div style="font-size:11px;color:#6B7280;margin-top:6px">'+cnt+' open</div>';
+    if(cnt>0) catHtml+='<div style="position:absolute;top:8px;right:8px;background:'+c.color+';color:white;border-radius:999px;font-size:10px;font-weight:700;padding:2px 6px">'+cnt+'</div>';
+    catHtml+='</button>';
+  });
+
+  var html='<h1 style="font-size:26px;font-weight:700;margin-bottom:4px">Your Second Brain</h1>';
+  html+='<p style="font-size:12px;color:#94A3B8">'+new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})+'</p>';
+  html+='<div style="height:3px;background:#1F2937;border-radius:99px;margin-top:10px"><div style="height:100%;background:linear-gradient(90deg,#4F8EF7,#A78BFA);border-radius:99px;width:'+(tasks.length?Math.round(done/tasks.length*100):0)+'%;transition:width .5s"></div></div>';
+  html+='<div class="sg">';
+  html+='<div class="sc"><div class="sv" style="color:#4F8EF7">'+tasks.length+'</div><div class="sl">TOTAL</div></div>';
+  html+='<div class="sc"><div class="sv" style="color:#34D399">'+done+'</div><div class="sl">DONE</div></div>';
+  html+='<div class="sc"><div class="sv" style="color:#FBBF24">'+inp+'</div><div class="sl">ACTIVE</div></div>';
+  html+='<div class="sc"><div class="sv" style="color:#F87171">'+ovList.length+'</div><div class="sl">OVERDUE</div></div>';
+  html+='</div>';
+  if(ovList.length) {
+    html+='<div class="al"><span style="color:#F87171;font-size:15px">!</span><span style="flex:1;color:#F87171;font-size:13px;font-weight:600">'+ovList.length+' overdue task'+(ovList.length>1?'s':'')+'</span>';
+    html+='<button onclick="setTab(\'work\')" style="background:#F87171;border:none;border-radius:8px;color:#fff;font-size:12px;font-weight:600;padding:4px 10px;cursor:pointer">View</button></div>';
+  }
+  if(urg.length) { html+='<div style="font-size:10px;color:#6B7280;text-transform:uppercase;font-weight:600;margin-bottom:8px">Urgent & High</div>'+urgHtml; }
+  html+='<div class="wb"><div><div style="font-size:13px;font-weight:600">'+wk.label+'</div><div style="font-size:11px;color:#4B5563;margin-top:2px">Weekly report</div></div>';
+  html+='<button onclick="setTab(\'report\')" style="background:transparent;border:none;color:#4F8EF7;font-size:12px;font-weight:600;cursor:pointer">Generate</button></div>';
+  html+='<div style="font-size:11px;color:#6B7280;text-transform:uppercase;font-weight:600;margin-bottom:12px">Categories</div>';
+  html+='<div class="cg">'+catHtml+'</div>';
+  html+='<div style="height:20px"></div>';
+  return html;
+}
+
+// ── LIST ──────────────────────────────────────────────────────────────────────
+function renderList() {
+  var c=getC(tab);
+  var list=tasks.filter(function(t){return t.category===tab;});
+  if(fStatus!=='all') list=list.filter(function(t){return t.status===fStatus;});
+  list=list.sort(function(a,b){var p=['urgent','high','normal','low'];return p.indexOf(a.priority)-p.indexOf(b.priority)||new Date(b.updatedAt||0)-new Date(a.updatedAt||0);});
+
+  var chipsHtml='';
+  [{id:'all',label:'All'}].concat(STAT).forEach(function(s){
+    var sc=STAT.find(function(x){return x.id===s.id;});
+    var on=fStatus===s.id;
+    chipsHtml+='<button class="chipbtn" style="'+(on&&sc?'background:'+sc.color+'22;color:'+sc.color+';border-color:'+sc.color:'')+'" onclick="fStatus=\''+s.id+'\';render()">'+s.label+'</button>';
+  });
+
+  var html='<h2 style="font-size:22px;font-weight:700;margin-bottom:6px">'+c.label+'</h2>';
+  html+='<div style="font-size:11px;color:#374151;margin-bottom:10px">'+list.filter(function(t){return t.status!=='done';}).length+' open</div>';
+  html+='<div class="chips">'+chipsHtml+'</div>';
+
+  if(!list.length) { html+='<p style="color:#6B7280;text-align:center;padding:40px 0">Nothing here - tap + to add</p>'; }
+
+  list.forEach(function(t){
+    var p=getP(t.priority),s=getS(t.status),ov=isOv(t),exp=expId===t.id;
+    var ic={todo:'O',inprogress:'>',done:'OK',blocked:'X',someday:'~'}[t.status]||'O';
+    html+='<div class="tc" style="'+(ov?'border:1px solid #F8717150':'')+'" onclick="togExp(\''+t.id+'\')">';
+    html+='<div style="display:flex;gap:8px;align-items:flex-start">';
+    html+='<div style="width:3px;min-height:20px;background:'+c.color+';border-radius:99px;flex-shrink:0;margin-top:2px"></div>';
+    html+='<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600;'+(t.status==='done'?'text-decoration:line-through;opacity:.5':'')+'">'+t.title+'</div>';
+    if(exp&&t.notes) html+='<div style="font-size:12px;color:#94A3B8;margin-top:6px;line-height:1.5">'+t.notes+'</div>';
+    html+='</div>';
+    html+='<button onclick="event.stopPropagation();cycleStatus(\''+t.id+'\')" style="background:'+s.color+'22;color:'+s.color+';border:none;border-radius:7px;width:28px;height:28px;font-size:11px;font-weight:700;flex-shrink:0;cursor:pointer">'+ic+'</button>';
+    html+='</div>';
+    html+='<div style="margin-top:8px">';
+    html+='<span class="badge" style="color:'+p.color+'">'+p.label+'</span>';
+    html+='<span class="badge" style="color:'+s.color+'">'+s.label+'</span>';
+    if(t.dueDate) html+='<span class="badge" style="color:'+(ov?'#F87171':'#6B7280')+'">'+(ov?'! ':'')+fdate(t.dueDate)+'</span>';
+    html+='</div>';
+    if(exp) {
+      html+='<div style="display:flex;gap:8px;margin-top:12px">';
+      html+='<button onclick="event.stopPropagation();showTaskModal(\''+t.id+'\')" style="flex:1;background:#1F2937;border:none;border-radius:8px;color:#94A3B8;padding:8px;cursor:pointer;font-size:12px">Edit</button>';
+      html+='<button onclick="event.stopPropagation();deleteTask(\''+t.id+'\')" style="background:#F8717120;border:1px solid #F87171;border-radius:8px;color:#F87171;padding:8px 12px;cursor:pointer;font-size:12px">Delete</button>';
+      html+='</div>';
+    }
+    html+='</div>';
+  });
+  html+='<div style="height:20px"></div>';
+  return html;
+}
+
+// ── WORKLOG ───────────────────────────────────────────────────────────────────
+function renderLog() {
+  var grouped={};
+  worklog.forEach(function(e){if(!grouped[e.date])grouped[e.date]=[];grouped[e.date].push(e);});
+  var days=Object.keys(grouped).sort(function(a,b){return b.localeCompare(a);});
+  var cnt={bau:0,project:0,investigation:0,agentic:0};
+  worklog.forEach(function(e){if(cnt[e.type]!==undefined)cnt[e.type]++;});
+
+  var html='<h2 style="font-size:22px;font-weight:700;margin-bottom:6px">Worklog</h2>';
+  html+='<div style="font-size:11px;color:#374151;margin-bottom:14px">'+worklog.length+' entries</div>';
+  html+='<div class="abar">';
+  [['project','#A78BFA','Project'],['bau','#94A3B8','BAU'],['investigation','#F87171','Invest.'],['agentic','#34D399','Agentic']].forEach(function(x){
+    html+='<div class="ap" style="background:'+x[1]+'18"><div style="font-size:18px;font-weight:700;color:'+x[1]+'">'+cnt[x[0]]+'</div><div style="font-size:9px;color:'+x[1]+'">'+x[2]+'</div></div>';
+  });
+  html+='</div>';
+
+  if(!days.length) { html+='<p style="color:#6B7280;text-align:center;padding:40px 0">No entries - tap + to add</p>'; }
+
+  days.forEach(function(date){
+    var es=grouped[date];
+    html+='<div style="margin-bottom:16px">';
+    html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">';
+    html+='<span style="font-size:12px;font-weight:600">'+fdate(date)+'</span>';
+    html+='<span style="font-size:10px;color:#374151;flex:1">'+date+'</span>';
+    html+='<span style="background:#1F2937;color:#4B5563;font-size:10px;border-radius:99px;padding:1px 7px">'+es.length+'</span>';
+    html+='</div>';
+    es.forEach(function(e){
+      var c=getC(e.category),tc=TC[e.type]||'#94A3B8',tl=TL[e.type]||e.type;
+      html+='<div class="lce">';
+      html+='<div style="width:3px;min-height:20px;border-radius:99px;background:'+c.color+';flex-shrink:0;margin-top:1px"></div>';
+      html+='<div style="flex:1;min-width:0">';
+      html+='<div style="font-size:12px;color:#C8D6E5;line-height:1.5;margin-bottom:4px">'+e.text+'</div>';
+      html+='<span class="chip" style="background:'+c.color+'22;color:'+c.color+'">'+c.label+'</span>';
+      html+='<span class="chip" style="background:'+tc+'22;color:'+tc+'">'+tl+'</span>';
+      html+='</div>';
+      html+='<button onclick="deleteLog(\''+e.id+'\')" style="background:transparent;border:none;color:#374151;font-size:14px;cursor:pointer;padding:0 2px">x</button>';
+      html+='</div>';
+    });
+    html+='</div>';
+  });
+  html+='<div style="height:20px"></div>';
+  return html;
+}
+
+// ── REPORT ────────────────────────────────────────────────────────────────────
+function renderRep() {
+  var wk=weekRange();
+  var html='<h2 style="font-size:22px;font-weight:700;margin-bottom:16px">Weekly Report</h2>';
+  html+='<div class="rh">';
+  html+='<div style="font-size:13px;font-weight:600;margin-bottom:4px">'+wk.label+'</div>';
+  html+='<div style="font-size:12px;color:#4B5563;margin-bottom:4px">AI reads your worklog and tasks to draft your email</div>';
+  html+='<button class="gbtn" onclick="buildReport()" '+(repLoading?'disabled':'')+'>'+(repLoading?'Generating...':'Generate Weekly Report')+'</button>';
+  html+='</div>';
+  if(report) {
+    html+='<div style="display:flex;gap:8px;margin-bottom:12px">';
+    html+='<button onclick="copyReport()" style="flex:1;padding:10px;background:#1F2937;border:none;border-radius:10px;color:#94A3B8;font-size:13px;cursor:pointer">'+(repCopied?'Copied!':'Copy Email')+'</button>';
+    html+='<button onclick="downloadReport()" style="flex:1;padding:10px;background:#1F2937;border:none;border-radius:10px;color:#94A3B8;font-size:13px;cursor:pointer">Download</button>';
+    html+='</div>';
+    html+='<div class="rbox"><pre class="rpre">'+report.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</pre></div>';
+
+} else {
+html+=’<p style="color:#6B7280;text-align:center;padding:32px 0;font-size:13px">’+(apiKey?‘Tap Generate to build your weekly report’:‘Add API key first (Key button)’)+’</p>’;
+}
+html+=’<div style="height:20px"></div>’;
+return html;
+}
+
+async function buildReport() {
+if(!apiKey){alert(‘Add API key first’);return;}
+repLoading=true;report=’’;render();
+var wk=weekRange();
+var logs=worklog.filter(function(e){return e.date>=wk.start&&e.date<=wk.end;});
+var wt=tasks.filter(function(t){return t.category===‘work’||t.category===‘projects’;});
+try{
+var prompt=‘Generate weekly work update email:\n\nHi Sir,\n\nPlease find below my weekly work update:\n\n—\n\nAgentic Solutions / Ideas\n\n| Issue | Summary | Next Steps |\n|——|———|————|\n[rows]\n\n—\n\nProjects\n\n| Project | Status | Summary | Next Steps |\n|––––|––––|———|————|\n[rows]\n\n—\n\nTroubleshooting / Investigation\n\n| Issue | Summary | Next Steps |\n|——|———|————|\n[rows]\n\n—\n\nPlease let me know if you would like additional details.\n\nThanks,\nAbhi Kapoor\n\nWEEK: ‘+wk.label+’\n\nWORKLOG:\n’+logs.map(function(e){return’[’+e.date+’][’+e.type+’] ‘+e.text;}).join(’\n’)+’\n\nTASKS:\n’+wt.map(function(t){return’[’+t.category+’][’+t.status+’] ‘+t.title+(t.notes?’ - ‘+t.notes:’’);}).join(’\n’);
+var d=await callAI(‘You are a professional email writer. Follow the format exactly. Return ONLY the email text.’,prompt,2000,false);
+report=(d.content||[]).filter(function(b){return b.type===‘text’;}).map(function(b){return b.text;}).join(’’)||‘Error generating report.’;
+}catch(e){report=‘Error: ‘+e.message;}
+repLoading=false;render();
+}
+function copyReport(){navigator.clipboard.writeText(report).then(function(){repCopied=true;render();setTimeout(function(){repCopied=false;render();},2000);});}
+function downloadReport(){var a=document.createElement(‘a’);a.href=‘data:text/plain;charset=utf-8,’+encodeURIComponent(report);a.download=‘Report-’+todayStr()+’.txt’;a.click();}
+
+// ── TASK MODAL ────────────────────────────────────────────────────────────────
+var _editId = null;
+
+function showTaskModal(id) {
+_editId = id || null;
+_formTags = [];
+var t = id ? tasks.find(function(x){return x.id===id;}) : null;
+if(!t) t={id:uid(),title:’’,notes:’’,category:tab!==‘home’&&tab!==‘report’?tab:‘personal’,priority:‘normal’,status:‘todo’,dueDate:’’,tags:[]};
+_formTags = (t.tags||[]).slice();
+var isE = !!id;
+
+var catOpts=’’;
+cats.forEach(function(c){catOpts+=’<option value=”’+c.id+’”’+(t.category===c.id?’ selected’:’’)+’>’+c.label+’</option>’;});
+var priOpts=PRI.map(function(p){return’<option value=”’+p.id+’”’+(t.priority===p.id?’ selected’:’’)+’>’+p.label+’</option>’;}).join(’’);
+var statOpts=STAT.map(function(s){return’<option value=”’+s.id+’”’+(t.status===s.id?’ selected’:’’)+’>’+s.label+’</option>’;}).join(’’);
+var tagsHtml=_formTags.map(function(tg){return’<span style="display:inline-flex;align-items:center;gap:4px;background:#4F8EF722;color:#4F8EF7;border-radius:6px;font-size:11px;padding:3px 8px;margin-right:4px">#’+tg+’<button onclick="removeTag(\''+tg+'\')" style="background:none;border:none;color:inherit;cursor:pointer;padding:0;font-size:14px;line-height:1">x</button></span>’;}).join(’’);
+
+document.getElementById(‘mc’).innerHTML=’<div class="ovl" onclick="if(event.target===this)closeModal()"><div class="mdl"><div class="mhdl"></div><div class="mhd"><span class="mttl">’+(isE?‘Edit Task’:‘New Task’)+’</span><button class="mclb" onclick="closeModal()">X</button></div>’
++’<div class="fld"><div class="flbl">Category</div><select class="sel" id="fcat">’+catOpts+’</select></div>’
++’<div class="fld"><div class="flbl">Title</div><input class=“inp” id=“ftitle” value=”’+t.title.replace(/”/g,’"’)+’” placeholder=“What needs to be done?”/></div>’
++’<div class="fld"><div class="flbl">Notes</div><textarea class="inpta" id="fnotes" placeholder="Details...">’+t.notes+’</textarea></div>’
++’<div class="r2"><div><div class="flbl">Priority</div><select class="sel" id="fpri">’+priOpts+’</select></div><div><div class="flbl">Status</div><select class="sel" id="fstat">’+statOpts+’</select></div></div>’
++’<div class="fld"><div class="flbl">Due Date</div><input type="date" class="inp" id="fdate" value="'+(t.dueDate||'')+'"/></div>’
++’<div class="fld"><div class="flbl">Tags</div><div style="display:flex;gap:6px;margin-top:6px"><input class="inp" id="ftagin" placeholder="Add tag..." style="flex:1;margin-top:0" onkeydown="if(event.key===\'Enter\')addTag()"/><button onclick="addTag()" style="background:#1F2937;border:none;border-radius:10px;color:#94A3B8;font-size:13px;padding:0 14px;cursor:pointer">Add</button></div><div id="tagsWrap" style="margin-top:8px">’+tagsHtml+’</div></div>’
++’<button class="svbtn" onclick="saveTask(\''+t.id+'\','+isE+')">’+(isE?‘Update Task’:‘Add Task’)+’</button></div></div>’;
+}
+
+function addTag(){var v=document.getElementById(‘ftagin’).value.trim();if(v&&!_formTags.includes(v)){_formTags.push(v);}document.getElementById(‘ftagin’).value=’’;document.getElementById(‘tagsWrap’).innerHTML=_formTags.map(function(tg){return’<span style="display:inline-flex;align-items:center;gap:4px;background:#4F8EF722;color:#4F8EF7;border-radius:6px;font-size:11px;padding:3px 8px;margin-right:4px">#’+tg+’<button onclick="removeTag(\''+tg+'\')" style="background:none;border:none;color:inherit;cursor:pointer;padding:0;font-size:14px;line-height:1">x</button></span>’;}).join(’’);}
+function removeTag(tg){_formTags=_formTags.filter(function(x){return x!==tg;});document.getElementById(‘tagsWrap’).innerHTML=_formTags.map(function(t){return’<span style="display:inline-flex;align-items:center;gap:4px;background:#4F8EF722;color:#4F8EF7;border-radius:6px;font-size:11px;padding:3px 8px;margin-right:4px">#’+t+’<button onclick="removeTag(\''+t+'\')" style="background:none;border:none;color:inherit;cursor:pointer;padding:0;font-size:14px;line-height:1">x</button></span>’;}).join(’’);}
+
+function saveTask(id,isEdit){
+var title=document.getElementById(‘ftitle’).value.trim();
+if(!title){alert(‘Title required’);return;}
+var obj={id:id,title:title,notes:document.getElementById(‘fnotes’).value,category:document.getElementById(‘fcat’).value,priority:document.getElementById(‘fpri’).value,status:document.getElementById(‘fstat’).value,dueDate:document.getElementById(‘fdate’).value,tags:_formTags.slice(),updatedAt:nowISO(),createdAt:nowISO()};
+if(isEdit){var ex=tasks.find(function(t){return t.id===id;});if(ex)obj.createdAt=ex.createdAt||nowISO();tasks=tasks.map(function(t){return t.id===id?obj:t;});}
+else{tasks.unshift(obj);}
+saveTasks();closeModal();render();
+}
+
+// ── LOG MODAL ─────────────────────────────────────────────────────────────────
+function showLogModal(){
+var catOpts=cats.map(function(c){return’<option value=”’+c.id+’”’+(c.id===‘work’?’ selected’:’’)+’>’+c.label+’</option>’;}).join(’’);
+var typeOpts=[[‘bau’,‘BAU Activity’],[‘project’,‘Project Work’],[‘investigation’,‘Investigation’],[‘agentic’,‘Agentic/Idea’]].map(function(x){return’<option value="'+x[0]+'">’+x[1]+’</option>’;}).join(’’);
+var taskOpts=’<option value="">– None –</option>’+tasks.filter(function(t){return t.category===‘work’||t.category===‘projects’;}).map(function(t){return’<option value="'+t.id+'">’+t.title.slice(0,45)+’</option>’;}).join(’’);
+document.getElementById(‘mc’).innerHTML=’<div class="ovl" onclick="if(event.target===this)closeModal()"><div class="mdl"><div class="mhdl"></div><div class="mhd"><span class="mttl">Log Work Entry</span><button class="mclb" onclick="closeModal()">X</button></div><div class="fld"><div class="flbl">Date</div><input type="date" class="inp" id="ldate" value="'+todayStr()+'"/></div><div class="fld"><div class="flbl">What did you work on?</div><textarea class="inpta" id="ltext" placeholder="e.g. Worked on DHCP failover UAT..." style="height:90px"></textarea></div><div class="r2"><div><div class="flbl">Category</div><select class="sel" id="lcat">’+catOpts+’</select></div><div><div class="flbl">Type</div><select class="sel" id="ltype">’+typeOpts+’</select></div></div><div class="fld"><div class="flbl">Link to Task</div><select class="sel" id="ltask">’+taskOpts+’</select></div><button class="svbtn" onclick="saveLog()">Save Entry</button></div></div>’;
+}
+function saveLog(){var text=document.getElementById(‘ltext’).value.trim();if(!text){alert(‘Describe what you worked on’);return;}worklog.unshift({id:uid(),date:document.getElementById(‘ldate’).value,text:text,category:document.getElementById(‘lcat’).value,type:document.getElementById(‘ltype’).value,taskId:document.getElementById(‘ltask’).value,createdAt:nowISO()});saveWL();closeModal();render();}
+
+// ── CAT MODAL ─────────────────────────────────────────────────────────────────
+function showCatModal(){
+_newCat={label:’’,icon:‘Pin’,color:’#8B5CF6’};
+renderCatModal();
+}
+function renderCatModal(){
+var rows=’’;
+cats.forEach(function(c){var cnt=tasks.filter(function(t){return t.category===c.id;}).length;rows+=’<button onclick="setTab(\''+c.id+'\');closeModal()" style="display:flex;align-items:center;gap:12px;padding:12px;background:#080C14;border:1px solid #1F2937;border-radius:10px;cursor:pointer;width:100%;text-align:left;color:white;margin-bottom:6px;font-family:Arial,sans-serif"><span style="width:12px;height:12px;border-radius:50%;background:'+c.color+';display:inline-block;flex-shrink:0"></span><span style="flex:1;font-size:14px;font-weight:500">’+c.label+’</span><span style="color:#4B5563;font-size:12px">’+cnt+’</span></button>’;});
+document.getElementById(‘mc’).innerHTML=’<div class="ovl" onclick="if(event.target===this)closeModal()"><div class="mdl"><div class="mhdl"></div><div class="mhd"><span class="mttl">All Categories</span><button class="mclb" onclick="closeModal()">X</button></div><div style="margin-bottom:20px">’+rows+’</div><div style="background:#080C14;border:1px solid #1F2937;border-radius:14px;padding:14px"><div class="flbl" style="margin-bottom:8px">New Category</div><input class="inp" id="ncl" value="'+_newCat.label+'" placeholder="Category name" oninput="_newCat.label=this.value" style="margin-bottom:8px"/><div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span class="flbl">Color</span><input type="color" value="'+_newCat.color+'" oninput="_newCat.color=this.value" style="width:36px;height:30px;border:none;border-radius:6px;cursor:pointer"/></div><button class="svbtn" onclick="saveCat()" style="margin-top:0">Create Category</button></div></div></div>’;
+}
+function saveCat(){var l=document.getElementById(‘ncl’).value.trim();if(!l){alert(‘Name required’);return;}cats.push({id:l.toLowerCase().replace(/\s+/g,’-’)+’-’+Date.now().toString(36),label:l,color:_newCat.color});lsave();if(apiKey)driveWrite(DRIVE.categories,{version:1,categories:cats});closeModal();render();}
+
+function closeModal(){document.getElementById(‘mc’).innerHTML=’’;}
+
+// ── FAB ───────────────────────────────────────────────────────────────────────
+function onFab(){
+if(showingLog){showLogModal();return;}
+if(tab===‘home’||tab===‘report’){showLogModal();return;}
+showTaskModal(null);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+lload();
+setSyncDot(apiKey?’#FBBF24’:’#34D399’, apiKey?‘Syncing…’:tasks.length+’ tasks’);
 render();
+if(apiKey) syncDrive();
 
-document.getElementById('stxt').textContent =
-  tasks.length + ' tasks loaded';
+// Add FAB button
+var fab=document.createElement(‘button’);
+fab.textContent=’+’;
+fab.style.cssText=‘position:fixed;bottom:90px;right:20px;width:54px;height:54px;border-radius:50%;border:none;background:linear-gradient(135deg,#4F8EF7,#A78BFA);color:white;font-size:28px;cursor:pointer;box-shadow:0 4px 16px #4F8EF755;z-index:20’;
+fab.onclick=onFab;
+document.body.appendChild(fab);
 
 </script>
-
 </body>
 </html>
