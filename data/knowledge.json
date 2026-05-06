@@ -1,0 +1,44 @@
+{
+  "category": "Knowledge",
+  "color": "#2D8CFF",
+  "items": [
+    {
+      "id": "knowledge-001",
+      "title": "Learn trainings",
+      "done": false,
+      "link": "https://www.instagram.com/p/DXyDnzeDJhN/"
+    },
+    {
+      "id": "knowledge-002",
+      "title": "Job finding AI",
+      "done": false,
+      "flagged": true,
+      "dueDate": "2026-05-10T12:00:00",
+      "link": "https://www.instagram.com/reel/DWF8IPqCvMO/"
+    },
+    {
+      "id": "knowledge-003",
+      "title": "Test and refine AI system",
+      "done": false,
+      "dueDate": "2026-05-09T12:00:00"
+    },
+    {
+      "id": "knowledge-004",
+      "title": "Research AI job market tools",
+      "done": false,
+      "dueDate": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "knowledge-005",
+      "title": "Design AI job search workflow",
+      "done": false,
+      "dueDate": "2026-05-07T12:00:00"
+    },
+    {
+      "id": "knowledge-006",
+      "title": "Develop job finding AI prototype",
+      "done": false,
+      "dueDate": "2026-05-08T12:00:00"
+    }
+  ]
+}
