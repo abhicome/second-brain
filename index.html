@@ -1,50 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
 
-  <title>Second Brain</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <style>
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-      -webkit-tap-highlight-color:transparent;
-    }
+<title>Second Brain</title>
 
-    body{
-      background:#020617;
-      color:white;
-      font-family:-apple-system,BlinkMacSystemFont,sans-serif;
-      overflow-x:hidden;
-    }
+<style>
 
-    button,
-    input,
-    textarea{
-      font-family:inherit;
-    }
+body{
+  margin:0;
+  background:#020617;
+  color:white;
+  font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+}
 
-    input[type="checkbox"]{
-      accent-color:#3B82F6;
-    }
+#root{
+  min-height:100vh;
+}
 
-    a{
-      color:#3B82F6;
-    }
-  </style>
+</style>
+
 </head>
 
 <body>
 
-  <div id="root"></div>
+<div id="root"></div>
 
-  <script src="app.js"></script>
+<script src="./js/config.js"></script>
+<script src="./js/state.js"></script>
+<script src="./js/utils.js"></script>
+<script src="./js/github.js"></script>
+<script src="./js/renderCards.js"></script>
+<script src="./js/renderTasks.js"></script>
+<script src="./js/renderProjects.js"></script>
+<script src="./js/renderHome.js"></script>
+<script src="./js/app.js"></script>
 
 </body>
 </html>
