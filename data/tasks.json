@@ -1,0 +1,122 @@
+{
+  "tasks": [
+    {
+      "id": "task-cloudad-discussion",
+      "title": "Cloud.ad Account issue discussion",
+      "status": "done",
+      "priority": "medium",
+      "context": "work",
+      "summary": "Cloud.ad account issue discussion completed.",
+      "dueDate": "2026-04-28",
+      "createdAt": "2026-05-06",
+      "isDeleted": false,
+      "subtasks": []
+    },
+    {
+      "id": "task-agentic-automation",
+      "title": "Agentic automation use cases",
+      "status": "done",
+      "priority": "medium",
+      "context": "work",
+      "summary": "Agentic automation use case discussion completed.",
+      "dueDate": "2026-04-27",
+      "createdAt": "2026-05-06",
+      "isDeleted": false,
+      "subtasks": []
+    },
+    {
+      "id": "task-multiple-records",
+      "title": "Discuss multiple records",
+      "status": "done",
+      "priority": "medium",
+      "context": "work",
+      "summary": "Need to discuss handling multiple records on a single ticket.",
+      "dueDate": "2026-04-30",
+      "createdAt": "2026-05-06",
+      "isDeleted": false,
+      "subtasks": []
+    },
+    {
+      "id": "task-packetfence-patching",
+      "title": "PacketFence Patching",
+      "status": "inprogress",
+      "priority": "high",
+      "context": "work",
+      "summary": "Patching planned for PFE01 server on 25–26 April; rescheduled for 3rd May.",
+      "dueDate": "2026-05-25",
+      "createdAt": "2026-05-06",
+      "isDeleted": false,
+      "subtasks": []
+    },
+    {
+      "id": "task-ad-replication-monitoring",
+      "title": "Discuss AD replication monitoring with LM",
+      "status": "done",
+      "priority": "medium",
+      "context": "work",
+      "summary": "AD replication monitoring discussion completed with LM.",
+      "dueDate": "2026-04-29",
+      "createdAt": "2026-05-06",
+      "isDeleted": false,
+      "subtasks": []
+    },
+    {
+      "id": "task-arista-pretasks",
+      "title": "Arista Agni Pre Tasks to Sanjay",
+      "status": "done",
+      "priority": "medium",
+      "context": "work",
+      "summary": "Pre tasks for Arista Agni shared with Sanjay.",
+      "dueDate": "2026-05-03",
+      "createdAt": "2026-05-06",
+      "isDeleted": false,
+      "subtasks": []
+    },
+    {
+      "id": "task-fix-packetfence-enrolment",
+      "title": "Fix PacketFence Auto Enrolment Issue",
+      "status": "inprogress",
+      "priority": "high",
+      "context": "work",
+      "summary": "Investigating PacketFence auto enrolment issue.",
+      "dueDate": "2026-05-06",
+      "createdAt": "2026-05-06",
+      "isDeleted": false,
+      "subtasks": []
+    },
+    {
+      "id": "task-dhcp-failover-uat",
+      "title": "DHCP Scope Failover UAT",
+      "status": "inprogress",
+      "priority": "high",
+      "context": "work",
+      "summary": "Network team using solution to assign IP on switch interface, which can exclude DS team involvement from DHCP failover UAT.",
+      "nextSteps": [
+        "Discuss feasibility and stability with Vikas Maurya"
+      ],
+      "dueDate": "2026-05-09",
+      "createdAt": "2026-05-06",
+      "isDeleted": false,
+      "subtasks": [
+        {
+          "id": "dhcp-uat-sub-1",
+          "title": "Discuss feasibility and stability with Vikas Maurya",
+          "status": "todo",
+          "dueDate": "2026-05-06"
+        },
+        {
+          "id": "dhcp-uat-sub-2",
+          "title": "Review IP assignment solution on switch interface",
+          "status": "todo",
+          "dueDate": "2026-05-06"
+        },
+        {
+          "id": "dhcp-uat-sub-3",
+          "title": "Evaluate DS team exclusion from failover UAT",
+          "status": "todo",
+          "dueDate": "2026-05-06"
+        }
+      ]
+    }
+  ]
+}
