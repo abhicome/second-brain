@@ -828,14 +828,19 @@ setBdg(‘nb3’, S.worklog.filter(function(e){ return e.date === todayStr(); })
 function render() {
 updNav();
 var b = document.getElementById(‘body’);
-if (!b) return;
+if (!b) { alert(‘body element not found!’); return; }
 try {
-if (S.showLog)          { b.innerHTML = renderLog();  return; }
-if (S.tab === ‘home’)   { b.innerHTML = renderHome(); return; }
-if (S.tab === ‘report’) { b.innerHTML = renderRep();  return; }
-b.innerHTML = renderList();
+var content = ‘’;
+if (S.showLog)          { content = renderLog();  }
+else if (S.tab === ‘home’)   { content = renderHome(); }
+else if (S.tab === ‘report’) { content = renderRep();  }
+else                         { content = renderList(); }
+b.innerHTML = content;
+// Debug: show what happened
+document.getElementById(‘stxt’).textContent = ‘Rendered ’ + S.tab + ’ (’ + content.length + ’ chars)’;
 } catch(e) {
-b.innerHTML = ’<div style="padding:20px;color:#F87171;font-size:13px">Error: ’ + esc(e.message) + ‘</div>’;
+b.innerHTML = ’<div style="padding:20px;color:#F87171;font-size:13px">Render error: ’ + e.message + ‘<br>’ + e.stack + ‘</div>’;
+document.getElementById(‘stxt’).textContent = ’ERROR: ’ + e.message;
 }
 }
 
@@ -852,12 +857,12 @@ var urg    = tasks.filter(function(t){ return (t.priority===‘urgent’||t.prio
 var oal = ovList.length
 ? ‘<div class="al"><span style="color:#F87171;font-size:15px">!</span>’
 + ‘<span style="flex:1;color:#F87171;font-size:13px;font-weight:600">’ + ovList.length + ’ overdue task’ + (ovList.length > 1 ? ‘s’ : ‘’) + ‘</span>’
-+ ‘<button class="ab" id="homeOvBtn">View</button></div>’
++ ‘<button class="ab" data-action="goto" data-tab="work">View</button></div>’
 : ‘’;
 
 var uc = urg.map(function(t) {
 var c = getC(t.category), p = getP(t.priority), ov = isOv(t);
-return ‘<div class="mc2" data-gotab="' + t.category + '">’
+return ‘<div class="mc2" data-action="goto" data-tab="' + t.category + '">’
 + ‘<div class="ma" style="background:' + c.color + '"></div>’
 + ‘<span style="flex:1;font-size:13px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">’ + esc(t.title) + ‘</span>’
 + ‘<span class="bdg" style="background:' + p.color + '22;color:' + p.color + '">’ + p.label + ‘</span>’
@@ -867,14 +872,14 @@ return ‘<div class="mc2" data-gotab="' + t.category + '">’
 
 var cg = S.cats.map(function(c) {
 var cnt = tasks.filter(function(t){ return t.category === c.id && t.status !== ‘done’; }).length;
-return ‘<button class="ct" data-gotab="' + c.id + '" style="border-color:' + c.color + '44">’
+return ‘<button class="ct" data-action="goto" data-tab="' + c.id + '" style="border-color:' + c.color + '44">’
 + ‘<span style="font-size:20px">’ + esc(c.icon) + ‘</span>’
 + ‘<span style="font-size:11px;color:#6B7280;font-weight:500">’ + esc(c.label) + ‘</span>’
 + (cnt > 0 ? ‘<span class="cba" style="background:' + c.color + '">’ + cnt + ‘</span>’ : ‘’)
 + ‘</button>’;
 }).join(’’);
 
-var html = ‘<div class="pg">’
+return ‘<div class="pg">’
 + ‘<div class="hero">’
 + ‘<div class="hdate">’ + new Date().toLocaleDateString(‘en-US’,{weekday:‘long’,month:‘long’,day:‘numeric’}) + ‘</div>’
 + ‘<div class="htitle">Your Second Brain</div>’
@@ -891,31 +896,11 @@ var html = ‘<div class="pg">’
 + (urg.length ? ‘<span class="stl">Urgent & High Priority</span>’ + uc : ‘’)
 + ‘<div class="wb">’
 + ‘<div><div class="wl">’ + wk.label + ‘</div><div class="ws">Tap to generate report</div></div>’
-+ ‘<button class="wbtn" id="homeRepBtn">Generate</button>’
++ ‘<button class="wbtn" data-action="goto" data-tab="report">Generate</button>’
 + ‘</div>’
 + ‘<span class="stl">Categories</span>’
-+ ‘<div class="cg" id="homeCatGrid">’ + cg + ‘</div>’
++ ‘<div class="cg">’ + cg + ‘</div>’
 + ‘</div>’;
-
-// Set HTML first then wire events
-setTimeout(function() {
-var ovb = document.getElementById(‘homeOvBtn’);
-if (ovb) ovb.addEventListener(‘click’, function(){ setTab(‘work’); });
-var rb = document.getElementById(‘homeRepBtn’);
-if (rb) rb.addEventListener(‘click’, function(){ setTab(‘report’); });
-var cgg = document.getElementById(‘homeCatGrid’);
-if (cgg) cgg.addEventListener(‘click’, function(e) {
-var btn = e.target.closest(’[data-gotab]’);
-if (btn) setTab(btn.dataset.gotab);
-});
-var urg2 = document.querySelector(’.pg’);
-if (urg2) urg2.addEventListener(‘click’, function(e) {
-var btn = e.target.closest(’[data-gotab]’);
-if (btn && !e.target.closest(’#homeCatGrid’)) setTab(btn.dataset.gotab);
-});
-}, 0);
-
-return html;
 }
 
 // ── LIST ──────────────────────────────────────────────────────────────────────
@@ -932,46 +917,23 @@ var chips = [{id:‘all’,label:‘All’}].concat(STAT).map(function(s) {
 var sc  = STAT.find(function(x){ return x.id === s.id; });
 var on  = S.fStatus === s.id;
 var sty = on && sc ? (‘background:’ + sc.color + ‘22;color:’ + sc.color + ‘;border-color:’ + sc.color) : ‘’;
-return ‘<button class="chip" data-fstatus="' + s.id + '" style="' + sty + '">’ + s.label + ‘</button>’;
+return ‘<button class="chip" data-action="filter" data-status="' + s.id + '" style="' + sty + '">’ + s.label + ‘</button>’;
 }).join(’’);
 
 var cards = list.length
 ? list.map(renderTC).join(’’)
 : ‘<div style="text-align:center;padding:40px 0;color:#374151">Nothing here - tap + to add</div>’;
 
-var html = ‘<div class="pg">’
+return ‘<div class="pg">’
 + ‘<div class="lh">’
 + ‘<span style="font-size:20px">’ + esc(c.icon) + ‘</span>’
 + ‘<span class="lt">’ + esc(c.label) + ‘</span>’
 + ‘<span class="lc2">’ + list.filter(function(t){ return t.status !== ‘done’; }).length + ’ open</span>’
 + ‘</div>’
-+ ‘<div class="chips" id="listChips">’ + chips + ‘</div>’
-+ ‘<div id="listCards">’ + cards + ‘</div>’
++ ‘<div class="chips">’ + chips + ‘</div>’
++ cards
 + ‘<div style="height:20px"></div>’
 + ‘</div>’;
-
-setTimeout(function() {
-var chipsEl = document.getElementById(‘listChips’);
-if (chipsEl) chipsEl.addEventListener(‘click’, function(e) {
-var btn = e.target.closest(’[data-fstatus]’);
-if (btn) { S.fStatus = btn.dataset.fstatus; render(); }
-});
-var cardsEl = document.getElementById(‘listCards’);
-if (cardsEl) {
-cardsEl.addEventListener(‘click’, function(e) {
-var cs = e.target.closest(’[data-cycle]’);
-if (cs) { e.stopPropagation(); cycleStatus(cs.dataset.cycle); return; }
-var ed = e.target.closest(’[data-edit]’);
-if (ed) { e.stopPropagation(); editTask(ed.dataset.edit); return; }
-var dl = e.target.closest(’[data-del]’);
-if (dl) { e.stopPropagation(); delTask(dl.dataset.del); return; }
-var tc = e.target.closest(’[data-expand]’);
-if (tc) togExp(tc.dataset.expand);
-});
-}
-}, 0);
-
-return html;
 }
 
 function renderTC(t) {
@@ -982,11 +944,11 @@ var tags = (t.tags || []).map(function(tg){
 return ‘<span class="bdg" style="background:#0F1829;color:#4B5563">#’ + esc(tg) + ‘</span>’;
 }).join(’’);
 
-return ‘<div class="tc' + (ov ? ' ov' : '') + '" data-expand="' + t.id + '">’
+return ‘<div class="tc' + (ov ? ' ov' : '') + '" data-action="expand" data-id="' + t.id + '">’
 + ‘<div class="tac" style="background:' + c.color + '"></div>’
 + ‘<div class="tb">’
 + ‘<div class="tr2">’
-+ ‘<button class="sbtn" data-cycle="' + t.id + '" style="background:' + s.color + '22;color:' + s.color + '">’ + ic + ‘</button>’
++ ‘<button class="sbtn" data-action="cycle" data-id="' + t.id + '" style="background:' + s.color + '22;color:' + s.color + '">’ + ic + ‘</button>’
 + ‘<div style="flex:1;min-width:0">’
 + ‘<div class="tt' + (t.status === 'done' ? ' dn' : '') + '">’ + esc(t.title) + ‘</div>’
 + (exp && t.notes ? ‘<div class="tn">’ + esc(t.notes) + ‘</div>’ : ‘’)
@@ -999,7 +961,7 @@ return ‘<div class="tc' + (ov ? ' ov' : '') + '" data-expand="' + t.id + '">�
 + ‘<span class="bdg" style="background:' + c.color + '22;color:' + c.color + '">’ + esc(c.label) + ‘</span>’
 + tags
 + ‘</div>’
-+ (exp ? ‘<div class="tact"><button class="eb" data-edit="' + t.id + '">Edit</button><button class="db" data-del="' + t.id + '">Delete</button></div>’ : ‘’)
++ (exp ? ‘<div class="tact"><button class="eb" data-action="edit" data-id="' + t.id + '">Edit</button><button class="db" data-action="del" data-id="' + t.id + '">Delete</button></div>’ : ‘’)
 + ‘</div></div>’;
 }
 
@@ -1038,7 +1000,7 @@ return ‘<div class="lce">’
 + ‘<span class="bdg" style="background:' + c.color + '22;color:' + c.color + '">’ + esc(c.label) + ‘</span>’
 + ‘<span class="bdg" style="background:' + tc + '22;color:' + tc + '">’ + tl + ‘</span>’
 + ‘</div></div>’
-+ ‘<button class="ldel" data-dellog="' + e.id + '">x</button>’
++ ‘<button class="ldel" data-action="dellog" data-id="' + e.id + '">x</button>’
 + ‘</div>’;
 }).join(’’);
 return ‘<div style="margin-bottom:16px">’
@@ -1054,14 +1016,6 @@ var html = ‘<div class="pg">’
 + (days.length ? dh : ‘<div style="text-align:center;padding:40px 0;color:#374151">No entries - tap + to log</div>’)
 + ‘<div style="height:20px"></div></div>’;
 
-setTimeout(function() {
-var body = document.getElementById(‘body’);
-if (body) body.addEventListener(‘click’, function handler(e) {
-var btn = e.target.closest(’[data-dellog]’);
-if (btn) { delLog(btn.dataset.dellog); body.removeEventListener(‘click’, handler); }
-});
-}, 0);
-
 return html;
 }
 
@@ -1070,34 +1024,23 @@ function renderRep() {
 var wk = weekRange();
 var rbody = S.report
 ? ‘<div class="racts">’
-+ ‘<button class="rab" id="repCopy">’ + (S.copied ? ‘Copied!’ : ‘Copy Email’) + ‘</button>’
-+ ‘<button class="rab" id="repDl">Download</button>’
++ ‘<button class="rab" data-action="copyreport">’ + (S.copied ? ‘Copied!’ : ‘Copy Email’) + ‘</button>’
++ ‘<button class="rab" data-action="dlreport">Download</button>’
 + ‘</div>’
 + ‘<div class="rbox"><pre class="rpre">’ + esc(S.report) + ‘</pre></div>’
 : ‘<div style="text-align:center;padding:32px 0;color:#374151;font-size:13px">’
 + (S.apiKey ? ‘Tap Generate to build your weekly report’ : ‘Add API key first (Key button)’) + ‘</div>’;
 
-var html = ‘<div class="pg">’
+return ‘<div class="pg">’
 + ‘<div class="lh"><span style="font-size:20px">Report</span><span class="lt">Weekly Report</span></div>’
 + ‘<div class="rh">’
 + ‘<div class="rw">’ + wk.label + ‘</div>’
 + ‘<div class="rs">AI reads your worklog and tasks to draft your email</div>’
-+ ‘<button class=“gbtn” id=“repGenBtn”’ + (S.repLoading ? ’ disabled’ : ‘’) + ‘>’
++ ‘<button class=“gbtn” data-action=“genreport”’ + (S.repLoading ? ’ disabled’ : ‘’) + ‘>’
 + (S.repLoading ? ‘Generating…’ : ‘Generate Weekly Report’) + ‘</button>’
 + ‘</div>’
 + rbody
 + ‘<div style="height:20px"></div></div>’;
-
-setTimeout(function() {
-var gb = document.getElementById(‘repGenBtn’);
-if (gb) gb.addEventListener(‘click’, buildReport);
-var cp = document.getElementById(‘repCopy’);
-if (cp) cp.addEventListener(‘click’, copyRep);
-var dl = document.getElementById(‘repDl’);
-if (dl) dl.addEventListener(‘click’, dlRep);
-}, 0);
-
-return html;
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
@@ -1124,6 +1067,35 @@ setSyncDot(’#FBBF24’, ‘Syncing with Drive…’);
 } else {
 setSyncDot(’#F87171’, ‘Tap Key to add API key’);
 }
+
+// Single delegated event listener handles ALL body clicks
+var bodyEl = document.getElementById(‘body’);
+bodyEl.addEventListener(‘click’, function(e) {
+var el = e.target.closest(’[data-action]’);
+if (!el) return;
+var action = el.dataset.action;
+var tab    = el.dataset.tab;
+var id     = el.dataset.id;
+if (action === ‘goto’)       { e.stopPropagation(); setTab(tab); }
+else if (action === ‘filter’)     { e.stopPropagation(); S.fStatus = el.dataset.status; render(); }
+else if (action === ‘cycle’)      { e.stopPropagation(); cycleStatus(id); }
+else if (action === ‘edit’)       { e.stopPropagation(); editTask(id); }
+else if (action === ‘del’)        { e.stopPropagation(); delTask(id); }
+else if (action === ‘expand’)     { togExp(id); }
+else if (action === ‘dellog’)     { e.stopPropagation(); delLog(id); }
+else if (action === ‘genreport’)  { buildReport(); }
+else if (action === ‘copyreport’) { copyRep(); }
+else if (action === ‘dlreport’)   { dlRep(); }
+else if (action === ‘tmcat’)      { if(tmd){tmd.category=el.dataset.catid;renderTM();} }
+else if (action === ‘rmtag’)      { if(tmd){tmd.tags=(tmd.tags||[]).filter(function(x){return x!==el.dataset.tag;});renderTM();} }
+else if (action === ‘addtag’)     { addTag(); }
+else if (action === ‘tmsave’)     { subTask(el.dataset.ise===‘true’); }
+else if (action === ‘lmsave’)     { subLog(); }
+else if (action === ‘cmsave’)     { subCat(); }
+else if (action === ‘tmclose’)    { closeM(); }
+else if (action === ‘catgoto’)    { setTab(el.dataset.catid); closeM(); }
+else if (action === ‘caticon’)    { ncd.icon=el.dataset.icon; renderCM(); }
+});
 
 // Render immediately
 render();
