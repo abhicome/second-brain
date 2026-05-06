@@ -1,4 +1,4 @@
-const app =
+const root =
   document.getElementById("root");
 
 let state = {
@@ -8,10 +8,10 @@ let state = {
       "github_token"
     ) || "",
 
-  data: {},
+  data:{},
 
-  raw: {},
+  raw:{},
 
-  current: null
+  current:null
 
 };
