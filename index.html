@@ -173,8 +173,8 @@ pre{
 
     <div style="display:flex;gap:8px;align-items:center;">
 
-      <button onclick="testDrive()" style="background:#111827;border:none;color:#94A3B8;padding:6px 10px;border-radius:8px;cursor:pointer;">
-        Test
+      <button onclick="loadDatabase()" style="background:#111827;border:none;color:#94A3B8;padding:6px 10px;border-radius:8px;cursor:pointer;">
+        Sync
       </button>
 
       <div id="stxt" style="font-size:10px;color:#34D399;">
@@ -218,81 +218,98 @@ pre{
 
 </div>
 
-<button class="fab">
+<button class="fab" onclick="quickAdd()">
 +
 </button>
 
 <script>
 
-var TASK_FILE_ID = '1OWIXMe5PvrXOZXDVFDxVfylXQ8Kml_IE';
+var TASKS_URL =
+'https://drive.google.com/uc?export=download&id=1OWIXMe5PvrXOZXDVFDxVfylXQ8Kml_IE';
 
-var API_KEY = localStorage.getItem('sb_api') || '';
+var WORKLOG_URL =
+'https://drive.google.com/uc?export=download&id=1w6jQLE48kmnSQ3kXn5TDiafhfYe2y4tQ';
 
-var tab = 'home';
+var CATEGORIES_URL =
+'https://drive.google.com/uc?export=download&id=14zFd-GoGYRGdbjr76ySlRNb-pqZrNSyK';
 
-var tasks = [
-{
-  id:'1',
-  title:'DHCP Scope Failover UAT',
-  category:'work',
-  priority:'urgent',
-  status:'inprogress',
-  dueDate:'2026-05-09',
-  notes:'Discuss with Vikas Maurya'
-},
-{
-  id:'2',
-  title:'PacketFence Patching',
-  category:'work',
-  priority:'high',
-  status:'inprogress',
-  dueDate:'2026-05-25',
-  notes:'PFE01 pending'
-},
-{
-  id:'3',
-  title:'AD Transformation Roadmap',
-  category:'projects',
-  priority:'high',
-  status:'inprogress',
-  dueDate:'2026-05-08',
-  notes:'Awaiting Microsoft response'
-},
-{
-  id:'4',
-  title:'Arista AGNI Implementation',
-  category:'projects',
-  priority:'high',
-  status:'inprogress',
-  dueDate:'2026-09-30',
-  notes:'Infosec approval pending'
+var tab='home';
+
+var tasks=[];
+var worklog=[];
+var categories=[];
+
+function saveLocal(){
+
+  localStorage.setItem('sb_tasks',JSON.stringify(tasks));
+  localStorage.setItem('sb_worklog',JSON.stringify(worklog));
+  localStorage.setItem('sb_categories',JSON.stringify(categories));
 }
-];
 
-var worklog = [
-{
-  id:'1',
-  date:'2026-05-05',
-  text:'AD transformation discussion with Microsoft'
-},
-{
-  id:'2',
-  date:'2026-05-04',
-  text:'DHCP incident RCA'
+function loadLocal(){
+
+  try{
+
+    var t=localStorage.getItem('sb_tasks');
+    var w=localStorage.getItem('sb_worklog');
+    var c=localStorage.getItem('sb_categories');
+
+    if(t) tasks=JSON.parse(t);
+    if(w) worklog=JSON.parse(w);
+    if(c) categories=JSON.parse(c);
+
+  }catch(e){
+    console.log(e);
+  }
 }
-];
+
+async function loadDatabase(){
+
+  try{
+
+    document.getElementById('stxt').textContent='Syncing...';
+
+    const responses = await Promise.all([
+      fetch(TASKS_URL),
+      fetch(WORKLOG_URL),
+      fetch(CATEGORIES_URL)
+    ]);
+
+    const tasksData = await responses[0].json();
+    const worklogData = await responses[1].json();
+    const categoriesData = await responses[2].json();
+
+    tasks = tasksData.items || [];
+    worklog = worklogData.entries || [];
+    categories = categoriesData.categories || [];
+
+    saveLocal();
+
+    render();
+
+    document.getElementById('stxt').textContent='Synced';
+
+  }catch(e){
+
+    console.error(e);
+
+    document.getElementById('stxt').textContent='Sync Failed';
+
+    alert('Database load failed');
+  }
+}
 
 function setTab(t){
 
-  tab = t;
+  tab=t;
 
-  var tabs = document.querySelectorAll('.ntab');
+  var tabs=document.querySelectorAll('.ntab');
 
   for(var i=0;i<tabs.length;i++){
     tabs[i].classList.remove('on');
   }
 
-  var arr = ['home','work','projects','log','report'];
+  var arr=['home','work','projects','log','report'];
 
   tabs[arr.indexOf(t)].classList.add('on');
 
@@ -303,13 +320,13 @@ function fdate(iso){
 
   if(!iso) return '';
 
-  var today = new Date();
+  var today=new Date();
   today.setHours(0,0,0,0);
 
-  var dt = new Date(iso);
+  var dt=new Date(iso);
   dt.setHours(0,0,0,0);
 
-  var diff = Math.round((dt-today)/86400000);
+  var diff=Math.round((dt-today)/86400000);
 
   if(diff===0) return 'Today';
 
@@ -327,145 +344,159 @@ function isOverdue(t){
 
   return (
     t.dueDate &&
-    t.status !== 'done' &&
-    new Date(t.dueDate) < new Date(new Date().toDateString())
+    t.status!=='done' &&
+    new Date(t.dueDate)<new Date(new Date().toDateString())
   );
 }
 
 function render(){
 
-  var b = document.getElementById('appBody');
+  var b=document.getElementById('appBody');
 
   if(tab==='home'){
-    b.innerHTML = renderHome();
+    b.innerHTML=renderHome();
     return;
   }
 
   if(tab==='work'){
-    b.innerHTML = renderList('work');
+    b.innerHTML=renderList('work');
     return;
   }
 
   if(tab==='projects'){
-    b.innerHTML = renderList('projects');
+    b.innerHTML=renderList('projects');
     return;
   }
 
   if(tab==='log'){
-    b.innerHTML = renderLog();
+    b.innerHTML=renderLog();
     return;
   }
 
   if(tab==='report'){
-    b.innerHTML = renderReport();
+    b.innerHTML=renderReport();
     return;
   }
 }
 
 function renderHome(){
 
-  var done = tasks.filter(function(t){
+  var done=tasks.filter(function(t){
     return t.status==='done';
   }).length;
 
-  var overdue = tasks.filter(isOverdue).length;
+  var overdue=tasks.filter(isOverdue).length;
 
-  var html = '';
+  var html='';
 
-  html += '<h1 style="font-size:26px;font-weight:700;margin-bottom:4px;">';
-  html += 'Your Second Brain';
-  html += '</h1>';
+  html+='<h1 style="font-size:26px;font-weight:700;margin-bottom:4px;">';
+  html+='Your Second Brain';
+  html+='</h1>';
 
-  html += '<p style="font-size:12px;color:#94A3B8;">';
-  html += new Date().toLocaleDateString('en-US',{
+  html+='<p style="font-size:12px;color:#94A3B8;">';
+  html+=new Date().toLocaleDateString('en-US',{
     weekday:'long',
     month:'long',
     day:'numeric'
   });
-  html += '</p>';
+  html+='</p>';
 
-  html += '<div class="sg">';
+  html+='<div class="sg">';
 
-  html += '<div class="sc">';
-  html += '<div class="sv" style="color:#4F8EF7;">'+tasks.length+'</div>';
-  html += '<div class="sl">TOTAL</div>';
-  html += '</div>';
+  html+='<div class="sc">';
+  html+='<div class="sv" style="color:#4F8EF7;">'+tasks.length+'</div>';
+  html+='<div class="sl">TOTAL</div>';
+  html+='</div>';
 
-  html += '<div class="sc">';
-  html += '<div class="sv" style="color:#34D399;">0</div>';
-  html += '<div class="sl">DONE</div>';
-  html += '</div>';
+  html+='<div class="sc">';
+  html+='<div class="sv" style="color:#34D399;">'+done+'</div>';
+  html+='<div class="sl">DONE</div>';
+  html+='</div>';
 
-  html += '<div class="sc">';
-  html += '<div class="sv" style="color:#FBBF24;">'+worklog.length+'</div>';
-  html += '<div class="sl">LOGS</div>';
-  html += '</div>';
+  html+='<div class="sc">';
+  html+='<div class="sv" style="color:#FBBF24;">'+worklog.length+'</div>';
+  html+='<div class="sl">LOGS</div>';
+  html+='</div>';
 
-  html += '<div class="sc">';
-  html += '<div class="sv" style="color:#F87171;">'+overdue+'</div>';
-  html += '<div class="sl">OVERDUE</div>';
-  html += '</div>';
+  html+='<div class="sc">';
+  html+='<div class="sv" style="color:#F87171;">'+overdue+'</div>';
+  html+='<div class="sl">OVERDUE</div>';
+  html+='</div>';
 
-  html += '</div>';
+  html+='</div>';
 
-  html += '<div style="font-size:11px;color:#6B7280;text-transform:uppercase;font-weight:600;margin-bottom:12px;">';
-  html += 'Categories';
-  html += '</div>';
+  html+='<div style="font-size:11px;color:#6B7280;text-transform:uppercase;font-weight:600;margin-bottom:12px;">';
+  html+='Categories';
+  html+='</div>';
 
-  html += '<div class="cg">';
+  html+='<div class="cg">';
 
-  html += '<button class="ct" onclick="setTab(\'work\')">';
-  html += '<div style="font-size:14px;font-weight:700;">Work</div>';
-  html += '</button>';
+  html+='<button class="ct" onclick="setTab(\'work\')">';
+  html+='<div style="font-size:14px;font-weight:700;">Work</div>';
+  html+='<div style="font-size:11px;color:#6B7280;margin-top:6px;">';
+  html+=tasks.filter(function(t){return t.category==="work";}).length+' tasks';
+  html+='</div>';
+  html+='</button>';
 
-  html += '<button class="ct" onclick="setTab(\'projects\')">';
-  html += '<div style="font-size:14px;font-weight:700;">Projects</div>';
-  html += '</button>';
+  html+='<button class="ct" onclick="setTab(\'projects\')">';
+  html+='<div style="font-size:14px;font-weight:700;">Projects</div>';
+  html+='<div style="font-size:11px;color:#6B7280;margin-top:6px;">';
+  html+=tasks.filter(function(t){return t.category==="projects";}).length+' tasks';
+  html+='</div>';
+  html+='</button>';
 
-  html += '<button class="ct" onclick="setTab(\'log\')">';
-  html += '<div style="font-size:14px;font-weight:700;">Worklog</div>';
-  html += '</button>';
+  html+='<button class="ct" onclick="setTab(\'log\')">';
+  html+='<div style="font-size:14px;font-weight:700;">Worklog</div>';
+  html+='<div style="font-size:11px;color:#6B7280;margin-top:6px;">';
+  html+=worklog.length+' entries';
+  html+='</div>';
+  html+='</button>';
 
-  html += '</div>';
+  html+='</div>';
 
   return html;
 }
 
 function renderList(cat){
 
-  var list = tasks.filter(function(t){
+  var list=tasks.filter(function(t){
     return t.category===cat;
   });
 
-  var html = '';
+  var html='';
 
-  html += '<h2 style="font-size:22px;font-weight:700;margin-bottom:16px;">';
-  html += cat==='work' ? 'Work' : 'Projects';
-  html += '</h2>';
+  html+='<h2 style="font-size:22px;font-weight:700;margin-bottom:16px;">';
+
+  html+=cat==='work'?'Work':'Projects';
+
+  html+='</h2>';
 
   for(var i=0;i<list.length;i++){
 
-    var t = list[i];
+    var t=list[i];
 
-    html += '<div class="tc">';
+    html+='<div class="tc">';
 
-    html += '<div style="font-size:15px;font-weight:700;">';
-    html += t.title;
-    html += '</div>';
+    html+='<div style="font-size:15px;font-weight:700;">';
+    html+=t.title;
+    html+='</div>';
 
-    html += '<div style="font-size:12px;color:#94A3B8;margin-top:8px;">';
-    html += t.notes;
-    html += '</div>';
+    html+='<div style="font-size:12px;color:#94A3B8;margin-top:8px;">';
+    html+=(t.notes||'');
+    html+='</div>';
 
-    html += '<div>';
+    html+='<div>';
 
-    html += '<span class="badge">'+t.priority+'</span>';
-    html += '<span class="badge">'+t.status+'</span>';
-    html += '<span class="badge">'+fdate(t.dueDate)+'</span>';
+    html+='<span class="badge">'+(t.priority||'normal')+'</span>';
+    html+='<span class="badge">'+(t.status||'todo')+'</span>';
 
-    html += '</div>';
+    if(t.dueDate){
+      html+='<span class="badge">'+fdate(t.dueDate)+'</span>';
+    }
 
-    html += '</div>';
+    html+='</div>';
+
+    html+='</div>';
   }
 
   return html;
@@ -473,27 +504,27 @@ function renderList(cat){
 
 function renderLog(){
 
-  var html = '';
+  var html='';
 
-  html += '<h2 style="font-size:22px;font-weight:700;margin-bottom:16px;">';
-  html += 'Worklog';
-  html += '</h2>';
+  html+='<h2 style="font-size:22px;font-weight:700;margin-bottom:16px;">';
+  html+='Worklog';
+  html+='</h2>';
 
   for(var i=0;i<worklog.length;i++){
 
-    var e = worklog[i];
+    var e=worklog[i];
 
-    html += '<div class="tc">';
+    html+='<div class="tc">';
 
-    html += '<div style="font-size:11px;color:#6B7280;">';
-    html += e.date;
-    html += '</div>';
+    html+='<div style="font-size:11px;color:#6B7280;">';
+    html+=e.date||'';
+    html+='</div>';
 
-    html += '<div style="margin-top:8px;font-size:13px;">';
-    html += e.text;
-    html += '</div>';
+    html+='<div style="margin-top:8px;font-size:13px;">';
+    html+=e.text||'';
+    html+='</div>';
 
-    html += '</div>';
+    html+='</div>';
   }
 
   return html;
@@ -501,84 +532,48 @@ function renderLog(){
 
 function renderReport(){
 
-  return '<h2 style="font-size:22px;font-weight:700;">Weekly Report</h2>';
+  return `
+  <h2 style="font-size:22px;font-weight:700;margin-bottom:16px;">
+    Weekly Report
+  </h2>
+
+  <div class="tc">
+    <div style="font-size:13px;line-height:1.7;color:#C8D6E5;">
+      AI weekly reports coming next.
+    </div>
+  </div>
+  `;
 }
 
-async function testDrive(){
+function quickAdd(){
 
-  try{
+  var txt=prompt('Quick task');
 
-    if(!API_KEY){
+  if(!txt) return;
 
-      API_KEY = prompt('Enter Anthropic API Key');
+  tasks.unshift({
+    id:Date.now().toString(),
+    title:txt,
+    category:'personal',
+    priority:'normal',
+    status:'todo',
+    dueDate:'',
+    notes:''
+  });
 
-      if(!API_KEY) return;
+  saveLocal();
 
-      localStorage.setItem('sb_api', API_KEY);
-    }
-
-    document.getElementById('stxt').textContent = 'Reading Drive...';
-
-    var body = {
-
-      model:'claude-sonnet-4-20250514',
-
-      max_tokens:1000,
-
-      system:'You have Google Drive access.',
-
-      messages:[
-        {
-          role:'user',
-          content:'Read Google Drive file ID: '+TASK_FILE_ID+' and return raw JSON only.'
-        }
-      ],
-
-      mcp_servers:[
-        {
-          type:'url',
-          url:'https://drivemcp.googleapis.com/mcp/v1',
-          name:'gdrive'
-        }
-      ]
-    };
-
-    var r = await fetch('https://api.anthropic.com/v1/messages',{
-
-      method:'POST',
-
-      headers:{
-        'Content-Type':'application/json',
-        'x-api-key':API_KEY,
-        'anthropic-version':'2023-06-01',
-        'anthropic-beta':'mcp-client-2025-04-04'
-      },
-
-      body:JSON.stringify(body)
-    });
-
-    var data = await r.json();
-
-    console.log(data);
-
-    alert(JSON.stringify(data,null,2));
-
-    document.getElementById('stxt').textContent = 'Drive Connected';
-
-  }catch(e){
-
-    console.error(e);
-
-    alert(e.message);
-
-    document.getElementById('stxt').textContent = 'Drive Failed';
-  }
+  render();
 }
+
+loadLocal();
 
 render();
 
-document.getElementById('stxt').textContent =
-  tasks.length + ' tasks loaded';
+document.getElementById('stxt').textContent=
+tasks.length+' local tasks';
+
+loadDatabase();
 
 </script>
 
