@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta name="theme-color" content="#080C14"/>
 <title>Second Brain</title>
 
 <style>
-
 *{
   box-sizing:border-box;
   margin:0;
@@ -54,7 +52,21 @@ body{
   justify-content:space-around;
   padding:10px 0 20px;
   border-top:1px solid #1F2937;
-  z-index:20;
+}
+
+#fab{
+  position:fixed;
+  bottom:90px;
+  right:20px;
+  width:54px;
+  height:54px;
+  border-radius:50%;
+  border:none;
+  background:linear-gradient(135deg,#4F8EF7,#A78BFA);
+  color:white;
+  font-size:28px;
+  cursor:pointer;
+  box-shadow:0 4px 16px #4F8EF755;
 }
 
 .ntab{
@@ -73,50 +85,41 @@ body{
   color:#4F8EF7;
 }
 
-.ntab span:first-child{
-  font-size:20px;
-}
-
 .sg{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:8px;
+  gap:10px;
   margin:18px 0;
 }
 
 .sc{
   background:#111827;
-  padding:12px;
-  border-radius:12px;
+  border-radius:14px;
+  padding:16px;
   text-align:center;
 }
 
 .sv{
-  font-size:20px;
+  font-size:28px;
   font-weight:700;
 }
 
 .sl{
-  font-size:10px;
+  margin-top:6px;
+  font-size:11px;
   color:#6B7280;
-  margin-top:4px;
 }
 
 .cg{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-  margin-top:12px;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
 }
 
 .ct{
   background:#111827;
-  border:none;
-  border-radius:14px;
-  padding:16px;
-  color:white;
-  cursor:pointer;
-  text-align:left;
+  border-radius:16px;
+  padding:18px;
 }
 
 .tc{
@@ -127,37 +130,29 @@ body{
 }
 
 .badge{
+  display:inline-block;
+  margin-top:8px;
+  margin-right:6px;
   background:#1F2937;
   padding:4px 8px;
   border-radius:6px;
   font-size:10px;
-  display:inline-block;
-  margin-right:4px;
-  margin-top:6px;
 }
 
-.fab{
-  position:fixed;
-  right:18px;
-  bottom:90px;
-  width:58px;
-  height:58px;
+.syncbtn{
+  background:#111827;
   border:none;
-  border-radius:50%;
-  background:linear-gradient(135deg,#4F8EF7,#A78BFA);
-  color:white;
-  font-size:30px;
-  box-shadow:0 8px 24px rgba(79,142,247,.4);
-  z-index:50;
+  border-radius:10px;
+  padding:8px 14px;
+  color:#E2E8F0;
+  cursor:pointer;
 }
 
 pre{
   white-space:pre-wrap;
-  line-height:1.7;
-  font-size:11px;
-  color:#C8D6E5;
+  font-size:12px;
+  line-height:1.6;
 }
-
 </style>
 </head>
 
@@ -166,23 +161,19 @@ pre{
 <div id="wrap">
 
   <div id="hdr">
-
     <div style="font-size:18px;font-weight:700;">
       Second Brain
     </div>
 
-    <div style="display:flex;gap:8px;align-items:center;">
-
-      <button onclick="loadDatabase()" style="background:#111827;border:none;color:#94A3B8;padding:6px 10px;border-radius:8px;cursor:pointer;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button class="syncbtn" onclick="syncDrive()">
         Sync
       </button>
 
-      <div id="stxt" style="font-size:10px;color:#34D399;">
+      <div id="status" style="font-size:12px;color:#34D399;">
         Ready
       </div>
-
     </div>
-
   </div>
 
   <div id="appBody"></div>
@@ -190,112 +181,111 @@ pre{
 </div>
 
 <div id="nav">
-
   <button class="ntab on" onclick="setTab('home')">
-    <span>🏠</span>
-    <span>Home</span>
+    <div>🏠</div>
+    <div>Home</div>
   </button>
 
   <button class="ntab" onclick="setTab('work')">
-    <span>💼</span>
-    <span>Work</span>
+    <div>💼</div>
+    <div>Work</div>
   </button>
 
   <button class="ntab" onclick="setTab('projects')">
-    <span>🚀</span>
-    <span>Projects</span>
+    <div>🚀</div>
+    <div>Projects</div>
   </button>
 
   <button class="ntab" onclick="setTab('log')">
-    <span>📋</span>
-    <span>Log</span>
+    <div>📋</div>
+    <div>Log</div>
   </button>
 
   <button class="ntab" onclick="setTab('report')">
-    <span>📊</span>
-    <span>Report</span>
+    <div>📊</div>
+    <div>Report</div>
   </button>
-
 </div>
 
-<button class="fab" onclick="quickAdd()">
-+
-</button>
+<button id="fab">+</button>
 
 <script>
 
-var TASKS_URL =
-'https://drive.google.com/uc?export=download&id=1OWIXMe5PvrXOZXDVFDxVfylXQ8Kml_IE';
+const DB = {
+  tasks: 'https://drive.google.com/uc?export=download&id=1OWIXMe5PvrXOZXDVFDxVfylXQ8Kml_IE',
+  categories: 'https://drive.google.com/uc?export=download&id=14zFd-GoGYRGdbjr76ySlRNb-pqZrNSyK',
+  worklog: 'https://drive.google.com/uc?export=download&id=1w6jQLE48kmnSQ3kXn5TDiafhfYe2y4tQ'
+};
 
-var WORKLOG_URL =
-'https://drive.google.com/uc?export=download&id=1w6jQLE48kmnSQ3kXn5TDiafhfYe2y4tQ';
+let tasks = [];
+let worklog = [];
+let categories = [];
+let tab = 'home';
 
-var CATEGORIES_URL =
-'https://drive.google.com/uc?export=download&id=14zFd-GoGYRGdbjr76ySlRNb-pqZrNSyK';
+function setStatus(t,c){
+  const s=document.getElementById('status');
+  s.innerText=t;
+  s.style.color=c||'#34D399';
+}
 
-var tab='home';
+async function loadJson(url){
 
-var tasks=[];
-var worklog=[];
-var categories=[];
+  const r = await fetch(url);
 
-function saveLocal(){
+  if(!r.ok){
+    throw new Error('Fetch failed');
+  }
 
-  localStorage.setItem('sb_tasks',JSON.stringify(tasks));
-  localStorage.setItem('sb_worklog',JSON.stringify(worklog));
-  localStorage.setItem('sb_categories',JSON.stringify(categories));
+  return await r.json();
+}
+
+async function syncDrive(){
+
+  try{
+
+    setStatus('Syncing...','#FBBF24');
+
+    const t = await loadJson(DB.tasks);
+    const w = await loadJson(DB.worklog);
+    const c = await loadJson(DB.categories);
+
+    tasks = t.items || [];
+    worklog = w.entries || [];
+    categories = c.categories || [];
+
+    localStorage.setItem('sb_tasks',JSON.stringify(tasks));
+    localStorage.setItem('sb_worklog',JSON.stringify(worklog));
+    localStorage.setItem('sb_categories',JSON.stringify(categories));
+
+    setStatus('Synced','#34D399');
+
+    render();
+
+  }catch(e){
+
+    console.log(e);
+
+    setStatus('Load failed','#F87171');
+
+    alert('Database load failed');
+
+  }
 }
 
 function loadLocal(){
 
   try{
 
-    var t=localStorage.getItem('sb_tasks');
-    var w=localStorage.getItem('sb_worklog');
-    var c=localStorage.getItem('sb_categories');
-
-    if(t) tasks=JSON.parse(t);
-    if(w) worklog=JSON.parse(w);
-    if(c) categories=JSON.parse(c);
-
-  }catch(e){
-    console.log(e);
-  }
-}
-
-async function loadDatabase(){
-
-  try{
-
-    document.getElementById('stxt').textContent='Syncing...';
-
-    const responses = await Promise.all([
-      fetch(TASKS_URL),
-      fetch(WORKLOG_URL),
-      fetch(CATEGORIES_URL)
-    ]);
-
-    const tasksData = await responses[0].json();
-    const worklogData = await responses[1].json();
-    const categoriesData = await responses[2].json();
-
-    tasks = tasksData.items || [];
-    worklog = worklogData.entries || [];
-    categories = categoriesData.categories || [];
-
-    saveLocal();
-
-    render();
-
-    document.getElementById('stxt').textContent='Synced';
+    tasks = JSON.parse(localStorage.getItem('sb_tasks') || '[]');
+    worklog = JSON.parse(localStorage.getItem('sb_worklog') || '[]');
+    categories = JSON.parse(localStorage.getItem('sb_categories') || '[]');
 
   }catch(e){
 
-    console.error(e);
+    tasks = [];
+    worklog = [];
+    categories = [];
 
-    document.getElementById('stxt').textContent='Sync Failed';
-
-    alert('Database load failed');
   }
 }
 
@@ -303,229 +293,205 @@ function setTab(t){
 
   tab=t;
 
-  var tabs=document.querySelectorAll('.ntab');
+  const tabs=document.querySelectorAll('.ntab');
 
-  for(var i=0;i<tabs.length;i++){
-    tabs[i].classList.remove('on');
-  }
+  tabs.forEach(x=>x.classList.remove('on'));
 
-  var arr=['home','work','projects','log','report'];
+  const arr=['home','work','projects','log','report'];
 
   tabs[arr.indexOf(t)].classList.add('on');
 
   render();
 }
 
-function fdate(iso){
-
-  if(!iso) return '';
-
-  var today=new Date();
-  today.setHours(0,0,0,0);
-
-  var dt=new Date(iso);
-  dt.setHours(0,0,0,0);
-
-  var diff=Math.round((dt-today)/86400000);
-
-  if(diff===0) return 'Today';
-
-  if(diff===1) return 'Tomorrow';
-
-  if(diff<0) return Math.abs(diff)+'d ago';
-
-  return new Date(iso).toLocaleDateString('en-US',{
-    month:'short',
-    day:'numeric'
-  });
-}
-
-function isOverdue(t){
-
-  return (
-    t.dueDate &&
-    t.status!=='done' &&
-    new Date(t.dueDate)<new Date(new Date().toDateString())
-  );
-}
-
 function render(){
 
-  var b=document.getElementById('appBody');
+  const b=document.getElementById('appBody');
 
   if(tab==='home'){
     b.innerHTML=renderHome();
-    return;
   }
 
   if(tab==='work'){
-    b.innerHTML=renderList('work');
-    return;
+    b.innerHTML=renderTasks('work');
   }
 
   if(tab==='projects'){
-    b.innerHTML=renderList('projects');
-    return;
+    b.innerHTML=renderTasks('projects');
   }
 
   if(tab==='log'){
     b.innerHTML=renderLog();
-    return;
   }
 
   if(tab==='report'){
     b.innerHTML=renderReport();
-    return;
   }
 }
 
 function renderHome(){
 
-  var done=tasks.filter(function(t){
-    return t.status==='done';
+  const done=tasks.filter(x=>x.status==='done').length;
+
+  const overdue=tasks.filter(x=>{
+    return x.dueDate &&
+      x.status!=='done' &&
+      new Date(x.dueDate)<new Date();
   }).length;
 
-  var overdue=tasks.filter(isOverdue).length;
+  return `
+    <h1 style="font-size:30px;font-weight:700;margin-bottom:6px;">
+      Your Second Brain
+    </h1>
 
-  var html='';
+    <div style="color:#94A3B8;margin-bottom:20px;">
+      ${new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}
+    </div>
 
-  html+='<h1 style="font-size:26px;font-weight:700;margin-bottom:4px;">';
-  html+='Your Second Brain';
-  html+='</h1>';
+    <div class="sg">
 
-  html+='<p style="font-size:12px;color:#94A3B8;">';
-  html+=new Date().toLocaleDateString('en-US',{
-    weekday:'long',
-    month:'long',
-    day:'numeric'
-  });
-  html+='</p>';
+      <div class="sc">
+        <div class="sv" style="color:#4F8EF7;">
+          ${tasks.length}
+        </div>
+        <div class="sl">TOTAL</div>
+      </div>
 
-  html+='<div class="sg">';
+      <div class="sc">
+        <div class="sv" style="color:#34D399;">
+          ${done}
+        </div>
+        <div class="sl">DONE</div>
+      </div>
 
-  html+='<div class="sc">';
-  html+='<div class="sv" style="color:#4F8EF7;">'+tasks.length+'</div>';
-  html+='<div class="sl">TOTAL</div>';
-  html+='</div>';
+      <div class="sc">
+        <div class="sv" style="color:#FBBF24;">
+          ${worklog.length}
+        </div>
+        <div class="sl">LOGS</div>
+      </div>
 
-  html+='<div class="sc">';
-  html+='<div class="sv" style="color:#34D399;">'+done+'</div>';
-  html+='<div class="sl">DONE</div>';
-  html+='</div>';
+      <div class="sc">
+        <div class="sv" style="color:#F87171;">
+          ${overdue}
+        </div>
+        <div class="sl">OVERDUE</div>
+      </div>
 
-  html+='<div class="sc">';
-  html+='<div class="sv" style="color:#FBBF24;">'+worklog.length+'</div>';
-  html+='<div class="sl">LOGS</div>';
-  html+='</div>';
+    </div>
 
-  html+='<div class="sc">';
-  html+='<div class="sv" style="color:#F87171;">'+overdue+'</div>';
-  html+='<div class="sl">OVERDUE</div>';
-  html+='</div>';
+    <div style="font-size:13px;color:#6B7280;font-weight:700;margin-bottom:12px;">
+      CATEGORIES
+    </div>
 
-  html+='</div>';
+    <div class="cg">
 
-  html+='<div style="font-size:11px;color:#6B7280;text-transform:uppercase;font-weight:600;margin-bottom:12px;">';
-  html+='Categories';
-  html+='</div>';
+      <div class="ct">
+        <div style="font-size:16px;font-weight:700;">Work</div>
+        <div style="margin-top:8px;color:#6B7280;">
+          ${tasks.filter(x=>x.category==='work').length} tasks
+        </div>
+      </div>
 
-  html+='<div class="cg">';
+      <div class="ct">
+        <div style="font-size:16px;font-weight:700;">Projects</div>
+        <div style="margin-top:8px;color:#6B7280;">
+          ${tasks.filter(x=>x.category==='projects').length} tasks
+        </div>
+      </div>
 
-  html+='<button class="ct" onclick="setTab(\'work\')">';
-  html+='<div style="font-size:14px;font-weight:700;">Work</div>';
-  html+='<div style="font-size:11px;color:#6B7280;margin-top:6px;">';
-  html+=tasks.filter(function(t){return t.category==="work";}).length+' tasks';
-  html+='</div>';
-  html+='</button>';
+      <div class="ct">
+        <div style="font-size:16px;font-weight:700;">Worklog</div>
+        <div style="margin-top:8px;color:#6B7280;">
+          ${worklog.length} entries
+        </div>
+      </div>
 
-  html+='<button class="ct" onclick="setTab(\'projects\')">';
-  html+='<div style="font-size:14px;font-weight:700;">Projects</div>';
-  html+='<div style="font-size:11px;color:#6B7280;margin-top:6px;">';
-  html+=tasks.filter(function(t){return t.category==="projects";}).length+' tasks';
-  html+='</div>';
-  html+='</button>';
+      <div class="ct">
+        <div style="font-size:16px;font-weight:700;">Reports</div>
+        <div style="margin-top:8px;color:#6B7280;">
+          Weekly updates
+        </div>
+      </div>
 
-  html+='<button class="ct" onclick="setTab(\'log\')">';
-  html+='<div style="font-size:14px;font-weight:700;">Worklog</div>';
-  html+='<div style="font-size:11px;color:#6B7280;margin-top:6px;">';
-  html+=worklog.length+' entries';
-  html+='</div>';
-  html+='</button>';
-
-  html+='</div>';
-
-  return html;
+    </div>
+  `;
 }
 
-function renderList(cat){
+function renderTasks(cat){
 
-  var list=tasks.filter(function(t){
-    return t.category===cat;
+  const list=tasks.filter(x=>x.category===cat);
+
+  let html='';
+
+  html+=`
+    <h2 style="font-size:28px;font-weight:700;margin-bottom:18px;">
+      ${cat}
+    </h2>
+  `;
+
+  list.forEach(t=>{
+
+    html+=`
+      <div class="tc">
+
+        <div style="font-size:15px;font-weight:700;">
+          ${t.title}
+        </div>
+
+        <div style="margin-top:8px;color:#94A3B8;font-size:12px;">
+          ${t.notes || ''}
+        </div>
+
+        <div>
+
+          <span class="badge">
+            ${t.priority || 'normal'}
+          </span>
+
+          <span class="badge">
+            ${t.status || 'todo'}
+          </span>
+
+          <span class="badge">
+            ${t.dueDate || ''}
+          </span>
+
+        </div>
+
+      </div>
+    `;
   });
-
-  var html='';
-
-  html+='<h2 style="font-size:22px;font-weight:700;margin-bottom:16px;">';
-
-  html+=cat==='work'?'Work':'Projects';
-
-  html+='</h2>';
-
-  for(var i=0;i<list.length;i++){
-
-    var t=list[i];
-
-    html+='<div class="tc">';
-
-    html+='<div style="font-size:15px;font-weight:700;">';
-    html+=t.title;
-    html+='</div>';
-
-    html+='<div style="font-size:12px;color:#94A3B8;margin-top:8px;">';
-    html+=(t.notes||'');
-    html+='</div>';
-
-    html+='<div>';
-
-    html+='<span class="badge">'+(t.priority||'normal')+'</span>';
-    html+='<span class="badge">'+(t.status||'todo')+'</span>';
-
-    if(t.dueDate){
-      html+='<span class="badge">'+fdate(t.dueDate)+'</span>';
-    }
-
-    html+='</div>';
-
-    html+='</div>';
-  }
 
   return html;
 }
 
 function renderLog(){
 
-  var html='';
+  let html='';
 
-  html+='<h2 style="font-size:22px;font-weight:700;margin-bottom:16px;">';
-  html+='Worklog';
-  html+='</h2>';
+  html+=`
+    <h2 style="font-size:28px;font-weight:700;margin-bottom:18px;">
+      Worklog
+    </h2>
+  `;
 
-  for(var i=0;i<worklog.length;i++){
+  worklog.forEach(w=>{
 
-    var e=worklog[i];
+    html+=`
+      <div class="tc">
 
-    html+='<div class="tc">';
+        <div style="font-size:12px;color:#6B7280;margin-bottom:6px;">
+          ${w.date || ''}
+        </div>
 
-    html+='<div style="font-size:11px;color:#6B7280;">';
-    html+=e.date||'';
-    html+='</div>';
+        <div style="font-size:14px;">
+          ${w.text || ''}
+        </div>
 
-    html+='<div style="margin-top:8px;font-size:13px;">';
-    html+=e.text||'';
-    html+='</div>';
-
-    html+='</div>';
-  }
+      </div>
+    `;
+  });
 
   return html;
 }
@@ -533,47 +499,36 @@ function renderLog(){
 function renderReport(){
 
   return `
-  <h2 style="font-size:22px;font-weight:700;margin-bottom:16px;">
-    Weekly Report
-  </h2>
+    <h2 style="font-size:28px;font-weight:700;margin-bottom:20px;">
+      Weekly Report
+    </h2>
 
-  <div class="tc">
-    <div style="font-size:13px;line-height:1.7;color:#C8D6E5;">
-      AI weekly reports coming next.
+    <div class="tc">
+
+<pre>
+Hi Sir,
+
+Please find below my weekly work update:
+
+Generated from:
+- Tasks database
+- Worklog database
+- Projects database
+
+Total Tasks: ${tasks.length}
+Total Worklog Entries: ${worklog.length}
+
+Thanks,
+Abhi Kapoor
+</pre>
+
     </div>
-  </div>
   `;
 }
 
-function quickAdd(){
-
-  var txt=prompt('Quick task');
-
-  if(!txt) return;
-
-  tasks.unshift({
-    id:Date.now().toString(),
-    title:txt,
-    category:'personal',
-    priority:'normal',
-    status:'todo',
-    dueDate:'',
-    notes:''
-  });
-
-  saveLocal();
-
-  render();
-}
-
 loadLocal();
-
 render();
-
-document.getElementById('stxt').textContent=
-tasks.length+' local tasks';
-
-loadDatabase();
+syncDrive();
 
 </script>
 
