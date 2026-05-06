@@ -3,508 +3,713 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<meta name="theme-color" content="#080C14"/>
 <title>Second Brain</title>
 
 <style>
-
 *{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
+box-sizing:border-box;
+margin:0;
+padding:0;
 }
 
 body{
-  background:#080C14;
-  color:#E2E8F0;
-  font-family:Arial,sans-serif;
+background:#080C14;
+color:#E2E8F0;
+font-family:Arial,sans-serif;
 }
 
 #wrap{
-  max-width:430px;
-  margin:auto;
-  min-height:100vh;
+max-width:430px;
+margin:auto;
+min-height:100vh;
+padding-bottom:120px;
 }
 
 #hdr{
-  padding:14px 16px;
-  border-bottom:1px solid #1F2937;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  position:sticky;
-  top:0;
-  background:#080C14;
-  z-index:10;
+padding:14px 16px;
+border-bottom:1px solid #1F2937;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:#080C14;
+position:sticky;
+top:0;
+z-index:10;
 }
 
-#body{
-  padding:16px;
-  padding-bottom:120px;
+#app{
+padding:16px;
 }
 
 #nav{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  background:#111827;
-  display:flex;
-  justify-content:space-around;
-  padding:10px 0 20px;
-  border-top:1px solid #1F2937;
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+background:#111827;
+display:flex;
+justify-content:space-around;
+padding:10px 0 20px;
+border-top:1px solid #1F2937;
 }
 
-.nt{
-  background:none;
-  border:none;
-  color:#6B7280;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:4px;
-  font-size:11px;
+.ntab{
+background:none;
+border:none;
+color:#6B7280;
+font-size:11px;
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:4px;
+cursor:pointer;
 }
 
-.nt.on{
-  color:#4F8EF7;
+.ntab.on{
+color:#4F8EF7;
 }
 
-.sg{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  margin:18px 0;
+.card{
+background:#111827;
+border-radius:14px;
+padding:14px;
+margin-bottom:12px;
 }
 
-.sc{
-  background:#111827;
-  border-radius:14px;
-  padding:16px;
-  text-align:center;
+.grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+margin-top:12px;
+}
+
+.stat{
+background:#111827;
+padding:14px;
+border-radius:14px;
+text-align:center;
 }
 
 .sv{
-  font-size:28px;
-  font-weight:700;
+font-size:24px;
+font-weight:700;
 }
 
 .sl{
-  margin-top:6px;
-  font-size:11px;
-  color:#6B7280;
+font-size:11px;
+color:#6B7280;
+margin-top:4px;
 }
 
-.cg{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
+button{
+font-family:inherit;
 }
 
-.ct{
-  background:#111827;
-  border-radius:16px;
-  padding:18px;
+.fab{
+position:fixed;
+right:20px;
+bottom:90px;
+width:58px;
+height:58px;
+border:none;
+border-radius:50%;
+background:linear-gradient(135deg,#4F8EF7,#A78BFA);
+color:white;
+font-size:28px;
+cursor:pointer;
+box-shadow:0 4px 18px rgba(79,142,247,.4);
 }
 
-.tc{
-  background:#111827;
-  border-radius:14px;
-  padding:14px;
-  margin-bottom:12px;
+input,textarea,select{
+width:100%;
+background:#080C14;
+border:1px solid #374151;
+border-radius:10px;
+padding:11px;
+color:white;
+margin-top:6px;
+font-size:14px;
 }
 
-.bad{
-  display:inline-block;
-  margin-top:8px;
-  margin-right:6px;
-  background:#1F2937;
-  padding:4px 8px;
-  border-radius:6px;
-  font-size:10px;
+.modal{
+position:fixed;
+inset:0;
+background:#00000090;
+display:flex;
+align-items:flex-end;
+z-index:50;
 }
 
-.sync{
-  background:#111827;
-  border:none;
-  border-radius:10px;
-  color:white;
-  padding:8px 14px;
+.modalbox{
+background:#111827;
+width:100%;
+max-width:430px;
+margin:auto;
+padding:20px;
+border-radius:20px 20px 0 0;
 }
 
-pre{
-  white-space:pre-wrap;
-  line-height:1.7;
-  font-size:12px;
+.savebtn{
+width:100%;
+background:linear-gradient(135deg,#4F8EF7,#A78BFA);
+border:none;
+border-radius:12px;
+padding:14px;
+color:white;
+font-weight:700;
+margin-top:16px;
+}
+
+.badge{
+padding:4px 8px;
+border-radius:6px;
+font-size:10px;
+display:inline-block;
+margin-right:4px;
+margin-top:6px;
+background:#1F2937;
+}
+
+.small{
+font-size:12px;
+color:#94A3B8;
 }
 
 </style>
 </head>
-
 <body>
 
 <div id="wrap">
 
 <div id="hdr">
-
 <div style="font-size:18px;font-weight:700;">
 Second Brain
 </div>
 
-<div style="display:flex;align-items:center;gap:12px;">
+<div style="display:flex;gap:8px;align-items:center;">
 
-<button class="sync" onclick="syncDb()">
+<button onclick="showTokenModal()" style="background:#111827;border:none;color:#94A3B8;padding:8px 12px;border-radius:10px;">
+Token
+</button>
+
+<button onclick="syncData()" style="background:#111827;border:none;color:#94A3B8;padding:8px 12px;border-radius:10px;">
 Sync
 </button>
 
-<div id="st" style="font-size:12px;color:#34D399;">
+<div id="status" style="font-size:11px;color:#34D399;">
 Ready
 </div>
 
 </div>
-
 </div>
 
-<div id="body"></div>
+<div id="app"></div>
 
 </div>
 
 <div id="nav">
-
-<button class="nt on" onclick="tab('home')">
-<div>🏠</div>
-<div>Home</div>
+<button class="ntab on" onclick="setTab('home')">
+<span>🏠</span>
+<span>Home</span>
 </button>
 
-<button class="nt" onclick="tab('work')">
-<div>💼</div>
-<div>Work</div>
+<button class="ntab" onclick="setTab('work')">
+<span>💼</span>
+<span>Work</span>
 </button>
 
-<button class="nt" onclick="tab('projects')">
-<div>🚀</div>
-<div>Projects</div>
+<button class="ntab" onclick="setTab('projects')">
+<span>🚀</span>
+<span>Projects</span>
 </button>
 
-<button class="nt" onclick="tab('log')">
-<div>📋</div>
-<div>Log</div>
+<button class="ntab" onclick="setTab('log')">
+<span>📋</span>
+<span>Log</span>
 </button>
-
-<button class="nt" onclick="tab('report')">
-<div>📊</div>
-<div>Report</div>
-</button>
-
 </div>
+
+<button class="fab" onclick="addTask()">
++
+</button>
+
+<div id="modal"></div>
 
 <script>
 
-const DB = {
-  tasks:'./data/sb-tasks.json',
-  worklog:'./data/sb-worklog.json',
-  categories:'./data/sb-categories.json'
+const GH = {
+owner:'abhicome',
+repo:'second-brain',
+branch:'main'
 };
 
-let tasks=[];
-let worklog=[];
-let cats=[];
-let current='home';
+const FILES = {
+tasks:'data/sb-tasks.json',
+worklog:'data/sb-worklog.json',
+categories:'data/sb-categories.json'
+};
+
+let token = localStorage.getItem('sb_gh_token') || '';
+
+let tasks = [];
+let worklog = [];
+let categories = [];
+
+let tab = 'home';
 
 function setStatus(t,c){
-  const s=document.getElementById('st');
-  s.innerText=t;
-  s.style.color=c||'#34D399';
+const s=document.getElementById('status');
+s.innerText=t;
+s.style.color=c||'#34D399';
 }
 
-async function getJson(url){
-
-  const r=await fetch(url+'?v='+Date.now());
-
-  if(!r.ok){
-    throw new Error('Fetch failed');
-  }
-
-  return await r.json();
-}
-
-async function syncDb(){
-
-  try{
-
-    setStatus('Syncing...','#FBBF24');
-
-    const t=await getJson(DB.tasks);
-    const w=await getJson(DB.worklog);
-    const c=await getJson(DB.categories);
-
-    tasks=t.items||[];
-    worklog=w.entries||[];
-    cats=c.categories||[];
-
-    localStorage.setItem('sb_tasks',JSON.stringify(tasks));
-    localStorage.setItem('sb_worklog',JSON.stringify(worklog));
-    localStorage.setItem('sb_categories',JSON.stringify(cats));
-
-    setStatus('Synced','#34D399');
-
-    render();
-
-  }catch(e){
-
-    console.log(e);
-
-    setStatus('Failed','#F87171');
-
-    alert('Database load failed');
-
-  }
-
+function saveLocal(){
+localStorage.setItem('sb_tasks',JSON.stringify(tasks));
+localStorage.setItem('sb_worklog',JSON.stringify(worklog));
+localStorage.setItem('sb_categories',JSON.stringify(categories));
 }
 
 function loadLocal(){
-
-  tasks=JSON.parse(localStorage.getItem('sb_tasks')||'[]');
-  worklog=JSON.parse(localStorage.getItem('sb_worklog')||'[]');
-  cats=JSON.parse(localStorage.getItem('sb_categories')||'[]');
-
+tasks=JSON.parse(localStorage.getItem('sb_tasks')||'[]');
+worklog=JSON.parse(localStorage.getItem('sb_worklog')||'[]');
+categories=JSON.parse(localStorage.getItem('sb_categories')||'[]');
 }
 
-function tab(t){
+async function ghRead(path){
 
-  current=t;
+const url=
+'https://raw.githubusercontent.com/'
++GH.owner+'/'
++GH.repo+'/'
++GH.branch+'/'
++path;
 
-  const n=document.querySelectorAll('.nt');
+const r=await fetch(url+'?t='+Date.now());
 
-  n.forEach(x=>x.classList.remove('on'));
+if(!r.ok) throw new Error('Read failed');
 
-  const arr=['home','work','projects','log','report'];
+return await r.json();
+}
 
-  n[arr.indexOf(t)].classList.add('on');
+async function ghWrite(path,obj){
 
-  render();
+if(!token){
+alert('Add GitHub token first');
+return;
+}
 
+const api=
+'https://api.github.com/repos/'
++GH.owner+'/'+GH.repo+'/contents/'+path;
+
+const current=await fetch(api,{
+headers:{
+Authorization:'token '+token
+}
+});
+
+const cur=await current.json();
+
+const content=btoa(
+unescape(
+encodeURIComponent(
+JSON.stringify(obj,null,2)
+)
+)
+);
+
+const body={
+message:'Second Brain update',
+content:content,
+sha:cur.sha,
+branch:GH.branch
+};
+
+const r=await fetch(api,{
+method:'PUT',
+headers:{
+Authorization:'token '+token,
+'Content-Type':'application/json'
+},
+body:JSON.stringify(body)
+});
+
+if(!r.ok){
+throw new Error('Save failed');
+}
+
+return await r.json();
+}
+
+async function syncData(){
+
+try{
+
+setStatus('Syncing...','#FBBF24');
+
+tasks=await ghRead(FILES.tasks);
+worklog=await ghRead(FILES.worklog);
+categories=await ghRead(FILES.categories);
+
+saveLocal();
+
+setStatus('Synced','#34D399');
+
+render();
+
+}catch(e){
+
+console.log(e);
+
+setStatus('Offline','#F87171');
+
+alert('Sync failed');
+
+}
+}
+
+async function saveTasks(){
+
+saveLocal();
+
+try{
+await ghWrite(FILES.tasks,tasks);
+setStatus('Saved','#34D399');
+}catch(e){
+setStatus('Save failed','#F87171');
+}
+}
+
+async function saveWorklog(){
+
+saveLocal();
+
+try{
+await ghWrite(FILES.worklog,worklog);
+setStatus('Saved','#34D399');
+}catch(e){
+setStatus('Save failed','#F87171');
+}
+}
+
+function setTab(t){
+
+tab=t;
+
+document.querySelectorAll('.ntab').forEach(x=>{
+x.classList.remove('on');
+});
+
+if(t==='home') document.querySelectorAll('.ntab')[0].classList.add('on');
+if(t==='work') document.querySelectorAll('.ntab')[1].classList.add('on');
+if(t==='projects') document.querySelectorAll('.ntab')[2].classList.add('on');
+if(t==='log') document.querySelectorAll('.ntab')[3].classList.add('on');
+
+render();
 }
 
 function render(){
 
-  const b=document.getElementById('body');
+const app=document.getElementById('app');
 
-  if(current==='home'){
-    b.innerHTML=homeHtml();
-  }
+if(tab==='home'){
 
-  if(current==='work'){
-    b.innerHTML=taskHtml('work');
-  }
+const done=tasks.filter(x=>x.status==='done').length;
 
-  if(current==='projects'){
-    b.innerHTML=taskHtml('projects');
-  }
-
-  if(current==='log'){
-    b.innerHTML=logHtml();
-  }
-
-  if(current==='report'){
-    b.innerHTML=reportHtml();
-  }
-
-}
-
-function homeHtml(){
-
-  const done=tasks.filter(x=>x.status==='done').length;
-
-  return `
-
-<h1 style="font-size:32px;font-weight:700;margin-bottom:6px;">
+app.innerHTML='
+<h1 style="font-size:28px;font-weight:700;margin-bottom:6px;">
 Your Second Brain
 </h1>
 
-<div style="color:#94A3B8;margin-bottom:20px;">
-${new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}
+<div class="small" style="margin-bottom:18px;">
+'+new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})+'
 </div>
 
-<div class="sg">
+<div class="grid">
 
-<div class="sc">
+<div class="stat">
 <div class="sv" style="color:#4F8EF7;">
-${tasks.length}
+'+tasks.length+'
 </div>
 <div class="sl">TOTAL</div>
 </div>
 
-<div class="sc">
+<div class="stat">
 <div class="sv" style="color:#34D399;">
-${done}
+'+done+'
 </div>
 <div class="sl">DONE</div>
 </div>
 
-<div class="sc">
+<div class="stat">
 <div class="sv" style="color:#FBBF24;">
-${worklog.length}
+'+worklog.length+'
 </div>
 <div class="sl">LOGS</div>
 </div>
 
-<div class="sc">
+<div class="stat">
 <div class="sv" style="color:#F87171;">
-${tasks.filter(x=>x.status!=='done').length}
+'+tasks.filter(x=>x.status!=="done").length+'
 </div>
 <div class="sl">OPEN</div>
 </div>
 
 </div>
 
-<div style="font-size:13px;color:#6B7280;font-weight:700;margin-bottom:12px;">
+<div style="margin-top:24px;font-size:12px;color:#6B7280;font-weight:700;">
 CATEGORIES
 </div>
 
-<div class="cg">
+<div class="grid">
 
-<div class="ct">
-<div style="font-size:16px;font-weight:700;">
+<div class="card" onclick="setTab('work')">
+<div style="font-size:18px;font-weight:700;">
 Work
 </div>
-<div style="margin-top:8px;color:#6B7280;">
-${tasks.filter(x=>x.category==='work').length} tasks
+<div class="small">
+'+tasks.filter(x=>x.category==="work").length+' tasks
 </div>
 </div>
 
-<div class="ct">
-<div style="font-size:16px;font-weight:700;">
+<div class="card" onclick="setTab('projects')">
+<div style="font-size:18px;font-weight:700;">
 Projects
 </div>
-<div style="margin-top:8px;color:#6B7280;">
-${tasks.filter(x=>x.category==='projects').length} tasks
+<div class="small">
+'+tasks.filter(x=>x.category==="projects").length+' tasks
 </div>
 </div>
 
-<div class="ct">
-<div style="font-size:16px;font-weight:700;">
+<div class="card" onclick="setTab('log')">
+<div style="font-size:18px;font-weight:700;">
 Worklog
 </div>
-<div style="margin-top:8px;color:#6B7280;">
-${worklog.length} entries
-</div>
-</div>
-
-<div class="ct">
-<div style="font-size:16px;font-weight:700;">
-Reports
-</div>
-<div style="margin-top:8px;color:#6B7280;">
-Weekly updates
+<div class="small">
+'+worklog.length+' entries
 </div>
 </div>
 
 </div>
+';
 
-`;
+return;
+}
+
+if(tab==='work'||tab==='projects'){
+
+const list=tasks.filter(x=>x.category===tab);
+
+app.innerHTML=
+'<h2 style="font-size:24px;margin-bottom:18px;">'
++(tab==='work'?'Work':'Projects')
++'</h2>'
++
+list.map(t=>'
+<div class="card">
+
+<div style="display:flex;justify-content:space-between;gap:10px;">
+
+<div style="flex:1;">
+
+<div style="font-size:15px;font-weight:700;">
+'+t.title+'
+</div>
+
+<div class="small" style="margin-top:6px;">
+'+(t.notes||'')+'
+</div>
+
+<div>
+
+<span class="badge">
+'+(t.priority||'normal')+'
+</span>
+
+<span class="badge">
+'+(t.status||'todo')+'
+</span>
+
+</div>
+
+</div>
+
+<div style="display:flex;flex-direction:column;gap:8px;">
+
+<button onclick="toggleTask(\''+t.id+'\')" style="background:#1F2937;border:none;color:#fff;padding:8px;border-radius:8px;">
+✓
+</button>
+
+<button onclick="deleteTask(\''+t.id+'\')" style="background:#F87171;border:none;color:#fff;padding:8px;border-radius:8px;">
+✕
+</button>
+
+</div>
+
+</div>
+
+</div>
+').join('');
+
+return;
+}
+
+if(tab==='log'){
+
+app.innerHTML=
+'<h2 style="font-size:24px;margin-bottom:18px;">Worklog</h2>'
++
+worklog.map(l=>'
+<div class="card">
+
+<div style="font-size:14px;">
+'+l.text+'
+</div>
+
+<div class="small" style="margin-top:8px;">
+'+l.date+'
+</div>
+
+</div>
+').join('');
 
 }
 
-function taskHtml(cat){
-
-  const list=tasks.filter(x=>x.category===cat);
-
-  let h='';
-
-  h+='<h2 style="font-size:28px;font-weight:700;margin-bottom:18px;">'+cat+'</h2>';
-
-  list.forEach(t=>{
-
-    h+='<div class="tc">';
-
-    h+='<div style="font-size:15px;font-weight:700;">';
-    h+=t.title;
-    h+='</div>';
-
-    h+='<div style="margin-top:8px;color:#94A3B8;font-size:12px;">';
-    h+=(t.notes||'');
-    h+='</div>';
-
-    h+='<span class="bad">'+(t.priority||'normal')+'</span>';
-    h+='<span class="bad">'+(t.status||'todo')+'</span>';
-
-    if(t.dueDate){
-      h+='<span class="bad">'+t.dueDate+'</span>';
-    }
-
-    h+='</div>';
-
-  });
-
-  return h;
-
 }
 
-function logHtml(){
+function addTask(){
 
-  let h='';
+document.getElementById('modal').innerHTML='
+<div class="modal">
 
-  h+='<h2 style="font-size:28px;font-weight:700;margin-bottom:18px;">Worklog</h2>';
+<div class="modalbox">
 
-  worklog.forEach(w=>{
+<h3 style="margin-bottom:16px;">
+New Task
+</h3>
 
-    h+='<div class="tc">';
+<input id="ttitle" placeholder="Task title"/>
 
-    h+='<div style="font-size:12px;color:#6B7280;margin-bottom:6px;">';
-    h+=(w.date||'');
-    h+='</div>';
+<textarea id="tnotes" placeholder="Notes"></textarea>
 
-    h+='<div style="font-size:14px;">';
-    h+=(w.text||'');
-    h+='</div>';
+<select id="tcat">
+<option value="work">Work</option>
+<option value="projects">Projects</option>
+</select>
 
-    h+='</div>';
+<select id="tpri">
+<option value="urgent">Urgent</option>
+<option value="high">High</option>
+<option value="normal">Normal</option>
+<option value="low">Low</option>
+</select>
 
-  });
-
-  return h;
-
-}
-
-function reportHtml(){
-
-  return `
-
-<h2 style="font-size:28px;font-weight:700;margin-bottom:18px;">
-Weekly Report
-</h2>
-
-<div class="tc">
-
-<pre>
-Hi Sir,
-
-Please find below my weekly work update:
-
-Tasks Loaded: ${tasks.length}
-
-Worklog Entries: ${worklog.length}
-
-Projects:
-${tasks.filter(x=>x.category==='projects').length}
-
-Work:
-${tasks.filter(x=>x.category==='work').length}
-
-Thanks,
-Abhi Kapoor
-</pre>
+<button class="savebtn" onclick="saveTask()">
+Save Task
+</button>
 
 </div>
 
-`;
+</div>
+';
+
+}
+
+async function saveTask(){
+
+const obj={
+id:Date.now().toString(),
+title:document.getElementById('ttitle').value,
+notes:document.getElementById('tnotes').value,
+category:document.getElementById('tcat').value,
+priority:document.getElementById('tpri').value,
+status:'todo'
+};
+
+tasks.unshift(obj);
+
+await saveTasks();
+
+closeModal();
+
+render();
+}
+
+async function deleteTask(id){
+
+if(!confirm('Delete task?')) return;
+
+tasks=tasks.filter(x=>x.id!==id);
+
+await saveTasks();
+
+render();
+}
+
+async function toggleTask(id){
+
+tasks=tasks.map(t=>{
+
+if(t.id===id){
+
+t.status=t.status==='done'?'todo':'done';
+
+}
+
+return t;
+
+});
+
+await saveTasks();
+
+render();
+}
+
+function closeModal(){
+document.getElementById('modal').innerHTML='';
+}
+
+function showTokenModal(){
+
+document.getElementById('modal').innerHTML='
+<div class="modal">
+
+<div class="modalbox">
+
+<h3 style="margin-bottom:16px;">
+GitHub Token
+</h3>
+
+<textarea id="ghtoken" placeholder="ghp_xxxxx">'+token+'</textarea>
+
+<button class="savebtn" onclick="saveToken()">
+Save Token
+</button>
+
+</div>
+
+</div>
+';
+
+}
+
+function saveToken(){
+
+token=document.getElementById('ghtoken').value.trim();
+
+localStorage.setItem('sb_gh_token',token);
+
+closeModal();
+
+setStatus('Token saved','#34D399');
 
 }
 
 loadLocal();
+
 render();
-syncDb();
+
+syncData();
 
 </script>
 
