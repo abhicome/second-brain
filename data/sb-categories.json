@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "lastUpdated": "",
+  "categories": [
+    { "id": "work",      "label": "Work",      "icon": "💼", "color": "#4F8EF7" },
+    { "id": "projects",  "label": "Projects",  "icon": "🚀", "color": "#A78BFA" },
+    { "id": "personal",  "label": "Personal",  "icon": "🌿", "color": "#34D399" },
+    { "id": "knowledge", "label": "Knowledge", "icon": "🧠", "color": "#FBBF24" },
+    { "id": "bills",     "label": "Bills",     "icon": "💳", "color": "#F87171" },
+    { "id": "watchlist", "label": "Watchlist", "icon": "👁",  "color": "#38BDF8" },
+    { "id": "health",    "label": "Health",    "icon": "❤️", "color": "#FB923C" }
+  ]
+}
