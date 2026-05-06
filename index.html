@@ -7,7 +7,12 @@
 
 <meta
   name="viewport"
-  content="width=device-width,initial-scale=1"
+  content="
+    width=device-width,
+    initial-scale=1,
+    maximum-scale=1,
+    user-scalable=no
+  "
 />
 
 <title>Second Brain</title>
@@ -40,6 +45,11 @@ input{
   accent-color:#3B82F6;
 }
 
+::-webkit-scrollbar{
+  width:0;
+  height:0;
+}
+
 </style>
 
 </head>
@@ -48,23 +58,45 @@ input{
 
 <div id="root"></div>
 
-<script src="./js/config.js?v=10"></script>
+<!-- CORE -->
 
-<script src="./js/state.js?v=10"></script>
+<script src="./js/config.js?v=50"></script>
 
-<script src="./js/utils.js?v=10"></script>
+<script src="./js/state.js?v=50"></script>
 
-<script src="./js/github.js?v=10"></script>
+<script src="./js/utils.js?v=50"></script>
 
-<script src="./js/renderCards.js?v=10"></script>
+<script src="./js/github.js?v=50"></script>
 
-<script src="./js/renderTasks.js?v=10"></script>
+<!-- COMPONENTS -->
 
-<script src="./js/renderProjects.js?v=10"></script>
+<script src="./js/components/header.js?v=50"></script>
 
-<script src="./js/renderHome.js?v=10"></script>
+<script src="./js/components/stats.js?v=50"></script>
 
-<script src="./js/app.js?v=10"></script>
+<script src="./js/components/priorityCard.js?v=50"></script>
+
+<script src="./js/components/navbar.js?v=50"></script>
+
+<script src="./js/components/progressBar.js?v=50"></script>
+
+<script src="./js/components/taskCard.js?v=50"></script>
+
+<script src="./js/components/projectCard.js?v=50"></script>
+
+<!-- RENDERERS -->
+
+<script src="./js/renderCards.js?v=50"></script>
+
+<script src="./js/renderTasks.js?v=50"></script>
+
+<script src="./js/renderProjects.js?v=50"></script>
+
+<script src="./js/renderHome.js?v=50"></script>
+
+<!-- APP -->
+
+<script src="./js/app.js?v=50"></script>
 
 </body>
 
