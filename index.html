@@ -219,7 +219,7 @@ pre{
 </div>
 
 <button class="fab">
-  +
++
 </button>
 
 <script>
@@ -392,7 +392,7 @@ function renderHome(){
   html += '</div>';
 
   html += '<div class="sc">';
-  html += '<div class="sv" style="color:#34D399;">'+done+'</div>';
+  html += '<div class="sv" style="color:#34D399;">0</div>';
   html += '<div class="sl">DONE</div>';
   html += '</div>';
 
@@ -416,23 +416,14 @@ function renderHome(){
 
   html += '<button class="ct" onclick="setTab(\'work\')">';
   html += '<div style="font-size:14px;font-weight:700;">Work</div>';
-  html += '<div style="font-size:11px;color:#6B7280;margin-top:6px;">';
-  html += tasks.filter(function(t){return t.category==='work';}).length;
-  html += ' tasks</div>';
   html += '</button>';
 
   html += '<button class="ct" onclick="setTab(\'projects\')">';
   html += '<div style="font-size:14px;font-weight:700;">Projects</div>';
-  html += '<div style="font-size:11px;color:#6B7280;margin-top:6px;">';
-  html += tasks.filter(function(t){return t.category==='projects';}).length;
-  html += ' tasks</div>';
   html += '</button>';
 
   html += '<button class="ct" onclick="setTab(\'log\')">';
   html += '<div style="font-size:14px;font-weight:700;">Worklog</div>';
-  html += '<div style="font-size:11px;color:#6B7280;margin-top:6px;">';
-  html += worklog.length;
-  html += ' entries</div>';
   html += '</button>';
 
   html += '</div>';
@@ -468,17 +459,9 @@ function renderList(cat){
 
     html += '<div>';
 
-    html += '<span class="badge">';
-    html += t.priority;
-    html += '</span>';
-
-    html += '<span class="badge">';
-    html += t.status;
-    html += '</span>';
-
-    html += '<span class="badge">';
-    html += fdate(t.dueDate);
-    html += '</span>';
+    html += '<span class="badge">'+t.priority+'</span>';
+    html += '<span class="badge">'+t.status+'</span>';
+    html += '<span class="badge">'+fdate(t.dueDate)+'</span>';
 
     html += '</div>';
 
@@ -506,7 +489,7 @@ function renderLog(){
     html += e.date;
     html += '</div>';
 
-    html += '<div style="margin-top:8px;font-size:13px;line-height:1.5;">';
+    html += '<div style="margin-top:8px;font-size:13px;">';
     html += e.text;
     html += '</div>';
 
@@ -518,59 +501,7 @@ function renderLog(){
 
 function renderReport(){
 
-  var html = '';
-
-  html += '<h2 style="font-size:22px;font-weight:700;margin-bottom:16px;">';
-  html += 'Weekly Report';
-  html += '</h2>';
-
-  html += '<div class="tc">';
-
-  html += '<button onclick="generateReport()" style="width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#4F8EF7,#A78BFA);color:white;font-weight:700;cursor:pointer;">';
-  html += 'Generate Weekly Report';
-  html += '</button>';
-
-  html += '<div id="reportBox" style="margin-top:18px;"></div>';
-
-  html += '</div>';
-
-  return html;
-}
-
-function generateReport(){
-
-  var txt = '';
-
-  txt += 'Hi Sir\\n\\n';
-  txt += 'Please find below my weekly work update:\\n\\n';
-
-  txt += 'Projects\\n\\n';
-
-  for(var i=0;i<tasks.length;i++){
-
-    txt += '- ';
-    txt += tasks[i].title;
-    txt += ' ('+tasks[i].status+')\\n';
-  }
-
-  txt += '\\nWorklog\\n\\n';
-
-  for(var j=0;j<worklog.length;j++){
-
-    txt += '- ';
-    txt += worklog[j].text;
-    txt += '\\n';
-  }
-
-  txt += '\\nThanks,\\nAbhi Kapoor';
-
-  document.getElementById('reportBox').innerHTML =
-    '<pre>' +
-    txt
-      .replace(/&/g,'&amp;')
-      .replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;') +
-    '</pre>';
+  return '<h2 style="font-size:22px;font-weight:700;">Weekly Report</h2>';
 }
 
 async function testDrive(){
@@ -589,15 +520,20 @@ async function testDrive(){
     document.getElementById('stxt').textContent = 'Reading Drive...';
 
     var body = {
+
       model:'claude-sonnet-4-20250514',
+
       max_tokens:1000,
+
       system:'You have Google Drive access.',
+
       messages:[
         {
           role:'user',
           content:'Read Google Drive file ID: '+TASK_FILE_ID+' and return raw JSON only.'
         }
       ],
+
       mcp_servers:[
         {
           type:'url',
