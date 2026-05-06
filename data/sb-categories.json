@@ -1,48 +1,44 @@
-{
-  "version": 1,
-  "lastUpdated": "2026-05-06T00:00:00Z",
-  "categories": [
-    {
-      "id": "work",
-      "label": "Work",
-      "icon": "💼",
-      "color": "#4F8EF7"
-    },
-    {
-      "id": "projects",
-      "label": "Projects",
-      "icon": "🚀",
-      "color": "#A78BFA"
-    },
-    {
-      "id": "health",
-      "label": "Health",
-      "icon": "❤️",
-      "color": "#FB923C"
-    },
-    {
-      "id": "personal",
-      "label": "Personal",
-      "icon": "🌿",
-      "color": "#34D399"
-    },
-    {
-      "id": "knowledge",
-      "label": "Knowledge",
-      "icon": "🧠",
-      "color": "#FBBF24"
-    },
-    {
-      "id": "watchlist",
-      "label": "Watchlist",
-      "icon": "👁",
-      "color": "#38BDF8"
-    },
-    {
-      "id": "bills",
-      "label": "Bills",
-      "icon": "💳",
-      "color": "#F87171"
-    }
-  ]
-}
+[
+  {
+    "id": "work",
+    "name": "Work",
+    "color": "#3B82F6",
+    "file": "work.json",
+    "icon": "💼"
+  },
+  {
+    "id": "projects",
+    "name": "Projects",
+    "color": "#8B5CF6",
+    "file": "projects.json",
+    "icon": "🚀"
+  },
+  {
+    "id": "personal",
+    "name": "Personal",
+    "color": "#EF4444",
+    "file": "personal.json",
+    "icon": "👤"
+  },
+  {
+    "id": "knowledge",
+    "name": "Knowledge",
+    "color": "#2563EB",
+    "file": "knowledge.json",
+    "icon": "📘"
+  },
+  {
+    "id": "bills",
+    "name": "Bills",
+    "color": "#F59E0B",
+    "file": "bills.json",
+    "icon": "💳"
+  },
+  {
+    "id": "watchlist",
+    "name": "Watchlist",
+    "color": "#D946EF",
+    "file": "watchlist.json",
+    "icon": "🎬"
+  }
+]
