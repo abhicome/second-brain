@@ -23,13 +23,24 @@ if(color) s.style.color=color;
 }
 
 function setToken(){
-const existing = localStorage.getItem('gh_token') || '';
-const t = prompt('GitHub Personal Access Token', existing);
+
+const existing =
+localStorage.getItem('gh_token') || '';
+
+const t =
+prompt(
+'GitHub Personal Access Token',
+existing
+);
 
 if(t){
+
 localStorage.setItem('gh_token',t);
+
 alert('Token saved locally');
+
 }
+
 }
 
 async function fetchJson(path){
@@ -40,21 +51,34 @@ const url =
 const r = await fetch(url);
 
 if(!r.ok){
-throw new Error('Failed to fetch: ' + path);
+
+throw new Error(
+'Failed to fetch: ' + path
+);
+
 }
 
 return await r.json();
+
 }
 
 async function syncNow(){
 
 try{
 
-statusText('Syncing...','#FBBF24');
+statusText(
+'Syncing...',
+'#FBBF24'
+);
 
-const tData = await fetchJson(FILES.tasks);
-const wData = await fetchJson(FILES.worklog);
-const cData = await fetchJson(FILES.categories);
+const tData =
+await fetchJson(FILES.tasks);
+
+const wData =
+await fetchJson(FILES.worklog);
+
+const cData =
+await fetchJson(FILES.categories);
 
 TASKS =
 tData.items ||
@@ -77,9 +101,14 @@ cData.data ||
 cData ||
 [];
 
-if(!Array.isArray(TASKS)) TASKS=[];
-if(!Array.isArray(WORKLOG)) WORKLOG=[];
-if(!Array.isArray(CATEGORIES)) CATEGORIES=[];
+if(!Array.isArray(TASKS))
+TASKS=[];
+
+if(!Array.isArray(WORKLOG))
+WORKLOG=[];
+
+if(!Array.isArray(CATEGORIES))
+CATEGORIES=[];
 
 statusText(
 'Synced: ' +
@@ -94,25 +123,38 @@ render();
 
 console.error(e);
 
-statusText('Sync failed','#F87171');
+statusText(
+'Sync failed',
+'#F87171'
+);
 
 alert(
-'Sync failed.\n\n' +
+'Sync failed\n\n' +
 e.message
 );
 
 }
+
 }
 
 function setView(v){
+
 currentView=v;
+
 render();
+
 }
 
-function statCard(num,label,color){
+function statCard(
+num,
+label,
+color
+){
 
 return `
+
 <div class="stat">
+
 <div class="num ${color}">
 ${num}
 </div>
@@ -120,32 +162,46 @@ ${num}
 <div class="label">
 ${label}
 </div>
+
 </div>
+
 `;
 
 }
 
 function renderHome(){
 
-const total = TASKS.length;
+const total =
+TASKS.length;
 
-const done = TASKS.filter(x =>
-(x.status||'').toLowerCase()==='done'
+const done =
+TASKS.filter(x =>
+(x.status||'')
+.toLowerCase()==='done'
 ).length;
 
-const active = TASKS.filter(x =>
-(x.status||'').toLowerCase()!=='done'
+const active =
+TASKS.filter(x =>
+(x.status||'')
+.toLowerCase()!=='done'
 ).length;
 
-const overdue = TASKS.filter(x =>
+const overdue =
+TASKS.filter(x =>
 x.overdue===true
 ).length;
 
-const urgent = TASKS.filter(x => {
+const urgent =
+TASKS.filter(x => {
 
-const p = (x.priority||'').toLowerCase();
+const p =
+(x.priority||'')
+.toLowerCase();
 
-return p==='urgent' || p==='high';
+return (
+p==='urgent' ||
+p==='high'
+);
 
 }).slice(0,5);
 
@@ -165,13 +221,29 @@ ${new Date().toDateString()}
 
 <div class="stats">
 
-${statCard(total,'TOTAL','blue')}
+${statCard(
+total,
+'TOTAL',
+'blue'
+)}
 
-${statCard(done,'DONE','green')}
+${statCard(
+done,
+'DONE',
+'green'
+)}
 
-${statCard(active,'ACTIVE','yellow')}
+${statCard(
+active,
+'ACTIVE',
+'yellow'
+)}
 
-${statCard(overdue,'OVERDUE','red')}
+${statCard(
+overdue,
+'OVERDUE',
+'red'
+)}
 
 </div>
 
@@ -184,7 +256,8 @@ URGENT & HIGH PRIORITY
 urgent.forEach(t => {
 
 const pri =
-(t.priority||'normal').toLowerCase();
+(t.priority||'normal')
+.toLowerCase();
 
 html += `
 
@@ -196,7 +269,11 @@ html += `
 ${t.title || 'Untitled'}
 </div>
 
-<div style="margin-top:8px;color:#94A3B8;font-size:14px;">
+<div style="
+margin-top:8px;
+color:#94A3B8;
+font-size:14px;
+">
 ${t.status || 'Open'}
 </div>
 
@@ -229,10 +306,27 @@ c.name ||
 c.label ||
 'Unknown';
 
-const count = TASKS.filter(x =>
-(x.category||'') === cname &&
-(x.status||'').toLowerCase() !== 'done'
-).length;
+const count =
+TASKS.filter(x => {
+
+const taskCat =
+(
+x.category ||
+x.Category ||
+x.type ||
+''
+)
+.toString()
+.trim()
+.toLowerCase();
+
+return (
+taskCat ===
+cname
+.toLowerCase()
+);
+
+}).length;
 
 html += `
 
@@ -244,7 +338,7 @@ ${cname}
 </h3>
 
 <p>
-${count} open
+${count} tasks
 </p>
 
 </div>
@@ -263,9 +357,33 @@ content.innerHTML = html;
 
 function openCategory(cat){
 
-const tasks = TASKS.filter(x =>
-(x.category||'') === cat
+currentView = cat;
+
+const tasks =
+TASKS.filter(x => {
+
+const taskCat =
+(
+x.category ||
+x.Category ||
+x.type ||
+''
+)
+.toString()
+.trim()
+.toLowerCase();
+
+const selected =
+cat
+.toString()
+.trim()
+.toLowerCase();
+
+return (
+taskCat === selected
 );
+
+});
 
 let html = `
 
@@ -286,26 +404,68 @@ ${tasks.length} tasks
 tasks.forEach(t => {
 
 const pri =
-(t.priority||'normal').toLowerCase();
+(t.priority || 'normal')
+.toLowerCase();
+
+const status =
+t.status ||
+'Open';
+
+const notes =
+t.notes ||
+t.description ||
+'';
 
 html += `
 
 <div class="task">
 
-<div>
+<div style="flex:1;">
 
 <div class="task-title">
 ${t.title || 'Untitled'}
 </div>
 
-<div style="margin-top:8px;color:#94A3B8;font-size:14px;">
-${t.status || 'Open'}
+<div style="
+margin-top:8px;
+color:#94A3B8;
+font-size:14px;
+line-height:1.5;
+">
+${notes}
+</div>
+
+<div style="
+margin-top:10px;
+font-size:13px;
+color:#64748B;
+">
+${status}
 </div>
 
 </div>
+
+<div>
 
 <div class="badge ${pri}">
 ${t.priority || 'Normal'}
+</div>
+
+<button
+onclick="editTask(${t.id})"
+style="
+margin-top:10px;
+width:100%;
+background:#1E293B;
+border:none;
+color:white;
+padding:10px;
+border-radius:10px;
+font-size:13px;
+">
+Edit
+</button>
+
 </div>
 
 </div>
@@ -319,11 +479,11 @@ if(tasks.length===0){
 html += `
 
 <div style="
-margin-top:20px;
+margin-top:30px;
 color:#94A3B8;
 font-size:16px;
 ">
-No tasks found
+No tasks in this category
 </div>
 
 `;
@@ -336,7 +496,10 @@ content.innerHTML = html;
 
 function openAddTask(){
 
-document.body.insertAdjacentHTML('beforeend',`
+document.body.insertAdjacentHTML(
+'beforeend',
+
+`
 
 <div class="modal" id="modal">
 
@@ -349,6 +512,12 @@ Add Task
 <input
 id="t_title"
 placeholder="Task title">
+
+<textarea
+id="t_notes"
+placeholder="Notes"
+style="height:120px;"
+></textarea>
 
 <select id="t_cat">
 
@@ -407,7 +576,9 @@ Cancel
 
 </div>
 
-`);
+`
+
+);
 
 }
 
@@ -425,6 +596,9 @@ function saveTask(){
 const title =
 document.getElementById('t_title').value;
 
+const notes =
+document.getElementById('t_notes').value;
+
 const category =
 document.getElementById('t_cat').value;
 
@@ -433,7 +607,9 @@ document.getElementById('t_priority').value;
 
 if(!title){
 
-alert('Title required');
+alert(
+'Title required'
+);
 
 return;
 
@@ -444,6 +620,8 @@ TASKS.unshift({
 id:Date.now(),
 
 title:title,
+
+notes:notes,
 
 category:category,
 
@@ -458,8 +636,119 @@ closeModal();
 render();
 
 alert(
-'Task added locally.\n\n' +
-'GitHub WRITE sync comes next.'
+'Task added locally\n\n' +
+'GitHub WRITE sync comes next'
+);
+
+}
+
+function editTask(id){
+
+const t =
+TASKS.find(x =>
+x.id == id
+);
+
+if(!t) return;
+
+document.body.insertAdjacentHTML(
+'beforeend',
+
+`
+
+<div class="modal" id="modal">
+
+<div class="modal-box">
+
+<h3>
+Edit Task
+</h3>
+
+<input
+id="e_title"
+value="${t.title || ''}">
+
+<textarea
+id="e_notes"
+style="height:120px;"
+>${t.notes || ''}</textarea>
+
+<select id="e_status">
+
+<option
+${t.status==='Open'?'selected':''}>
+Open
+</option>
+
+<option
+${t.status==='In Progress'?'selected':''}>
+In Progress
+</option>
+
+<option
+${t.status==='Done'?'selected':''}>
+Done
+</option>
+
+</select>
+
+<br><br>
+
+<button onclick="saveEdit(${id})">
+Save Changes
+</button>
+
+<br><br>
+
+<button
+onclick="closeModal()"
+style="
+background:#374151;
+">
+Cancel
+</button>
+
+</div>
+
+</div>
+
+`
+
+);
+
+}
+
+function saveEdit(id){
+
+const t =
+TASKS.find(x =>
+x.id == id
+);
+
+if(!t) return;
+
+t.title =
+document.getElementById(
+'e_title'
+).value;
+
+t.notes =
+document.getElementById(
+'e_notes'
+).value;
+
+t.status =
+document.getElementById(
+'e_status'
+).value;
+
+closeModal();
+
+render();
+
+alert(
+'Task updated locally\n\n' +
+'GitHub WRITE sync comes next'
 );
 
 }
@@ -523,7 +812,7 @@ Weekly Report
 </h2>
 
 <p>
-Generation coming next
+AI generation coming next
 </p>
 
 </div>
