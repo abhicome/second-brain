@@ -16,40 +16,91 @@ let currentView = 'home';
 
 const content = document.getElementById('content');
 
-function statusText(t){
-document.getElementById('status').innerText=t;
+function statusText(t,color){
+const s=document.getElementById('status');
+s.innerText=t;
+if(color) s.style.color=color;
 }
 
 function setToken(){
-const t = prompt('GitHub Personal Access Token');
+const existing = localStorage.getItem('gh_token') || '';
+const t = prompt('GitHub Personal Access Token', existing);
+
 if(t){
 localStorage.setItem('gh_token',t);
-alert('Token saved');
+alert('Token saved locally');
 }
 }
 
 async function fetchJson(path){
-const url=`https://raw.githubusercontent.com/${GITHUB_USER}/${REPO}/${BRANCH}/${path}`;
-const r=await fetch(url+'?t=' + Date.now());
+
+const url =
+`https://raw.githubusercontent.com/${GITHUB_USER}/${REPO}/${BRANCH}/${path}?t=${Date.now()}`;
+
+const r = await fetch(url);
+
+if(!r.ok){
+throw new Error('Failed to fetch: ' + path);
+}
+
 return await r.json();
 }
 
 async function syncNow(){
+
 try{
-statusText('Syncing...');
 
-TASKS = await fetchJson(FILES.tasks);
-WORKLOG = await fetchJson(FILES.worklog);
-CATEGORIES = await fetchJson(FILES.categories);
+statusText('Syncing...','#FBBF24');
 
-statusText('Synced');
+const tData = await fetchJson(FILES.tasks);
+const wData = await fetchJson(FILES.worklog);
+const cData = await fetchJson(FILES.categories);
+
+TASKS =
+tData.items ||
+tData.tasks ||
+tData.data ||
+tData ||
+[];
+
+WORKLOG =
+wData.entries ||
+wData.worklog ||
+wData.items ||
+wData ||
+[];
+
+CATEGORIES =
+cData.categories ||
+cData.items ||
+cData.data ||
+cData ||
+[];
+
+if(!Array.isArray(TASKS)) TASKS=[];
+if(!Array.isArray(WORKLOG)) WORKLOG=[];
+if(!Array.isArray(CATEGORIES)) CATEGORIES=[];
+
+statusText(
+'Synced: ' +
+TASKS.length +
+' tasks',
+'#34D399'
+);
 
 render();
 
 }catch(e){
+
 console.error(e);
-statusText('Sync failed');
-alert('Database sync failed');
+
+statusText('Sync failed','#F87171');
+
+alert(
+'Sync failed.\n\n' +
+e.message
+);
+
 }
 }
 
@@ -59,214 +110,428 @@ render();
 }
 
 function statCard(num,label,color){
+
 return `
 <div class="stat">
-<div class="num ${color}">${num}</div>
-<div class="label">${label}</div>
+<div class="num ${color}">
+${num}
+</div>
+
+<div class="label">
+${label}
+</div>
 </div>
 `;
+
 }
 
 function renderHome(){
 
-const total=TASKS.length;
-const done=TASKS.filter(x=>x.status==='Done').length;
-const active=TASKS.filter(x=>x.status!=='Done').length;
-const overdue=TASKS.filter(x=>x.overdue).length;
+const total = TASKS.length;
 
-const urgent=TASKS.filter(x=>
-x.priority==='Urgent' || x.priority==='High'
-).slice(0,3);
+const done = TASKS.filter(x =>
+(x.status||'').toLowerCase()==='done'
+).length;
 
-let html=`
+const active = TASKS.filter(x =>
+(x.status||'').toLowerCase()!=='done'
+).length;
+
+const overdue = TASKS.filter(x =>
+x.overdue===true
+).length;
+
+const urgent = TASKS.filter(x => {
+
+const p = (x.priority||'').toLowerCase();
+
+return p==='urgent' || p==='high';
+
+}).slice(0,5);
+
+let html = `
+
 <div class="hero">
-<h2>Your Second Brain</h2>
-<p>${new Date().toDateString()}</p>
+
+<h2>
+Your Second Brain
+</h2>
+
+<p>
+${new Date().toDateString()}
+</p>
+
 </div>
 
 <div class="stats">
+
 ${statCard(total,'TOTAL','blue')}
+
 ${statCard(done,'DONE','green')}
+
 ${statCard(active,'ACTIVE','yellow')}
+
 ${statCard(overdue,'OVERDUE','red')}
+
 </div>
 
 <div class="section-title">
 URGENT & HIGH PRIORITY
 </div>
+
 `;
 
-urgent.forEach(t=>{
-html+=`
+urgent.forEach(t => {
+
+const pri =
+(t.priority||'normal').toLowerCase();
+
+html += `
+
 <div class="task">
+
 <div>
-<div class="task-title">${t.title}</div>
+
+<div class="task-title">
+${t.title || 'Untitled'}
 </div>
 
-<div class="badge ${t.priority.toLowerCase()}">
-${t.priority}
+<div style="margin-top:8px;color:#94A3B8;font-size:14px;">
+${t.status || 'Open'}
 </div>
+
 </div>
+
+<div class="badge ${pri}">
+${t.priority || 'Normal'}
+</div>
+
+</div>
+
 `;
+
 });
 
-html+=`
+html += `
+
 <div class="section-title">
 CATEGORIES
 </div>
 
 <div class="categories">
+
 `;
 
-CATEGORIES.forEach(c=>{
+CATEGORIES.forEach(c => {
 
-const count=TASKS.filter(x=>x.category===c.name && x.status!=='Done').length;
+const cname =
+c.name ||
+c.label ||
+'Unknown';
 
-html+=`
-<div class="cat" onclick="openCategory('${c.name}')">
-<h3>${c.name}</h3>
-<p>${count} open</p>
+const count = TASKS.filter(x =>
+(x.category||'') === cname &&
+(x.status||'').toLowerCase() !== 'done'
+).length;
+
+html += `
+
+<div class="cat"
+onclick="openCategory('${cname}')">
+
+<h3>
+${cname}
+</h3>
+
+<p>
+${count} open
+</p>
+
 </div>
+
 `;
+
 });
 
-html+=`</div>`;
+html += `
+</div>
+`;
 
-content.innerHTML=html;
+content.innerHTML = html;
+
 }
 
 function openCategory(cat){
 
-const tasks=TASKS.filter(x=>x.category===cat);
+const tasks = TASKS.filter(x =>
+(x.category||'') === cat
+);
 
-let html=`
+let html = `
+
 <div class="hero">
-<h2>${cat}</h2>
-<p>${tasks.length} tasks</p>
+
+<h2>
+${cat}
+</h2>
+
+<p>
+${tasks.length} tasks
+</p>
+
 </div>
+
 `;
 
-tasks.forEach(t=>{
+tasks.forEach(t => {
 
-html+=`
+const pri =
+(t.priority||'normal').toLowerCase();
+
+html += `
+
 <div class="task">
+
 <div>
-<div class="task-title">${t.title}</div>
-<div style="margin-top:8px;color:#94A3B8;">
-${t.status}
-</div>
+
+<div class="task-title">
+${t.title || 'Untitled'}
 </div>
 
-<div class="badge ${t.priority.toLowerCase()}">
-${t.priority}
+<div style="margin-top:8px;color:#94A3B8;font-size:14px;">
+${t.status || 'Open'}
 </div>
+
 </div>
+
+<div class="badge ${pri}">
+${t.priority || 'Normal'}
+</div>
+
+</div>
+
 `;
 
 });
 
-content.innerHTML=html;
+if(tasks.length===0){
+
+html += `
+
+<div style="
+margin-top:20px;
+color:#94A3B8;
+font-size:16px;
+">
+No tasks found
+</div>
+
+`;
+
+}
+
+content.innerHTML = html;
+
 }
 
 function openAddTask(){
 
 document.body.insertAdjacentHTML('beforeend',`
+
 <div class="modal" id="modal">
+
 <div class="modal-box">
 
-<h3>Add Task</h3>
+<h3>
+Add Task
+</h3>
 
-<input id="t_title" placeholder="Task title">
+<input
+id="t_title"
+placeholder="Task title">
 
 <select id="t_cat">
-${CATEGORIES.map(c=>`
-<option>${c.name}</option>
-`).join('')}
+
+${CATEGORIES.map(c => {
+
+const cname =
+c.name ||
+c.label ||
+'General';
+
+return `
+<option>
+${cname}
+</option>
+`;
+
+}).join('')}
+
 </select>
 
 <select id="t_priority">
-<option>Low</option>
-<option>Medium</option>
-<option>High</option>
-<option>Urgent</option>
+
+<option>
+Low
+</option>
+
+<option>
+Medium
+</option>
+
+<option>
+High
+</option>
+
+<option>
+Urgent
+</option>
+
 </select>
 
-<button onclick="saveTask()">Save Task</button>
+<button onclick="saveTask()">
+Save Task
+</button>
+
+<br><br>
+
+<button
+onclick="closeModal()"
+style="
+background:#374151;
+">
+Cancel
+</button>
 
 </div>
+
 </div>
+
 `);
 
 }
 
 function closeModal(){
-const m=document.getElementById('modal');
-if(m)m.remove();
+
+const m =
+document.getElementById('modal');
+
+if(m) m.remove();
+
 }
 
-async function saveTask(){
+function saveTask(){
 
-const title=document.getElementById('t_title').value;
-const category=document.getElementById('t_cat').value;
-const priority=document.getElementById('t_priority').value;
+const title =
+document.getElementById('t_title').value;
 
-if(!title)return;
+const category =
+document.getElementById('t_cat').value;
+
+const priority =
+document.getElementById('t_priority').value;
+
+if(!title){
+
+alert('Title required');
+
+return;
+
+}
 
 TASKS.unshift({
+
 id:Date.now(),
-title,
-category,
-priority,
+
+title:title,
+
+category:category,
+
+priority:priority,
+
 status:'Open'
+
 });
 
 closeModal();
 
 render();
 
-alert('Task added locally');
+alert(
+'Task added locally.\n\n' +
+'GitHub WRITE sync comes next.'
+);
 
 }
 
 function render(){
 
 if(currentView==='home'){
+
 renderHome();
+
 return;
+
 }
 
 if(currentView==='work'){
+
 openCategory('Work');
+
 return;
+
 }
 
 if(currentView==='projects'){
+
 openCategory('Projects');
+
 return;
+
 }
 
 if(currentView==='log'){
 
-content.innerHTML=`
+content.innerHTML = `
+
 <div class="hero">
-<h2>Worklog</h2>
-<p>${WORKLOG.length} entries</p>
+
+<h2>
+Worklog
+</h2>
+
+<p>
+${WORKLOG.length} entries
+</p>
+
 </div>
+
 `;
 
 return;
+
 }
 
 if(currentView==='report'){
 
-content.innerHTML=`
+content.innerHTML = `
+
 <div class="hero">
-<h2>Weekly Report</h2>
-<p>Generation coming next</p>
+
+<h2>
+Weekly Report
+</h2>
+
+<p>
+Generation coming next
+</p>
+
 </div>
+
 `;
 
 return;
+
 }
 
 }
