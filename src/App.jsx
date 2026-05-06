@@ -30,13 +30,21 @@ const TASKS = [
   }
 ];
 
+const WORKLOG = [
+  { id:'w1', text:'Worked on PacketFence auto enrolment fix', type:'Investigation' },
+  { id:'w2', text:'AD Transformation discussion with Microsoft', type:'Project' },
+  { id:'w3', text:'DHCP failover validation discussion', type:'BAU' },
+  { id:'w4', text:'DNS security architecture review', type:'Project' }
+];
+
 const CATEGORIES = [
   { id: 'work', icon: '💼', label: 'Work', color: '#4F8EF7' },
   { id: 'projects', icon: '🚀', label: 'Projects', color: '#A78BFA' },
   { id: 'personal', icon: '🌿', label: 'Personal', color: '#34D399' },
   { id: 'knowledge', icon: '🧠', label: 'Knowledge', color: '#FBBF24' },
   { id: 'bills', icon: '💳', label: 'Bills', color: '#F87171' },
-  { id: 'watchlist', icon: '👁️', label: 'Watchlist', color: '#38BDF8' }
+  { id: 'watchlist', icon: '👁️', label: 'Watchlist', color: '#38BDF8' },
+  { id: 'health', icon: '❤️', label: 'Health', color: '#FB923C' }
 ];
 
 export default function App(){
@@ -67,7 +75,6 @@ export default function App(){
 
       {tab === 'home' && (
         <div style={styles.page}>
-
           <div style={styles.heroTitle}>Your Second Brain</div>
 
           <div style={styles.heroSub}>
@@ -87,17 +94,14 @@ export default function App(){
 
           <div style={styles.sectionTitle}>🔥 URGENT & HIGH PRIORITY</div>
 
-          {
-            TASKS.filter(t => ['urgent','high'].includes(t.priority))
-              .map(task => (
-                <TaskCard
-                  key={task.id}
-                  task={task}
-                  expanded={expandedTask === task.id}
-                  onToggle={() => setExpandedTask(expandedTask === task.id ? null : task.id)}
-                />
-              ))
-          }
+          {TASKS.filter(t => ['urgent','high'].includes(t.priority)).map(task => (
+            <TaskCard
+              key={task.id}
+              task={task}
+              expanded={expandedTask === task.id}
+              onToggle={() => setExpandedTask(expandedTask === task.id ? null : task.id)}
+            />
+          ))}
 
           <div style={styles.weekBanner}>
             <div>
@@ -105,34 +109,64 @@ export default function App(){
               <div style={styles.weekSub}>AI weekly report ready</div>
             </div>
 
-            <button style={styles.generateBtn}>Generate →</button>
+            <button style={styles.generateBtn} onClick={() => setTab('report')}>Generate →</button>
           </div>
 
           <div style={styles.sectionTitle}>CATEGORIES</div>
 
           <div style={styles.categoryGrid}>
-            {
-              CATEGORIES.map(cat => (
-                <button
-                  key={cat.id}
-                  style={{
-                    ...styles.categoryCard,
-                    border:`1px solid ${cat.color}55`
-                  }}
-                  onClick={() => setTab(cat.id)}
-                >
-                  <div style={styles.categoryIcon}>{cat.icon}</div>
-                  <div style={styles.categoryLabel}>{cat.label}</div>
-                </button>
-              ))
-            }
+            {CATEGORIES.map(cat => (
+              <button
+                key={cat.id}
+                style={{
+                  ...styles.categoryCard,
+                  border:`1px solid ${cat.color}55`
+                }}
+                onClick={() => setTab(cat.id)}
+              >
+                <div style={styles.categoryIcon}>{cat.icon}</div>
+                <div style={styles.categoryLabel}>{cat.label}</div>
+              </button>
+            ))}
           </div>
         </div>
       )}
 
-      {tab !== 'home' && currentCategory && (
+      {tab === 'log' && (
         <div style={styles.page}>
+          <div style={styles.pageTitle}>📋 Worklog Timeline</div>
+          {WORKLOG.map(item => (
+            <div key={item.id} style={styles.logCard}>
+              <div style={styles.logDot}></div>
+              <div>
+                <div style={styles.logText}>{item.text}</div>
+                <div style={styles.logType}>{item.type}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
+      {tab === 'report' && (
+        <div style={styles.page}>
+          <div style={styles.pageTitle}>📊 AI Weekly Report</div>
+
+          <div style={styles.reportCard}>
+            <div style={styles.reportTitle}>Executive Summary</div>
+            <div style={styles.reportText}>
+              Completed migration preparation activities, PacketFence troubleshooting, AD transformation discussions, and DHCP failover validations.
+            </div>
+          </div>
+
+          <div style={styles.reportCard}>
+            <div style={styles.reportTitle}>Projects</div>
+            <div style={styles.reportText}>• AD Transformation Roadmap\n• DHCP Failover UAT\n• DNS Security Enhancements</div>
+          </div>
+        </div>
+      )}
+
+      {tab !== 'home' && tab !== 'report' && tab !== 'log' && currentCategory && (
+        <div style={styles.page}>
           <button style={styles.backBtn} onClick={() => setTab('home')}>
             ← Back
           </button>
@@ -145,22 +179,20 @@ export default function App(){
             </div>
           </div>
 
-          {
-            categoryTasks.length > 0 ? (
-              categoryTasks.map(task => (
-                <TaskCard
-                  key={task.id}
-                  task={task}
-                  expanded={expandedTask === task.id}
-                  onToggle={() => setExpandedTask(expandedTask === task.id ? null : task.id)}
-                />
-              ))
-            ) : (
-              <div style={styles.emptyCard}>
-                No tasks available in this category.
-              </div>
-            )
-          }
+          {categoryTasks.length > 0 ? (
+            categoryTasks.map(task => (
+              <TaskCard
+                key={task.id}
+                task={task}
+                expanded={expandedTask === task.id}
+                onToggle={() => setExpandedTask(expandedTask === task.id ? null : task.id)}
+              />
+            ))
+          ) : (
+            <div style={styles.emptyCard}>
+              No tasks available in this category.
+            </div>
+          )}
 
         </div>
       )}
@@ -169,7 +201,8 @@ export default function App(){
         <NavButton icon="🏠" active={tab === 'home'} onClick={() => setTab('home')} />
         <NavButton icon="💼" active={tab === 'work'} onClick={() => setTab('work')} />
         <NavButton icon="🚀" active={tab === 'projects'} onClick={() => setTab('projects')} />
-        <NavButton icon="📊" active={tab === 'report'} onClick={() => setTab('home')} />
+        <NavButton icon="📋" active={tab === 'log'} onClick={() => setTab('log')} />
+        <NavButton icon="📊" active={tab === 'report'} onClick={() => setTab('report')} />
       </div>
 
       <button style={styles.fab}>+</button>
@@ -190,15 +223,12 @@ function TaskCard({ task, expanded, onToggle }){
   return (
     <div style={styles.taskCard} onClick={onToggle}>
       <div style={styles.taskAccent}></div>
-
       <div style={{ flex:1 }}>
         <div style={styles.taskTitle}>{task.title}</div>
-
         <div style={styles.badges}>
           <span style={styles.priorityBadge}>{task.priority}</span>
           <span style={styles.dateText}>{task.dueDate}</span>
         </div>
-
         {expanded && (
           <div style={styles.notesBox}>{task.notes}</div>
         )}
@@ -260,5 +290,13 @@ const styles = {
   categoryPageTitle:{ fontSize:'28px', fontWeight:'800' },
   categoryPageSub:{ color:'#64748B', marginTop:'6px' },
   emptyCard:{ background:'#0F172A', borderRadius:'18px', padding:'24px', color:'#64748B' },
-  backBtn:{ background:'none', border:'none', color:'#4F8EF7', marginBottom:'18px', fontSize:'15px' }
+  backBtn:{ background:'none', border:'none', color:'#4F8EF7', marginBottom:'18px', fontSize:'15px' },
+  pageTitle:{ fontSize:'30px', fontWeight:'800', marginBottom:'24px' },
+  logCard:{ background:'#0F172A', borderRadius:'18px', padding:'18px', marginBottom:'12px', display:'flex', gap:'14px' },
+  logDot:{ width:'10px', height:'10px', borderRadius:'999px', background:'#4F8EF7', marginTop:'8px' },
+  logText:{ fontWeight:'600', marginBottom:'6px' },
+  logType:{ color:'#64748B', fontSize:'13px' },
+  reportCard:{ background:'#0F172A', borderRadius:'18px', padding:'20px', marginBottom:'14px' },
+  reportTitle:{ fontSize:'18px', fontWeight:'700', marginBottom:'10px' },
+  reportText:{ color:'#94A3B8', lineHeight:'1.7', whiteSpace:'pre-line' }
 };
