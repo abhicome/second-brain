@@ -515,10 +515,27 @@ closeModal();render();
 function closeModal() { document.getElementById(‘mc’).innerHTML=’’; }
 
 // Init
+try {
 lload();
-setSyncDot(apiKey?’#FBBF24’:’#F87171’, apiKey?‘Syncing…’:‘Tap Key to add API key’);
-render();
+var b = document.getElementById(‘body’);
+if (!b) {
+alert(‘BODY NOT FOUND’);
+} else {
+// Write directly first as test
+b.innerHTML = ’<div style="padding:20px;color:white;font-size:16px">JS running. Tasks: ’ + tasks.length + ‘</div>’;
+// Now try render
+try {
+var homeHtml = renderHome();
+b.innerHTML = homeHtml;
+document.getElementById(‘stxt’).textContent = ‘Rendered ’ + homeHtml.length + ’ chars’;
+} catch(re) {
+b.innerHTML = ’<div style="padding:20px;color:#F87171">renderHome error: ’ + re.message + ‘</div>’;
+}
+}
 if(apiKey) syncDrive();
+} catch(e) {
+document.getElementById(‘stxt’).textContent = ’INIT ERROR: ’ + e.message;
+}
 
 </script>
 </body>
