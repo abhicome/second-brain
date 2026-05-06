@@ -8,6 +8,7 @@
 <title>Second Brain</title>
 
 <style>
+
 *{
   box-sizing:border-box;
   margin:0;
@@ -115,7 +116,6 @@ body{
   padding:16px;
   color:white;
   cursor:pointer;
-  position:relative;
   text-align:left;
 }
 
@@ -151,71 +151,10 @@ body{
   z-index:50;
 }
 
-.ovl{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.65);
-  display:flex;
-  align-items:flex-end;
-  z-index:100;
-}
-
-.mdl{
-  width:100%;
-  max-width:430px;
-  margin:auto;
-  background:#111827;
-  border-radius:22px 22px 0 0;
-  padding:18px;
-}
-
-.inp,.sel,.ta{
-  width:100%;
-  background:#080C14;
-  border:1px solid #374151;
-  border-radius:10px;
-  padding:12px;
-  color:white;
-  margin-top:6px;
-  outline:none;
-}
-
-.ta{
-  min-height:90px;
-  resize:none;
-}
-
-.lbl{
-  font-size:11px;
-  color:#94A3B8;
-  margin-top:14px;
-  text-transform:uppercase;
-}
-
-.btn{
-  width:100%;
-  border:none;
-  border-radius:12px;
-  padding:14px;
-  margin-top:18px;
-  background:linear-gradient(135deg,#4F8EF7,#A78BFA);
-  color:white;
-  font-weight:700;
-}
-
-.row{
-  display:flex;
-  gap:10px;
-}
-
-.row > div{
-  flex:1;
-}
-
 pre{
   white-space:pre-wrap;
-  font-size:11px;
   line-height:1.7;
+  font-size:11px;
   color:#C8D6E5;
 }
 
@@ -227,13 +166,23 @@ pre{
 <div id="wrap">
 
   <div id="hdr">
+
     <div style="font-size:18px;font-weight:700;">
       Second Brain
     </div>
 
-    <div id="stxt" style="font-size:10px;color:#34D399;">
-      Ready
+    <div style="display:flex;gap:8px;align-items:center;">
+
+      <button onclick="testDrive()" style="background:#111827;border:none;color:#94A3B8;padding:6px 10px;border-radius:8px;cursor:pointer;">
+        Test
+      </button>
+
+      <div id="stxt" style="font-size:10px;color:#34D399;">
+        Ready
+      </div>
+
     </div>
+
   </div>
 
   <div id="appBody"></div>
@@ -241,6 +190,7 @@ pre{
 </div>
 
 <div id="nav">
+
   <button class="ntab on" onclick="setTab('home')">
     <span>🏠</span>
     <span>Home</span>
@@ -265,18 +215,18 @@ pre{
     <span>📊</span>
     <span>Report</span>
   </button>
+
 </div>
 
-<button class="fab" onclick="openTask()">+</button>
-
-<div id="modal"></div>
+<button class="fab">
+  +
+</button>
 
 <script>
 
-var DRIVE = {
-  tasks:'1OWIXMe5PvrXOZXDVFDxVfylXQ8Kml_IE',
-  worklog:'1w6jQLE48kmnSQ3kXn5TDiafhfYe2y4tQ'
-};
+var TASK_FILE_ID = '1OWIXMe5PvrXOZXDVFDxVfylXQ8Kml_IE';
+
+var API_KEY = localStorage.getItem('sb_api') || '';
 
 var tab = 'home';
 
@@ -288,7 +238,7 @@ var tasks = [
   priority:'urgent',
   status:'inprogress',
   dueDate:'2026-05-09',
-  notes:'Discuss feasibility with Vikas Maurya'
+  notes:'Discuss with Vikas Maurya'
 },
 {
   id:'2',
@@ -323,14 +273,12 @@ var worklog = [
 {
   id:'1',
   date:'2026-05-05',
-  text:'AD transformation discussion with Microsoft',
-  type:'project'
+  text:'AD transformation discussion with Microsoft'
 },
 {
   id:'2',
   date:'2026-05-04',
-  text:'DHCP incident RCA',
-  type:'investigation'
+  text:'DHCP incident RCA'
 }
 ];
 
@@ -344,9 +292,9 @@ function setTab(t){
     tabs[i].classList.remove('on');
   }
 
-  var map = ['home','work','projects','log','report'];
+  var arr = ['home','work','projects','log','report'];
 
-  tabs[map.indexOf(t)].classList.add('on');
+  tabs[arr.indexOf(t)].classList.add('on');
 
   render();
 }
@@ -364,7 +312,9 @@ function fdate(iso){
   var diff = Math.round((dt-today)/86400000);
 
   if(diff===0) return 'Today';
+
   if(diff===1) return 'Tomorrow';
+
   if(diff<0) return Math.abs(diff)+'d ago';
 
   return new Date(iso).toLocaleDateString('en-US',{
@@ -576,7 +526,7 @@ function renderReport(){
 
   html += '<div class="tc">';
 
-  html += '<button class="btn" onclick="generateReport()">';
+  html += '<button onclick="generateReport()" style="width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#4F8EF7,#A78BFA);color:white;font-weight:700;cursor:pointer;">';
   html += 'Generate Weekly Report';
   html += '</button>';
 
@@ -591,32 +541,28 @@ function generateReport(){
 
   var txt = '';
 
-  txt += 'Hi Sir,\n\n';
-  txt += 'Please find below my weekly work update:\n\n';
+  txt += 'Hi Sir\\n\\n';
+  txt += 'Please find below my weekly work update:\\n\\n';
 
-  txt += '---\n\n';
-
-  txt += 'Projects\n\n';
+  txt += 'Projects\\n\\n';
 
   for(var i=0;i<tasks.length;i++){
 
     txt += '- ';
     txt += tasks[i].title;
-    txt += ' ('+tasks[i].status+')\n';
+    txt += ' ('+tasks[i].status+')\\n';
   }
 
-  txt += '\n---\n\n';
-
-  txt += 'Worklog\n\n';
+  txt += '\\nWorklog\\n\\n';
 
   for(var j=0;j<worklog.length;j++){
 
     txt += '- ';
     txt += worklog[j].text;
-    txt += '\n';
+    txt += '\\n';
   }
 
-  txt += '\nThanks,\nAbhi Kapoor';
+  txt += '\\nThanks,\\nAbhi Kapoor';
 
   document.getElementById('reportBox').innerHTML =
     '<pre>' +
@@ -627,90 +573,70 @@ function generateReport(){
     '</pre>';
 }
 
-function openTask(){
+async function testDrive(){
 
-  document.getElementById('modal').innerHTML =
+  try{
 
-  '<div class="ovl">' +
+    if(!API_KEY){
 
-    '<div class="mdl">' +
+      API_KEY = prompt('Enter Anthropic API Key');
 
-      '<div style="font-size:18px;font-weight:700;margin-bottom:16px;">' +
-      'Add Task' +
-      '</div>' +
+      if(!API_KEY) return;
 
-      '<div class="lbl">Title</div>' +
-      '<input class="inp" id="tTitle"/>' +
+      localStorage.setItem('sb_api', API_KEY);
+    }
 
-      '<div class="lbl">Notes</div>' +
-      '<textarea class="ta" id="tNotes"></textarea>' +
+    document.getElementById('stxt').textContent = 'Reading Drive...';
 
-      '<div class="row">' +
+    var body = {
+      model:'claude-sonnet-4-20250514',
+      max_tokens:1000,
+      system:'You have Google Drive access.',
+      messages:[
+        {
+          role:'user',
+          content:'Read Google Drive file ID: '+TASK_FILE_ID+' and return raw JSON only.'
+        }
+      ],
+      mcp_servers:[
+        {
+          type:'url',
+          url:'https://drivemcp.googleapis.com/mcp/v1',
+          name:'gdrive'
+        }
+      ]
+    };
 
-        '<div>' +
-        '<div class="lbl">Category</div>' +
-        '<select class="sel" id="tCat">' +
-          '<option value="work">Work</option>' +
-          '<option value="projects">Projects</option>' +
-        '</select>' +
-        '</div>' +
+    var r = await fetch('https://api.anthropic.com/v1/messages',{
 
-        '<div>' +
-        '<div class="lbl">Priority</div>' +
-        '<select class="sel" id="tPri">' +
-          '<option value="urgent">Urgent</option>' +
-          '<option value="high">High</option>' +
-          '<option value="normal">Normal</option>' +
-        '</select>' +
-        '</div>' +
+      method:'POST',
 
-      '</div>' +
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':API_KEY,
+        'anthropic-version':'2023-06-01',
+        'anthropic-beta':'mcp-client-2025-04-04'
+      },
 
-      '<div class="lbl">Due Date</div>' +
-      '<input type="date" class="inp" id="tDate"/>' +
+      body:JSON.stringify(body)
+    });
 
-      '<button class="btn" onclick="saveTask()">' +
-      'Save Task' +
-      '</button>' +
+    var data = await r.json();
 
-      '<button class="btn" style="background:#1F2937;margin-top:8px;" onclick="closeModal()">' +
-      'Cancel' +
-      '</button>' +
+    console.log(data);
 
-    '</div>' +
+    alert(JSON.stringify(data,null,2));
 
-  '</div>';
-}
+    document.getElementById('stxt').textContent = 'Drive Connected';
 
-function saveTask(){
+  }catch(e){
 
-  var title = document.getElementById('tTitle').value.trim();
+    console.error(e);
 
-  if(!title){
-    alert('Title required');
-    return;
+    alert(e.message);
+
+    document.getElementById('stxt').textContent = 'Drive Failed';
   }
-
-  tasks.unshift({
-    id:String(Date.now()),
-    title:title,
-    notes:document.getElementById('tNotes').value,
-    category:document.getElementById('tCat').value,
-    priority:document.getElementById('tPri').value,
-    status:'todo',
-    dueDate:document.getElementById('tDate').value
-  });
-
-  closeModal();
-
-  render();
-
-  document.getElementById('stxt').textContent =
-    tasks.length + ' tasks';
-}
-
-function closeModal(){
-  document.getElementById('modal').innerHTML = '';
 }
 
 render();
