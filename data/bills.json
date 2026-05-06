@@ -1,0 +1,38 @@
+{
+  "category": "Bills",
+  "color": "#2D8CFF",
+  "items": [
+    {
+      "id": "bill-001",
+      "title": "Car loan",
+      "done": false,
+      "dueDate": "2026-05-17",
+      "recurring": "monthly",
+      "notes": ""
+    },
+    {
+      "id": "bill-002",
+      "title": "Kredit pe bill",
+      "done": false,
+      "dueDate": "2026-05-29",
+      "recurring": "monthly",
+      "notes": ""
+    },
+    {
+      "id": "bill-003",
+      "title": "Wifi bill",
+      "done": false,
+      "dueDate": "2026-06-05",
+      "recurring": "monthly",
+      "notes": ""
+    },
+    {
+      "id": "bill-004",
+      "title": "Home loan payment",
+      "done": false,
+      "dueDate": "2026-05-30",
+      "recurring": "monthly",
+      "notes": ""
+    }
+  ]
+}
