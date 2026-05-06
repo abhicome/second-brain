@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "title": "Test task",
+    "notes": "Testing",
+    "date": "2026-05-06",
+    "done": false,
+    "subtasks": [
+      {
+        "title": "Subtask",
+        "done": false
+      }
+    ]
+  }
+]
