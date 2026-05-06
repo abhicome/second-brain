@@ -1,21 +1,35 @@
 function renderHome(){
 
-  const taskCount =
-    (state.data.tasks || []).length;
+  const tasks =
+    state.data.tasks || [];
 
-  const projectCount =
-    (state.data.projects || []).length;
+  const projects =
+    state.data.projects || [];
 
-  const completedTasks =
-    (state.data.tasks || [])
-    .filter(t =>
-      t.status === "done"
+  const knowledge =
+    state.data.knowledge || [];
+
+  const watchlist =
+    state.data.watchlist || [];
+
+  const finance =
+    state.data.finance || [];
+
+  const health =
+    state.data.health || [];
+
+  const total =
+    tasks.length +
+    projects.length;
+
+  const done =
+    tasks.filter(
+      t => t.status === "done"
     ).length;
 
-  const inProgressTasks =
-    (state.data.tasks || [])
-    .filter(t =>
-      t.status === "inprogress"
+  const active =
+    tasks.filter(
+      t => t.status === "inprogress"
     ).length;
 
   root.innerHTML = `
@@ -88,19 +102,19 @@ function renderHome(){
       ">
 
         ${statCard(
-          taskCount + projectCount,
+          total,
           "TOTAL",
           "#3B82F6"
         )}
 
         ${statCard(
-          completedTasks,
+          done,
           "DONE",
           "#10B981"
         )}
 
         ${statCard(
-          inProgressTasks,
+          active,
           "ACTIVE",
           "#F59E0B"
         )}
@@ -132,54 +146,42 @@ function renderHome(){
           "tasks",
           "Tasks",
           "#3B82F6",
-          taskCount
+          tasks.length
         )}
 
         ${homeTile(
           "projects",
           "Projects",
           "#8B5CF6",
-          projectCount
+          projects.length
         )}
 
         ${homeTile(
           "knowledge",
           "Knowledge",
           "#2563EB",
-          (
-            state.data.knowledge ||
-            []
-          ).length
+          knowledge.length
         )}
 
         ${homeTile(
           "watchlist",
           "Watchlist",
           "#D946EF",
-          (
-            state.data.watchlist ||
-            []
-          ).length
+          watchlist.length
         )}
 
         ${homeTile(
           "finance",
           "Bills",
           "#F59E0B",
-          (
-            state.data.finance ||
-            []
-          ).length
+          finance.length
         )}
 
         ${homeTile(
           "health",
           "Health",
           "#EF4444",
-          (
-            state.data.health ||
-            []
-          ).length
+          health.length
         )}
 
       </div>
@@ -194,13 +196,8 @@ function renderHome(){
     )
     .onclick = setToken;
 
-  bindTile(
-    "tasks"
-  );
-
-  bindTile(
-    "projects"
-  );
+  bindTile("tasks");
+  bindTile("projects");
 
 }
 
