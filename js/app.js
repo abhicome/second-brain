@@ -5,36 +5,41 @@ const root =
 
 const state = {
   tasks: [],
-  projects: []
+  projects: [],
+  knowledge: [],
+  watchlist: [],
+  finance: [],
+  health: []
 };
 
 async function init(){
 
-  await loadData();
-
-  renderHome();
-
-}
-
-async function loadData(){
-
   try{
 
-    const tasksRes =
-      await fetch(
-        "./data/work.json?v=99"
-      );
+    await loadData();
 
-    const projectsRes =
-      await fetch(
-        "./data/projects.json?v=99"
-      );
+    if(
+      typeof renderHome ===
+      "function"
+    ){
 
-    state.tasks =
-      await tasksRes.json();
+      renderHome();
 
-    state.projects =
-      await projectsRes.json();
+    }
+
+    else{
+
+      root.innerHTML = `
+        <div style="
+          padding:40px;
+          color:red;
+          font-size:24px;
+        ">
+          renderHome missing
+        </div>
+      `;
+
+    }
 
   }
 
@@ -42,10 +47,74 @@ async function loadData(){
 
     console.log(err);
 
-    state.tasks = [];
-    state.projects = [];
+    root.innerHTML = `
+
+      <div style="
+        padding:40px;
+        color:red;
+        font-size:20px;
+        white-space:pre-wrap;
+      ">
+
+        ${err}
+
+      </div>
+
+    `;
 
   }
+
+}
+
+async function loadData(){
+
+  async function loadFile(path){
+
+    try{
+
+      const res =
+        await fetch(
+          path +
+          "?v=" +
+          Date.now()
+        );
+
+      return await res.json();
+
+    }
+
+    catch{
+
+      return [];
+
+    }
+
+  }
+
+  state.tasks =
+    await loadFile(
+      "./data/work.json"
+    );
+
+  state.projects =
+    await loadFile(
+      "./data/projects.json"
+    );
+
+  state.knowledge =
+    await loadFile(
+      "./data/knowledge.json"
+    );
+
+  state.watchlist =
+    await loadFile(
+      "./data/watchlist.json"
+    );
+
+  state.finance =
+    await loadFile(
+      "./data/bills.json"
+    );
 
 }
 
