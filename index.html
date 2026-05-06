@@ -1,402 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
 
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Second Brain</title>
 
-<title>Second Brain</title>
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      -webkit-tap-highlight-color:transparent;
+    }
 
-<meta name="theme-color" content="#080C14"/>
+    body{
+      background:#020617;
+      color:white;
+      font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+      overflow-x:hidden;
+    }
 
-<style>
+    button,
+    input,
+    textarea{
+      font-family:inherit;
+    }
 
-*{
-box-sizing:border-box;
-margin:0;
-padding:0;
-}
+    input[type="checkbox"]{
+      accent-color:#3B82F6;
+    }
 
-body{
-background:#080C14;
-color:#E2E8F0;
-font-family:Arial,sans-serif;
-}
-
-#wrap{
-max-width:430px;
-margin:auto;
-min-height:100vh;
-}
-
-#hdr{
-padding:14px 16px;
-border-bottom:1px solid #1F2937;
-display:flex;
-justify-content:space-between;
-align-items:center;
-background:#080C14;
-position:sticky;
-top:0;
-z-index:10;
-}
-
-#appBody{
-padding:16px;
-padding-bottom:120px;
-}
-
-#nav{
-position:fixed;
-bottom:0;
-left:0;
-right:0;
-background:#111827;
-display:flex;
-justify-content:space-around;
-padding:10px 0 20px;
-border-top:1px solid #1F2937;
-z-index:20;
-}
-
-.ntab{
-background:none;
-border:none;
-color:#6B7280;
-cursor:pointer;
-display:flex;
-flex-direction:column;
-align-items:center;
-gap:4px;
-font-size:11px;
-}
-
-.ntab.on{
-color:#4F8EF7;
-}
-
-.ntab span:first-child{
-font-size:20px;
-}
-
-.hero{
-margin-bottom:20px;
-}
-
-.hero h1,
-.hero h2{
-font-size:28px;
-font-weight:700;
-margin-bottom:6px;
-}
-
-.hero p{
-font-size:13px;
-color:#94A3B8;
-}
-
-.stats{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:10px;
-margin-bottom:20px;
-}
-
-.card{
-background:#111827;
-border-radius:16px;
-padding:16px;
-text-align:center;
-}
-
-.num{
-font-size:24px;
-font-weight:700;
-margin-bottom:4px;
-}
-
-.lbl{
-font-size:11px;
-color:#94A3B8;
-text-transform:uppercase;
-}
-
-.section-title{
-font-size:11px;
-color:#6B7280;
-text-transform:uppercase;
-margin-bottom:12px;
-font-weight:700;
-letter-spacing:.08em;
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:12px;
-}
-
-.cat{
-background:#111827;
-border:1px solid #1F2937;
-border-radius:16px;
-padding:18px;
-cursor:pointer;
-text-align:left;
-color:white;
-min-height:110px;
-}
-
-.cat-title{
-font-size:16px;
-font-weight:700;
-margin-top:8px;
-}
-
-.cat-count{
-font-size:12px;
-color:#94A3B8;
-margin-top:6px;
-}
-
-.addcat{
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-font-size:28px;
-font-weight:700;
-}
-
-.task{
-background:#111827;
-border-radius:16px;
-padding:16px;
-margin-bottom:12px;
-display:flex;
-gap:14px;
-align-items:flex-start;
-}
-
-.task-title{
-font-size:15px;
-font-weight:700;
-margin-bottom:6px;
-}
-
-.task-notes{
-font-size:13px;
-line-height:1.5;
-color:#94A3B8;
-margin-bottom:8px;
-}
-
-.task-status{
-font-size:12px;
-color:#64748B;
-}
-
-.badge{
-padding:6px 10px;
-border-radius:999px;
-font-size:11px;
-font-weight:700;
-margin-bottom:10px;
-text-align:center;
-}
-
-.badge.low{
-background:#334155;
-color:#CBD5E1;
-}
-
-.badge.normal{
-background:#1E293B;
-color:#94A3B8;
-}
-
-.badge.high{
-background:#FBBF2420;
-color:#FBBF24;
-}
-
-.badge.urgent{
-background:#F8717120;
-color:#F87171;
-}
-
-.editbtn{
-background:#2563EB;
-border:none;
-border-radius:10px;
-padding:10px 14px;
-color:white;
-font-size:12px;
-cursor:pointer;
-}
-
-.primary{
-width:100%;
-padding:14px;
-background:linear-gradient(135deg,#4F8EF7,#A78BFA);
-border:none;
-border-radius:14px;
-color:white;
-font-weight:700;
-font-size:14px;
-cursor:pointer;
-}
-
-.modal{
-position:fixed;
-inset:0;
-background:#00000090;
-display:flex;
-align-items:flex-end;
-justify-content:center;
-z-index:100;
-}
-
-.modal-box{
-width:100%;
-max-width:430px;
-background:#111827;
-border-radius:24px 24px 0 0;
-padding:20px;
-}
-
-.modal-box h3{
-font-size:22px;
-margin-bottom:16px;
-}
-
-.modal-box input,
-.modal-box textarea,
-.modal-box select{
-width:100%;
-background:#080C14;
-border:1px solid #374151;
-border-radius:12px;
-padding:14px;
-margin-bottom:12px;
-color:white;
-font-size:14px;
-font-family:inherit;
-}
-
-.modal-box textarea{
-height:120px;
-resize:none;
-}
-
-.modal-box button{
-width:100%;
-padding:14px;
-border:none;
-border-radius:12px;
-background:#2563EB;
-color:white;
-font-size:14px;
-font-weight:700;
-margin-bottom:10px;
-cursor:pointer;
-}
-
-</style>
-
+    a{
+      color:#3B82F6;
+    }
+  </style>
 </head>
 
 <body>
 
-<div id="wrap">
+  <div id="root"></div>
 
-<div id="hdr">
-
-<div style="font-size:18px;font-weight:700;">
-Second Brain
-</div>
-
-<div style="display:flex;align-items:center;gap:10px;">
-
-<div
-id="stxt"
-style="font-size:11px;color:#34D399;"
->
-Ready
-</div>
-
-<button
-onclick="saveToken()"
-style="
-background:#111827;
-border:none;
-border-radius:10px;
-padding:8px 12px;
-color:#94A3B8;
-cursor:pointer;
-font-size:12px;
-"
->
-Key
-</button>
-
-</div>
-
-</div>
-
-<div id="appBody">
-
-Loading...
-
-</div>
-
-</div>
-
-<div id="nav">
-
-<button
-class="ntab on"
-onclick="setTab('home')"
->
-<span>🏠</span>
-<span>Home</span>
-</button>
-
-<button
-class="ntab"
-onclick="setTab('work')"
->
-<span>💼</span>
-<span>Work</span>
-</button>
-
-<button
-class="ntab"
-onclick="setTab('projects')"
->
-<span>🚀</span>
-<span>Projects</span>
-</button>
-
-<button
-class="ntab"
-onclick="setTab('health')"
->
-<span>❤️</span>
-<span>Health</span>
-</button>
-
-<button
-class="ntab"
-onclick="setTab('personal')"
->
-<span>👤</span>
-<span>Personal</span>
-</button>
-
-</div>
-
-<script src="app.js"></script>
+  <script src="app.js"></script>
 
 </body>
 </html>
