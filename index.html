@@ -5,15 +5,103 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <style>
-body{background:#080C14;color:white;font-family:sans-serif;padding:20px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#080C14;color:#E2E8F0;font-family:sans-serif}
+#app{max-width:430px;margin:auto;min-height:100vh;display:flex;flex-direction:column}
+#hdr{padding:14px 16px;border-bottom:1px solid #1F2937;display:flex;justify-content:space-between;align-items:center;background:#080C14;position:sticky;top:0}
+#body{flex:1;overflow:auto;padding:16px;padding-bottom:100px}
+#nav{position:fixed;bottom:0;width:100%;max-width:430px;background:#111827;display:flex;justify-content:space-around;padding:10px 0 20px;border-top:1px solid #1F2937}
+.ntab{background:none;border:none;color:#4B5563;cursor:pointer;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 8px}
+.ntab.on{color:#4F8EF7}
+.ntab span:first-child{font-size:18px}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 0}
+.sc{background:#111827;padding:12px;border-radius:12px;text-align:center}
+.sv{font-size:20px;font-weight:700}
+.sl{font-size:9px;color:#6B7280;margin-top:4px;text-transform:uppercase}
+.cg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.ct{background:#111827;border:none;border-radius:14px;padding:16px;cursor:pointer;color:white;text-align:center;width:100%}
 </style>
 </head>
 <body>
-<h1 id="title">Loading...</h1>
-<div id="out"></div>
+<div id="app">
+  <div id="hdr">
+    <div style="font-size:17px;font-weight:700">Second Brain</div>
+    <div style="font-size:10px;color:#34D399" id="stxt">Ready</div>
+  </div>
+  <div id="body"></div>
+  <div id="nav">
+    <button class="ntab on" onclick="setTab('home')"><span>&#127968;</span><span>Home</span></button>
+    <button class="ntab" onclick="setTab('work')"><span>&#128188;</span><span>Work</span></button>
+    <button class="ntab" onclick="setTab('projects')"><span>&#128640;</span><span>Projects</span></button>
+    <button class="ntab" onclick="setTab('log')"><span>&#128203;</span><span>Log</span></button>
+    <button class="ntab" onclick="setTab('report')"><span>&#128202;</span><span>Report</span></button>
+  </div>
+</div>
 <script>
-document.getElementById('title').textContent = 'JS is working!';
-document.getElementById('out').innerHTML = '<p style="color:#34D399;font-size:18px">If you can read this, JavaScript runs fine on Vercel.</p><p style="margin-top:16px">Time: ' + new Date().toLocaleTimeString() + '</p>';
+
+var tasks = [
+{id:‘1’,title:‘DHCP Scope Failover UAT’,category:‘work’,priority:‘urgent’,status:‘inprogress’,dueDate:‘2026-05-09’,notes:‘Discuss feasibility with Vikas Maurya’},
+{id:‘2’,title:‘PacketFence Patching’,category:‘work’,priority:‘high’,status:‘inprogress’,dueDate:‘2026-05-25’,notes:‘PFE01 patching pending’},
+{id:‘3’,title:‘SailPoint Pre Migration’,category:‘projects’,priority:‘urgent’,status:‘inprogress’,dueDate:‘2026-05-08’,notes:‘DC updates pending’},
+{id:‘4’,title:‘AD Transformation Roadmap’,category:‘projects’,priority:‘high’,status:‘inprogress’,dueDate:‘2026-05-08’,notes:‘Awaiting Microsoft response’},
+{id:‘5’,title:‘Arista AGNI Implementation’,category:‘projects’,priority:‘high’,status:‘inprogress’,dueDate:‘2026-09-30’,notes:‘Infosec approval pending’},
+{id:‘6’,title:‘DNS Catalogue Modification’,category:‘projects’,priority:‘normal’,status:‘inprogress’,dueDate:‘2026-06-30’,notes:‘Most domain owners updated’}
+];
+
+var tab = ‘home’;
+
+var CATS = [
+{id:‘work’,label:‘Work’,icon:‘W’,color:’#4F8EF7’},
+{id:‘projects’,label:‘Projects’,icon:‘P’,color:’#A78BFA’},
+{id:‘personal’,label:‘Personal’,icon:‘Me’,color:’#34D399’},
+{id:‘knowledge’,label:‘Knowledge’,icon:‘K’,color:’#FBBF24’},
+{id:‘bills’,label:‘Bills’,icon:’$’,color:’#F87171’},
+{id:‘health’,label:‘Health’,icon:‘H’,color:’#FB923C’}
+];
+
+function setTab(t) {
+tab = t;
+document.querySelectorAll(’.ntab’).forEach(function(el){ el.classList.remove(‘on’); });
+var idx = [‘home’,‘work’,‘projects’,‘log’,‘report’].indexOf(t);
+if (idx >= 0) document.querySelectorAll(’.ntab’)[idx].classList.add(‘on’);
+render();
+}
+
+function render() {
+var b = document.getElementById(‘body’);
+var done = tasks.filter(function(t){return t.status===‘done’;}).length;
+var inp  = tasks.filter(function(t){return t.status===‘inprogress’;}).length;
+var ov   = tasks.filter(function(t){return t.dueDate && t.status!==‘done’ && new Date(t.dueDate)<new Date();}).length;
+
+if (tab !== ‘home’) {
+var list = tasks.filter(function(t){return t.category===tab;});
+var html = ‘<h2 style="margin-bottom:16px;text-transform:capitalize">’+tab+’</h2>’;
+if (!list.length) html += ‘<p style="color:#6B7280">No tasks</p>’;
+list.forEach(function(t){
+html += ‘<div style="background:#111827;border-radius:12px;padding:14px;margin-bottom:10px"><div style="font-size:14px;font-weight:600">’+t.title+’</div><div style="font-size:12px;color:#94A3B8;margin-top:6px">’+t.notes+’</div><div style="margin-top:8px"><span style="background:#1F2937;padding:3px 8px;border-radius:6px;font-size:10px;margin-right:4px">’+t.priority+’</span><span style="background:#1F2937;padding:3px 8px;border-radius:6px;font-size:10px">’+t.status+’</span></div></div>’;
+});
+b.innerHTML = html;
+return;
+}
+
+var catHtml = CATS.map(function(c){
+var cnt = tasks.filter(function(t){return t.category===c.id;}).length;
+return ‘<button class="ct" onclick="setTab(\''+c.id+'\')" style="border:1px solid '+c.color+'44"><div style="font-size:22px">’+c.icon+’</div><div style="margin-top:6px;font-size:12px;font-weight:500">’+c.label+’</div><div style="font-size:11px;color:#6B7280;margin-top:2px">’+cnt+’ tasks</div></button>’;
+}).join(’’);
+
+b.innerHTML = ‘<div style="margin-bottom:20px"><h1 style="font-size:24px;font-weight:700;margin-bottom:4px">Your Second Brain</h1><p style="color:#94A3B8;font-size:12px">’+new Date().toLocaleDateString(‘en-US’,{weekday:‘long’,month:‘long’,day:‘numeric’})+’</p></div>’
++ ‘<div class="sg">’
++ ‘<div class="sc"><div class="sv" style="color:#4F8EF7">’+tasks.length+’</div><div class="sl">Total</div></div>’
++ ‘<div class="sc"><div class="sv" style="color:#34D399">’+done+’</div><div class="sl">Done</div></div>’
++ ‘<div class="sc"><div class="sv" style="color:#FBBF24">’+inp+’</div><div class="sl">Active</div></div>’
++ ‘<div class="sc"><div class="sv" style="color:#F87171">’+ov+’</div><div class="sl">Overdue</div></div>’
++ ‘</div>’
++ ‘<div style="font-size:10px;color:#6B7280;text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:10px">Categories</div>’
++ ‘<div class="cg">’+catHtml+’</div>’;
+}
+
+render();
 </script>
+
 </body>
 </html>
