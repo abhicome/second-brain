@@ -1,828 +1,670 @@
-const GITHUB_USER = 'abhicome';
-const REPO = 'second-brain';
-const BRANCH = 'main';
+const GITHUB_USER = "abhicome";
+const GITHUB_REPO = "second-brain";
+const GITHUB_BRANCH = "main";
 
-const FILES = {
-tasks:'data/sb-tasks.json',
-worklog:'data/sb-worklog.json',
-categories:'data/sb-categories.json'
-};
+let GITHUB_TOKEN = localStorage.getItem("sb_token") || "";
 
-let TASKS = [];
+const API_BASE =
+`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents`;
+
+const RAW_BASE =
+`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/data`;
+
+let categories = [];
+let currentCategory = null;
+let currentView = "home";
+let TASKS = {};
 let WORKLOG = [];
-let CATEGORIES = [];
 
-let currentView = 'home';
+const app = document.getElementById("appBody");
 
-const content = document.getElementById('content');
-
-function statusText(t,color){
-const s=document.getElementById('status');
-s.innerText=t;
-if(color) s.style.color=color;
+function uid(){
+  return Date.now().toString(36) + Math.random().toString(36).slice(2);
 }
 
-function setToken(){
-
-const existing =
-localStorage.getItem('gh_token') || '';
-
-const t =
-prompt(
-'GitHub Personal Access Token',
-existing
-);
-
-if(t){
-
-localStorage.setItem('gh_token',t);
-
-alert('Token saved locally');
-
+function saveToken(){
+  const val = prompt("Enter GitHub Personal Access Token", GITHUB_TOKEN || "");
+  if(!val) return;
+  GITHUB_TOKEN = val.trim();
+  localStorage.setItem("sb_token", GITHUB_TOKEN);
+  statusText("GitHub token saved", "#34D399");
 }
 
+function statusText(t,c){
+  const s = document.getElementById("stxt");
+  if(!s) return;
+  s.innerText = t;
+  s.style.color = c || "#34D399";
 }
 
-async function fetchJson(path){
+async function githubRequest(url, method="GET", body=null){
 
-const url =
-`https://raw.githubusercontent.com/${GITHUB_USER}/${REPO}/${BRANCH}/${path}?t=${Date.now()}`;
+  const headers = {
+    "Accept":"application/vnd.github+json"
+  };
 
-const r = await fetch(url);
+  if(GITHUB_TOKEN){
+    headers["Authorization"] = `Bearer ${GITHUB_TOKEN}`;
+  }
 
-if(!r.ok){
+  if(body){
+    headers["Content-Type"] = "application/json";
+  }
 
-throw new Error(
-'Failed to fetch: ' + path
-);
+  const res = await fetch(url,{
+    method,
+    headers,
+    body: body ? JSON.stringify(body) : null
+  });
 
+  if(!res.ok){
+    throw new Error("GitHub API Error");
+  }
+
+  return res.json();
 }
 
-return await r.json();
+async function fetchJSON(path){
 
-}
+  try{
 
-async function syncNow(){
+    const res = await fetch(`${RAW_BASE}/${path}?t=${Date.now()}`);
 
-try{
+    if(!res.ok){
+      return null;
+    }
 
-statusText(
-'Syncing...',
-'#FBBF24'
-);
+    return await res.json();
 
-const tData =
-await fetchJson(FILES.tasks);
+  }catch(e){
 
-const wData =
-await fetchJson(FILES.worklog);
+    return null;
 
-const cData =
-await fetchJson(FILES.categories);
-
-TASKS =
-tData.items ||
-tData.tasks ||
-tData.data ||
-tData ||
-[];
-
-WORKLOG =
-wData.entries ||
-wData.worklog ||
-wData.items ||
-wData ||
-[];
-
-CATEGORIES =
-cData.categories ||
-cData.items ||
-cData.data ||
-cData ||
-[];
-
-if(!Array.isArray(TASKS))
-TASKS=[];
-
-if(!Array.isArray(WORKLOG))
-WORKLOG=[];
-
-if(!Array.isArray(CATEGORIES))
-CATEGORIES=[];
-
-statusText(
-'Synced: ' +
-TASKS.length +
-' tasks',
-'#34D399'
-);
-
-render();
-
-}catch(e){
-
-console.error(e);
-
-statusText(
-'Sync failed',
-'#F87171'
-);
-
-alert(
-'Sync failed\n\n' +
-e.message
-);
+  }
 
 }
 
+async function writeJSON(path,data){
+
+  if(!GITHUB_TOKEN){
+    alert("Add GitHub token first");
+    return;
+  }
+
+  statusText("Saving...", "#FBBF24");
+
+  const fileUrl = `${API_BASE}/data/${path}`;
+
+  let sha = null;
+
+  try{
+    const existing = await githubRequest(fileUrl);
+    sha = existing.sha;
+  }catch(e){}
+
+  const content =
+  btoa(
+    unescape(
+      encodeURIComponent(
+        JSON.stringify(data,null,2)
+      )
+    )
+  );
+
+  await githubRequest(
+    fileUrl,
+    "PUT",
+    {
+      message:`update ${path}`,
+      content,
+      sha,
+      branch:GITHUB_BRANCH
+    }
+  );
+
+  statusText("Synced", "#34D399");
+
 }
 
-function setView(v){
+async function init(){
 
-currentView=v;
+  statusText("Loading...", "#FBBF24");
 
-render();
+  let catData = await fetchJSON("categories.json");
+
+  if(!catData){
+
+    catData = [
+      {id:"work",label:"Work",color:"#4F8EF7"},
+      {id:"projects",label:"Projects",color:"#A78BFA"},
+      {id:"personal",label:"Personal",color:"#34D399"},
+      {id:"health",label:"Health",color:"#FB923C"},
+      {id:"knowledge",label:"Knowledge",color:"#FBBF24"},
+      {id:"bills",label:"Bills",color:"#F87171"},
+      {id:"watchlist",label:"Watchlist",color:"#38BDF8"}
+    ];
+
+    await writeJSON("categories.json",catData);
+
+  }
+
+  categories = catData;
+
+  for(const c of categories){
+
+    const file = `${c.id}.json`;
+
+    let data = await fetchJSON(file);
+
+    if(!data){
+
+      data = [];
+
+      await writeJSON(file,data);
+
+    }
+
+    TASKS[c.id] = data;
+
+  }
+
+  let wl = await fetchJSON("worklog.json");
+
+  if(!wl){
+
+    wl = [];
+
+    await writeJSON("worklog.json",wl);
+
+  }
+
+  WORKLOG = wl;
+
+  renderHome();
+
+  statusText("Ready", "#34D399");
 
 }
 
-function statCard(
-num,
-label,
-color
-){
+function setTab(t){
 
-return `
+  currentView = t;
 
-<div class="stat">
+  if(t === "home"){
+    renderHome();
+    return;
+  }
 
-<div class="num ${color}">
-${num}
-</div>
-
-<div class="label">
-${label}
-</div>
-
-</div>
-
-`;
+  openCategory(t);
 
 }
 
 function renderHome(){
 
-const total =
-TASKS.length;
+  let total = 0;
+  let overdue = 0;
+  let active = 0;
 
-const done =
-TASKS.filter(x =>
-(x.status||'')
-.toLowerCase()==='done'
-).length;
+  categories.forEach(c=>{
 
-const active =
-TASKS.filter(x =>
-(x.status||'')
-.toLowerCase()!=='done'
-).length;
+    const arr = TASKS[c.id] || [];
 
-const overdue =
-TASKS.filter(x =>
-x.overdue===true
-).length;
+    total += arr.length;
 
-const urgent =
-TASKS.filter(x => {
+    arr.forEach(t=>{
 
-const p =
-(x.priority||'')
-.toLowerCase();
+      if(t.status !== "Done"){
+        active++;
+      }
 
-return (
-p==='urgent' ||
-p==='high'
-);
+      if(
+        t.dueDate &&
+        t.status !== "Done" &&
+        new Date(t.dueDate) < new Date()
+      ){
+        overdue++;
+      }
 
-}).slice(0,5);
+    });
 
-let html = `
+  });
 
-<div class="hero">
+  let html = `
 
-<h2>
-Your Second Brain
-</h2>
+  <div class="hero">
 
-<p>
-${new Date().toDateString()}
-</p>
+    <h1>
+      Second Brain
+    </h1>
 
-</div>
+    <p>
+      Everything synced with GitHub
+    </p>
 
-<div class="stats">
+  </div>
 
-${statCard(
-total,
-'TOTAL',
-'blue'
-)}
+  <div class="stats">
 
-${statCard(
-done,
-'DONE',
-'green'
-)}
+    <div class="card">
+      <div class="num">${total}</div>
+      <div class="lbl">Tasks</div>
+    </div>
 
-${statCard(
-active,
-'ACTIVE',
-'yellow'
-)}
+    <div class="card">
+      <div class="num">${active}</div>
+      <div class="lbl">Active</div>
+    </div>
 
-${statCard(
-overdue,
-'OVERDUE',
-'red'
-)}
+    <div class="card">
+      <div class="num">${overdue}</div>
+      <div class="lbl">Overdue</div>
+    </div>
 
-</div>
+  </div>
 
-<div class="section-title">
-URGENT & HIGH PRIORITY
-</div>
+  <div class="section-title">
+    Categories
+  </div>
 
-`;
+  <div class="grid">
 
-urgent.forEach(t => {
+  `;
 
-const pri =
-(t.priority||'normal')
-.toLowerCase();
+  categories.forEach(c=>{
 
-html += `
+    const count = (TASKS[c.id] || []).length;
 
-<div class="task">
+    html += `
 
-<div>
+    <button
+      class="cat"
+      onclick="openCategory('${c.id}')"
+      style="border-color:${c.color};"
+    >
 
-<div class="task-title">
-${t.title || 'Untitled'}
-</div>
+      <div class="cat-title">
+        ${c.label}
+      </div>
 
-<div style="
-margin-top:8px;
-color:#94A3B8;
-font-size:14px;
-">
-${t.status || 'Open'}
-</div>
+      <div class="cat-count">
+        ${count} items
+      </div>
 
-</div>
+    </button>
 
-<div class="badge ${pri}">
-${t.priority || 'Normal'}
-</div>
+    `;
 
-</div>
+  });
 
-`;
+  html += `
 
-});
+  <button class="cat addcat" onclick="showAddCategory()">
 
-html += `
+    +
 
-<div class="section-title">
-CATEGORIES
-</div>
+    <div class="cat-title">
+      Add Category
+    </div>
 
-<div class="categories">
+  </button>
 
-`;
+  </div>
 
-CATEGORIES.forEach(c => {
+  `;
 
-const cname =
-c.name ||
-c.label ||
-'Unknown';
-
-const count =
-TASKS.filter(x => {
-
-const taskCat =
-(
-x.category ||
-x.Category ||
-x.type ||
-''
-)
-.toString()
-.trim()
-.toLowerCase();
-
-return (
-taskCat ===
-cname
-.toLowerCase()
-);
-
-}).length;
-
-html += `
-
-<div class="cat"
-onclick="openCategory('${cname}')">
-
-<h3>
-${cname}
-</h3>
-
-<p>
-${count} tasks
-</p>
-
-</div>
-
-`;
-
-});
-
-html += `
-</div>
-`;
-
-content.innerHTML = html;
+  app.innerHTML = html;
 
 }
 
-function openCategory(cat){
+function openCategory(id){
 
-currentView = cat;
+  currentCategory = id;
 
-const tasks =
-TASKS.filter(x => {
-
-const taskCat =
-(
-x.category ||
-x.Category ||
-x.type ||
-''
-)
-.toString()
-.trim()
-.toLowerCase();
+  const cat =
+  categories.find(x=>x.id===id);
 
-const selected =
-cat
-.toString()
-.trim()
-.toLowerCase();
+  const tasks =
+  TASKS[id] || [];
 
-return (
-taskCat === selected
-);
+  let html = `
 
-});
+  <div class="hero">
 
-let html = `
+    <h2>
+      ${cat.label}
+    </h2>
 
-<div class="hero">
+    <p>
+      ${tasks.length} tasks
+    </p>
 
-<h2>
-${cat}
-</h2>
+  </div>
 
-<p>
-${tasks.length} tasks
-</p>
+  <button class="primary" onclick="showAddTask()">
+    Add Task
+  </button>
 
-</div>
+  <div style="height:16px;"></div>
 
-`;
+  `;
 
-tasks.forEach(t => {
+  tasks.forEach((t,index)=>{
 
-const pri =
-(t.priority || 'normal')
-.toLowerCase();
+    html += `
 
-const status =
-t.status ||
-'Open';
+    <div class="task">
 
-const notes =
-t.notes ||
-t.description ||
-'';
+      <div style="flex:1;">
 
-html += `
+        <div class="task-title">
+          ${t.title || ""}
+        </div>
 
-<div class="task">
+        <div class="task-notes">
+          ${t.notes || ""}
+        </div>
 
-<div style="flex:1;">
+        <div class="task-status">
+          ${t.status || "Open"}
+        </div>
 
-<div class="task-title">
-${t.title || 'Untitled'}
-</div>
+      </div>
 
-<div style="
-margin-top:8px;
-color:#94A3B8;
-font-size:14px;
-line-height:1.5;
-">
-${notes}
-</div>
+      <div>
 
-<div style="
-margin-top:10px;
-font-size:13px;
-color:#64748B;
-">
-${status}
-</div>
+        <div class="badge ${String(t.priority || "").toLowerCase()}">
+          ${t.priority || "Normal"}
+        </div>
 
-</div>
+        <button
+          class="editbtn"
+          onclick="editTask(${index})"
+        >
+          Edit
+        </button>
 
-<div>
+      </div>
 
-<div class="badge ${pri}">
-${t.priority || 'Normal'}
-</div>
+    </div>
 
-<button
-onclick="editTask(${t.id})"
-style="
-margin-top:10px;
-width:100%;
-background:#1E293B;
-border:none;
-color:white;
-padding:10px;
-border-radius:10px;
-font-size:13px;
-">
-Edit
-</button>
+    `;
 
-</div>
+  });
 
-</div>
-
-`;
-
-});
-
-if(tasks.length===0){
-
-html += `
-
-<div style="
-margin-top:30px;
-color:#94A3B8;
-font-size:16px;
-">
-No tasks in this category
-</div>
-
-`;
-
-}
-
-content.innerHTML = html;
-
-}
-
-function openAddTask(){
-
-document.body.insertAdjacentHTML(
-'beforeend',
-
-`
-
-<div class="modal" id="modal">
-
-<div class="modal-box">
-
-<h3>
-Add Task
-</h3>
-
-<input
-id="t_title"
-placeholder="Task title">
-
-<textarea
-id="t_notes"
-placeholder="Notes"
-style="height:120px;"
-></textarea>
-
-<select id="t_cat">
-
-${CATEGORIES.map(c => {
-
-const cname =
-c.name ||
-c.label ||
-'General';
-
-return `
-<option>
-${cname}
-</option>
-`;
-
-}).join('')}
-
-</select>
-
-<select id="t_priority">
-
-<option>
-Low
-</option>
-
-<option>
-Medium
-</option>
-
-<option>
-High
-</option>
-
-<option>
-Urgent
-</option>
-
-</select>
-
-<button onclick="saveTask()">
-Save Task
-</button>
-
-<br><br>
-
-<button
-onclick="closeModal()"
-style="
-background:#374151;
-">
-Cancel
-</button>
-
-</div>
-
-</div>
-
-`
-
-);
+  app.innerHTML = html;
 
 }
 
 function closeModal(){
 
-const m =
-document.getElementById('modal');
+  const m = document.getElementById("modal");
 
-if(m) m.remove();
-
-}
-
-function saveTask(){
-
-const title =
-document.getElementById('t_title').value;
-
-const notes =
-document.getElementById('t_notes').value;
-
-const category =
-document.getElementById('t_cat').value;
-
-const priority =
-document.getElementById('t_priority').value;
-
-if(!title){
-
-alert(
-'Title required'
-);
-
-return;
+  if(m){
+    m.remove();
+  }
 
 }
 
-TASKS.unshift({
+function showAddCategory(){
 
-id:Date.now(),
+  document.body.insertAdjacentHTML(
+    "beforeend",
+    `
 
-title:title,
+    <div class="modal" id="modal">
 
-notes:notes,
+      <div class="modal-box">
 
-category:category,
+        <h3>Add Category</h3>
 
-priority:priority,
+        <input id="c_name" placeholder="Category name">
 
-status:'Open'
+        <input id="c_color" placeholder="#4F8EF7">
 
-});
+        <button onclick="createCategory()">
+          Create
+        </button>
 
-closeModal();
+        <button onclick="closeModal()">
+          Cancel
+        </button>
 
-render();
+      </div>
 
-alert(
-'Task added locally\n\n' +
-'GitHub WRITE sync comes next'
-);
+    </div>
 
-}
-
-function editTask(id){
-
-const t =
-TASKS.find(x =>
-x.id == id
-);
-
-if(!t) return;
-
-document.body.insertAdjacentHTML(
-'beforeend',
-
-`
-
-<div class="modal" id="modal">
-
-<div class="modal-box">
-
-<h3>
-Edit Task
-</h3>
-
-<input
-id="e_title"
-value="${t.title || ''}">
-
-<textarea
-id="e_notes"
-style="height:120px;"
->${t.notes || ''}</textarea>
-
-<select id="e_status">
-
-<option
-${t.status==='Open'?'selected':''}>
-Open
-</option>
-
-<option
-${t.status==='In Progress'?'selected':''}>
-In Progress
-</option>
-
-<option
-${t.status==='Done'?'selected':''}>
-Done
-</option>
-
-</select>
-
-<br><br>
-
-<button onclick="saveEdit(${id})">
-Save Changes
-</button>
-
-<br><br>
-
-<button
-onclick="closeModal()"
-style="
-background:#374151;
-">
-Cancel
-</button>
-
-</div>
-
-</div>
-
-`
-
-);
+    `
+  );
 
 }
 
-function saveEdit(id){
+async function createCategory(){
 
-const t =
-TASKS.find(x =>
-x.id == id
-);
+  const name =
+  document.getElementById("c_name").value.trim();
 
-if(!t) return;
+  const color =
+  document.getElementById("c_color").value.trim() || "#4F8EF7";
 
-t.title =
-document.getElementById(
-'e_title'
-).value;
+  if(!name){
+    return;
+  }
 
-t.notes =
-document.getElementById(
-'e_notes'
-).value;
+  const id =
+  name
+  .toLowerCase()
+  .replace(/\s+/g,"-");
 
-t.status =
-document.getElementById(
-'e_status'
-).value;
+  const obj = {
+    id,
+    label:name,
+    color
+  };
 
-closeModal();
+  categories.push(obj);
 
-render();
+  TASKS[id] = [];
 
-alert(
-'Task updated locally\n\n' +
-'GitHub WRITE sync comes next'
-);
+  await writeJSON("categories.json",categories);
 
-}
+  await writeJSON(`${id}.json`,[]);
 
-function render(){
+  closeModal();
 
-if(currentView==='home'){
-
-renderHome();
-
-return;
+  renderHome();
 
 }
 
-if(currentView==='work'){
+function showAddTask(){
 
-openCategory('Work');
+  document.body.insertAdjacentHTML(
+    "beforeend",
+    `
 
-return;
+    <div class="modal" id="modal">
 
-}
+      <div class="modal-box">
 
-if(currentView==='projects'){
+        <h3>Add Task</h3>
 
-openCategory('Projects');
+        <input id="t_title" placeholder="Task title">
 
-return;
+        <textarea id="t_notes" placeholder="Notes"></textarea>
 
-}
+        <input type="date" id="t_due">
 
-if(currentView==='log'){
+        <select id="t_priority">
 
-content.innerHTML = `
+          <option>Low</option>
+          <option>Normal</option>
+          <option>High</option>
+          <option>Urgent</option>
 
-<div class="hero">
+        </select>
 
-<h2>
-Worklog
-</h2>
+        <button onclick="createTask()">
+          Save
+        </button>
 
-<p>
-${WORKLOG.length} entries
-</p>
+        <button onclick="closeModal()">
+          Cancel
+        </button>
 
-</div>
+      </div>
 
-`;
+    </div>
 
-return;
-
-}
-
-if(currentView==='report'){
-
-content.innerHTML = `
-
-<div class="hero">
-
-<h2>
-Weekly Report
-</h2>
-
-<p>
-AI generation coming next
-</p>
-
-</div>
-
-`;
-
-return;
+    `
+  );
 
 }
 
+async function createTask(){
+
+  const obj = {
+
+    id:uid(),
+
+    title:
+    document.getElementById("t_title").value,
+
+    notes:
+    document.getElementById("t_notes").value,
+
+    dueDate:
+    document.getElementById("t_due").value,
+
+    priority:
+    document.getElementById("t_priority").value,
+
+    status:"Open"
+
+  };
+
+  TASKS[currentCategory].unshift(obj);
+
+  await writeJSON(
+    `${currentCategory}.json`,
+    TASKS[currentCategory]
+  );
+
+  closeModal();
+
+  openCategory(currentCategory);
+
 }
 
-syncNow();
+function editTask(index){
+
+  const t =
+  TASKS[currentCategory][index];
+
+  document.body.insertAdjacentHTML(
+    "beforeend",
+    `
+
+    <div class="modal" id="modal">
+
+      <div class="modal-box">
+
+        <h3>Edit Task</h3>
+
+        <input id="e_title" value="${t.title || ""}">
+
+        <textarea id="e_notes">${t.notes || ""}</textarea>
+
+        <input type="date" id="e_due" value="${t.dueDate || ""}">
+
+        <select id="e_priority">
+
+          <option ${t.priority==="Low"?"selected":""}>Low</option>
+          <option ${t.priority==="Normal"?"selected":""}>Normal</option>
+          <option ${t.priority==="High"?"selected":""}>High</option>
+          <option ${t.priority==="Urgent"?"selected":""}>Urgent</option>
+
+        </select>
+
+        <select id="e_status">
+
+          <option ${t.status==="Open"?"selected":""}>Open</option>
+          <option ${t.status==="In Progress"?"selected":""}>In Progress</option>
+          <option ${t.status==="Done"?"selected":""}>Done</option>
+
+        </select>
+
+        <button onclick="saveTask(${index})">
+          Save Changes
+        </button>
+
+        <button onclick="deleteTask(${index})">
+          Delete
+        </button>
+
+      </div>
+
+    </div>
+
+    `
+  );
+
+}
+
+async function saveTask(index){
+
+  const t =
+  TASKS[currentCategory][index];
+
+  t.title =
+  document.getElementById("e_title").value;
+
+  t.notes =
+  document.getElementById("e_notes").value;
+
+  t.dueDate =
+  document.getElementById("e_due").value;
+
+  t.priority =
+  document.getElementById("e_priority").value;
+
+  t.status =
+  document.getElementById("e_status").value;
+
+  await writeJSON(
+    `${currentCategory}.json`,
+    TASKS[currentCategory]
+  );
+
+  closeModal();
+
+  openCategory(currentCategory);
+
+}
+
+async function deleteTask(index){
+
+  TASKS[currentCategory].splice(index,1);
+
+  await writeJSON(
+    `${currentCategory}.json`,
+    TASKS[currentCategory]
+  );
+
+  closeModal();
+
+  openCategory(currentCategory);
+
+}
+
+window.setTab = setTab;
+window.saveToken = saveToken;
+window.openCategory = openCategory;
+window.showAddCategory = showAddCategory;
+window.createCategory = createCategory;
+window.showAddTask = showAddTask;
+window.createTask = createTask;
+window.editTask = editTask;
+window.saveTask = saveTask;
+window.deleteTask = deleteTask;
+window.closeModal = closeModal;
+
+init();
