@@ -1,121 +1,19 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<meta name="theme-color" content="#080C14"/>
-<title>Second Brain</title>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{background:#080C14;color:#E2E8F0;font-family:Sora,sans-serif}
-#app{max-width:430px;margin:auto;min-height:100vh;display:flex;flex-direction:column;position:relative}
-#hdr{padding:14px 16px 10px;border-bottom:1px solid #1F2937;display:flex;justify-content:space-between;align-items:center;background:#080C14;position:sticky;top:0;z-index:10}
-.brand{font-size:17px;font-weight:700}
-.sr{display:flex;align-items:center;gap:5px;margin-top:3px}
-.sd{width:7px;height:7px;border-radius:50%;display:inline-block;background:#34D399}
-.st{font-size:10px;color:#4B5563}
-.hbs{display:flex;gap:8px}
-.hb{background:#111827;border:none;border-radius:10px;color:#94A3B8;font-size:13px;padding:8px 12px;cursor:pointer}
-#apanel{background:#0D1420;border-bottom:1px solid #1F2937;padding:12px 16px;display:none}
-#body{flex:1;overflow:auto;padding:16px;padding-bottom:100px}
-.hero{margin-bottom:20px}
-.hero h1{font-size:24px;font-weight:700;margin-bottom:4px}
-.hero p{color:#94A3B8;font-size:12px}
-.bar-track{height:4px;background:#1F2937;border-radius:99px;margin-top:10px}
-.bar-fill{height:100%;background:linear-gradient(90deg,#4F8EF7,#A78BFA);border-radius:99px;transition:width .5s}
-.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 0}
-.sc{background:#111827;padding:12px;border-radius:12px;text-align:center}
-.sv{font-size:20px;font-weight:700}
-.sl{font-size:9px;color:#6B7280;margin-top:4px;text-transform:uppercase;letter-spacing:.05em}
-.al{background:#F8717115;border:1px solid #F8717130;border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:8px;margin-bottom:14px}
-.stl{display:block;margin:16px 0 10px;color:#6B7280;font-size:10px;text-transform:uppercase;letter-spacing:.08em;font-weight:600}
-.cg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.ct{background:#111827;border:none;border-radius:14px;padding:16px;cursor:pointer;color:white;text-align:center;position:relative}
-.wb{background:linear-gradient(135deg,#4F8EF715,#A78BFA15);border:1px solid #4F8EF730;border-radius:14px;padding:14px 16px;margin:14px 0;display:flex;align-items:center;justify-content:space-between}
-.mc2{display:flex;align-items:center;gap:8px;background:#111827;border-radius:10px;padding:10px 12px;margin-bottom:6px;cursor:pointer}
-.tc{background:#111827;border-radius:14px;padding:14px;margin-bottom:10px;cursor:pointer}
-.tc.ov{border:1px solid #F8717150}
-.tt{font-size:14px;font-weight:600}
-.tt.dn{text-decoration:line-through;opacity:.4}
-.tn{font-size:12px;color:#94A3B8;margin-top:6px;line-height:1.5}
-.bdg{display:inline-block;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:500;margin-top:6px;margin-right:4px}
-.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;margin-bottom:4px}
-.chip{background:#111827;border:1px solid #1F2937;border-radius:99px;color:#6B7280;font-size:11px;padding:5px 12px;cursor:pointer;white-space:nowrap;flex-shrink:0}
-.abar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
-.ap{border-radius:10px;padding:10px 6px;text-align:center}
-.dh{display:flex;align-items:center;gap:8px;margin-bottom:6px;padding:4px 0}
-.lce{background:#111827;border-radius:10px;padding:10px 12px;margin-bottom:6px;display:flex;gap:8px;align-items:flex-start}
-.la{width:3px;min-height:20px;border-radius:99px;flex-shrink:0;margin-top:2px}
-.rh{background:linear-gradient(135deg,#4F8EF715,#A78BFA15);border:1px solid #4F8EF730;border-radius:14px;padding:16px;margin-bottom:16px}
-.gbtn{width:100%;padding:13px;background:linear-gradient(135deg,#4F8EF7,#A78BFA);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;margin-top:10px;font-family:Sora,sans-serif}
-.rbox{background:#111827;border-radius:12px;padding:14px;margin-top:12px;overflow-x:auto}
-.rpre{margin:0;color:#C8D6E5;font-size:11px;line-height:1.8;white-space:pre-wrap;font-family:monospace}
-#fab{position:fixed;bottom:90px;right:20px;width:54px;height:54px;border-radius:50%;border:none;background:linear-gradient(135deg,#4F8EF7,#A78BFA);color:white;font-size:28px;cursor:pointer;box-shadow:0 4px 16px #4F8EF755;z-index:20}
-#nav{position:fixed;bottom:0;width:100%;max-width:430px;background:#111827;display:flex;justify-content:space-around;padding:10px 0 20px;border-top:1px solid #1F2937;z-index:10}
-.ntab{background:none;border:none;color:#4B5563;cursor:pointer;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 8px}
-.ntab.on{color:#4F8EF7}
-.ntab span:first-child{font-size:18px}
-.ovl{position:fixed;inset:0;background:#00000090;display:flex;align-items:flex-end;z-index:50}
-.mdl{background:#111827;width:100%;max-width:430px;margin:auto;border-radius:20px 20px 0 0;padding:20px;max-height:88vh;overflow-y:auto}
-.mhdl{width:36px;height:4px;background:#374151;border-radius:99px;margin:0 auto 16px}
-.mhd{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.mttl{font-size:18px;font-weight:700}
-.mclb{background:none;border:none;color:#94A3B8;font-size:20px;cursor:pointer}
-.inp,.sel,.inpta{width:100%;background:#080C14;border:1px solid #374151;border-radius:10px;padding:11px 12px;color:white;font-family:Sora,sans-serif;font-size:14px;outline:none;display:block;margin-top:6px}
-.inpta{height:80px;resize:none}
-.svbtn{width:100%;background:linear-gradient(135deg,#4F8EF7,#A78BFA);border:none;border-radius:12px;padding:14px;color:white;font-weight:700;margin-top:16px;cursor:pointer;font-size:15px;font-family:Sora,sans-serif}
-.fld{margin-bottom:14px}
-.flbl{font-size:11px;color:#94A3B8;text-transform:uppercase;letter-spacing:.06em}
-.r2{display:flex;gap:10px;margin-bottom:14px}
-.r2>div{flex:1}
-.ccs{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-.cc{background:#080C14;border:1px solid #374151;border-radius:99px;color:#94A3B8;font-size:11px;padding:5px 10px;cursor:pointer}
-.tw{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.tagbdg{display:inline-flex;align-items:center;gap:4px;background:#4F8EF720;color:#4F8EF7;border-radius:6px;font-size:11px;padding:3px 8px}
-.lh{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-.lt{font-size:20px;font-weight:700;flex:1}
-.tagrow{display:flex;gap:6px;margin-top:6px}
+body{background:#080C14;color:white;font-family:sans-serif;padding:20px}
 </style>
 </head>
 <body>
-<div id="app">
-  <div id="hdr">
-    <div>
-      <div class="brand">&#9001; Second Brain</div>
-      <div class="sr"><span class="sd" id="sdot"></span><span class="st" id="stxt">Ready</span></div>
-    </div>
-    <div class="hbs">
-      <button class="hb" onclick="toggleApi()">&#128273; Key</button>
-      <button class="hb" onclick="toggleLog()">&#128203; Log</button>
-    </div>
-  </div>
-  <div id="apanel">
-    <div style="font-size:11px;color:#6B7280;margin-bottom:8px">Anthropic API Key - saved on device only</div>
-    <div style="display:flex;gap:8px;margin-bottom:6px">
-      <input type="password" id="akey" placeholder="sk-ant-..." style="flex:1;background:#080C14;border:1px solid #374151;border-radius:10px;padding:10px 12px;color:white;font-size:13px;outline:none"/>
-      <button onclick="saveKey()" style="background:#4F8EF7;border:none;border-radius:10px;color:white;font-size:13px;padding:0 14px;font-weight:600;cursor:pointer">Save</button>
-      <button onclick="toggleApi()" style="background:#1F2937;border:none;border-radius:10px;color:#94A3B8;font-size:13px;padding:0 12px;cursor:pointer">X</button>
-    </div>
-    <div style="font-size:10px;color:#374151">console.anthropic.com - API Keys</div>
-  </div>
-  <div id="body"></div>
-  <div id="nav">
-    <button class="ntab on" id="nt0" onclick="setTab('home')"><span>&#127968;</span><span>Home</span></button>
-    <button class="ntab" id="nt1" onclick="setTab('work')"><span>&#128188;</span><span>Work</span></button>
-    <button class="ntab" id="nt2" onclick="setTab('projects')"><span>&#128640;</span><span>Projects</span></button>
-    <button class="ntab" id="nt3" onclick="toggleLog()"><span>&#128203;</span><span>Log</span></button>
-    <button class="ntab" id="nt4" onclick="setTab('report')"><span>&#128202;</span><span>Report</span></button>
-    <button class="ntab" id="nt5" onclick="showCatModal()"><span>&#8230;</span><span>More</span></button>
-  </div>
-  <button id="fab" onclick="onFab()">+</button>
-</div>
-<div id="mc"></div>
-
-<script src="app.js"></script>
-
+<h1 id="title">Loading...</h1>
+<div id="out"></div>
+<script>
+document.getElementById('title').textContent = 'JS is working!';
+document.getElementById('out').innerHTML = '<p style="color:#34D399;font-size:18px">If you can read this, JavaScript runs fine on Vercel.</p><p style="margin-top:16px">Time: ' + new Date().toLocaleTimeString() + '</p>';
+</script>
 </body>
 </html>
