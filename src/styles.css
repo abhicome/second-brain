@@ -1,0 +1,18 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #080C14;
+  color: #E2E8F0;
+  font-family: Inter, sans-serif;
+}
+
+button {
+  font-family: inherit;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
