@@ -1,7 +1,4 @@
-const root =
-  document.getElementById(
-    "root"
-  );
+const root = document.getElementById("root");
 
 const state = {
   tasks: [],
@@ -18,48 +15,26 @@ async function init(){
 
     await loadData();
 
-    if(
-      typeof renderHome ===
-      "function"
-    ){
-
+    if(typeof renderHome === "function"){
       renderHome();
-
     }
-
     else{
-
       root.innerHTML = `
-        <div style="
-          padding:40px;
-          color:red;
-          font-size:24px;
-        ">
+        <div style="padding:40px;color:red;font-size:24px;">
           renderHome missing
         </div>
       `;
-
     }
 
   }
-
   catch(err){
 
     console.log(err);
 
     root.innerHTML = `
-
-      <div style="
-        padding:40px;
-        color:red;
-        font-size:20px;
-        white-space:pre-wrap;
-      ">
-
+      <div style="padding:40px;color:red;font-size:20px;white-space:pre-wrap;">
         ${err}
-
       </div>
-
     `;
 
   }
@@ -72,49 +47,31 @@ async function loadData(){
 
     try{
 
-      const res =
-        await fetch(
-          path +
-          "?v=" +
-          Date.now()
-        );
+      const res = await fetch(
+        path + "?v=" + Date.now()
+      );
 
       return await res.json();
 
     }
-
-    catch{
-
+    catch(err){
+      console.log(err);
       return [];
-
     }
 
   }
 
-  state.tasks =
-    await loadFile(
-      "./data/work.json"
-    );
+  const tasksData = await loadFile("./data/work.json");
+  const projectsData = await loadFile("./data/projects.json");
+  const knowledgeData = await loadFile("./data/knowledge.json");
+  const watchlistData = await loadFile("./data/watchlist.json");
+  const financeData = await loadFile("./data/bills.json");
 
-  state.projects =
-    await loadFile(
-      "./data/projects.json"
-    );
-
-  state.knowledge =
-    await loadFile(
-      "./data/knowledge.json"
-    );
-
-  state.watchlist =
-    await loadFile(
-      "./data/watchlist.json"
-    );
-
-  state.finance =
-    await loadFile(
-      "./data/bills.json"
-    );
+  state.tasks = tasksData.tasks || tasksData || [];
+  state.projects = projectsData.projects || projectsData || [];
+  state.knowledge = knowledgeData.knowledge || knowledgeData || [];
+  state.watchlist = watchlistData.watchlist || watchlistData || [];
+  state.finance = financeData.bills || financeData || [];
 
 }
 
@@ -134,10 +91,7 @@ function buttonStyle(){
 
 function setToken(){
 
-  const token =
-    prompt(
-      "Enter GitHub Token"
-    );
+  const token = prompt("Enter GitHub Token");
 
   if(token){
 
@@ -146,9 +100,7 @@ function setToken(){
       token
     );
 
-    alert(
-      "Token Saved"
-    );
+    alert("Token Saved");
 
   }
 
