@@ -1,74 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Second Brain</title>
-
-<link rel="stylesheet" href="style.css"/>
-
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div id="wrap">
+<div id="app">
 
-<div id="hdr">
-
-<div class="logo">
-Second Brain
+<header class="topbar">
+<div>
+<h1>Second Brain</h1>
+<p id="status">Loading...</p>
 </div>
 
-<div class="topBtns">
-
-<button id="tokenBtn">
-Token
-</button>
-
-<button id="syncBtn">
-Sync
-</button>
-
-<div id="status">
-Ready
+<div class="top-actions">
+<button onclick="setToken()">Key</button>
+<button onclick="syncNow()">Sync</button>
 </div>
+</header>
 
-</div>
+<div id="content"></div>
 
-</div>
+<nav class="bottom-nav">
+<button onclick="setView('home')">🏠<span>Home</span></button>
+<button onclick="setView('work')">💼<span>Work</span></button>
+<button onclick="setView('projects')">🚀<span>Projects</span></button>
+<button onclick="setView('log')">📋<span>Log</span></button>
+<button onclick="setView('report')">📊<span>Report</span></button>
+</nav>
 
-<div id="app"></div>
+<button class="fab" onclick="openAddTask()">+</button>
 
 </div>
-
-<div id="nav">
-
-<button class="ntab on" data-tab="home">
-<span>🏠</span>
-<span>Home</span>
-</button>
-
-<button class="ntab" data-tab="work">
-<span>💼</span>
-<span>Work</span>
-</button>
-
-<button class="ntab" data-tab="projects">
-<span>🚀</span>
-<span>Projects</span>
-</button>
-
-<button class="ntab" data-tab="log">
-<span>📋</span>
-<span>Log</span>
-</button>
-
-</div>
-
-<button id="fab">
-+
-</button>
-
-<div id="modal"></div>
 
 <script src="app.js"></script>
 
