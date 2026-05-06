@@ -10,12 +10,12 @@ throw new Error(“Root container missing”);
 }
 
 const DEFAULT_CATEGORIES = [
-{id:“work”,      name:“Work”,      color:”#3B82F6”, file:“work.json”,      icon:“💼”},
-{id:“projects”,  name:“Projects”,  color:”#8B5CF6”, file:“projects.json”,  icon:“🚀”},
-{id:“personal”,  name:“Personal”,  color:”#EF4444”, file:“personal.json”,  icon:“👤”},
-{id:“knowledge”, name:“Knowledge”, color:”#2563EB”, file:“knowledge.json”, icon:“📘”},
-{id:“bills”,     name:“Bills”,     color:”#F59E0B”, file:“bills.json”,     icon:“💳”},
-{id:“watchlist”, name:“Watchlist”, color:”#D946EF”, file:“watchlist.json”, icon:“🎬”}
+{id:“work”,      name:“Work”,      color:”#3B82F6”, file:“work.json”,      icon:“W”},
+{id:“projects”,  name:“Projects”,  color:”#8B5CF6”, file:“projects.json”,  icon:“P”},
+{id:“personal”,  name:“Personal”,  color:”#EF4444”, file:“personal.json”,  icon:“Me”},
+{id:“knowledge”, name:“Knowledge”, color:”#2563EB”, file:“knowledge.json”, icon:“K”},
+{id:“bills”,     name:“Bills”,     color:”#F59E0B”, file:“bills.json”,     icon:”$”},
+{id:“watchlist”, name:“Watchlist”, color:”#D946EF”, file:“watchlist.json”, icon:“TV”}
 ];
 
 const PCOL = {urgent:”#EF4444”, high:”#F59E0B”, normal:”#94A3B8”, low:”#475569”};
@@ -40,12 +40,26 @@ async function init() {
 renderLoading();
 try {
 await loadCategories();
+} catch(e) {
+console.error(“loadCategories failed:”, e);
+state.categories = DEFAULT_CATEGORIES;
+}
+try {
 await loadAllData();
+} catch(e) {
+console.error(“loadAllData failed:”, e);
+}
+try {
 await loadWorklog();
+} catch(e) {
+console.error(“loadWorklog failed:”, e);
+state.worklog = [];
+}
+try {
 renderHome();
 } catch(e) {
-console.error(e);
-app.innerHTML = ‘<div style="color:white;padding:30px">Failed to load — check console.</div>’;
+console.error(“renderHome failed:”, e);
+app.innerHTML = ’<div style="background:#020617;color:white;padding:30px;min-height:100vh;font-family:sans-serif"><h2>Second Brain</h2><p style="color:#EF4444;margin-top:20px">Render error: ’ + e.message + ‘</p><button onclick="location.reload()" style="margin-top:20px;padding:12px 20px;background:#3B82F6;border:none;border-radius:10px;color:white;font-size:16px;cursor:pointer">Reload</button></div>’;
 }
 }
 
@@ -89,7 +103,7 @@ state.worklog = [];
 }
 }
 
-// ── GITHUB SAVE ───────────────────────────────────────────────────────────────
+// – GITHUB SAVE —————————————————————
 async function saveFile(file, data) {
 if (!state.token) { alert(“Add GitHub token first (Key button)”); return; }
 const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_PATH}/${file}`;
@@ -112,7 +126,7 @@ clearTimeout(saveTimers[key]);
 saveTimers[key] = setTimeout(async () => {
 setStatus(“Saving…”);
 await saveFile(file, data);
-setStatus(“Saved ✓”);
+setStatus(“Saved OK”);
 }, 1200);
 }
 
@@ -121,7 +135,7 @@ const el = document.getElementById(“status”);
 if (el) el.textContent = msg;
 }
 
-// ── HOME ──────────────────────────────────────────────────────────────────────
+// – HOME –––––––––––––––––––––––––––––––––––
 function renderHome() {
 state.view    = “home”;
 state.current = null;
@@ -149,10 +163,10 @@ app.innerHTML = `
       <div id="status" style="font-size:12px;color:#34D399;margin-top:4px">${state.token ? "Ready" : "Add token to save"}</div>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
-      <button onclick="setToken()" style="${btnStyle()}">🔑 Key</button>
-      <button onclick="syncAll()" style="${btnStyle()}">⟳ Sync</button>
-      <button onclick="renderLog()" style="${btnStyle()}">📋 Log</button>
-      <button onclick="renderReport()" style="${btnStyle()}">📊 Report</button>
+      <button onclick="setToken()" style="${btnStyle()}">Key Key</button>
+      <button onclick="syncAll()" style="${btnStyle()}">O Sync</button>
+      <button onclick="renderLog()" style="${btnStyle()}">Log Log</button>
+      <button onclick="renderReport()" style="${btnStyle()}">Rep Report</button>
     </div>
   </div>
 
@@ -187,7 +201,7 @@ return `<div style="background:#081225;border-radius:22px;padding:24px;text-alig
   </div>`;
 }
 
-// ── CATEGORY VIEW ─────────────────────────────────────────────────────────────
+// – CATEGORY VIEW ———————————————————––
 function openCategory(id) {
 state.current = id;
 state.view    = “category”;
@@ -228,7 +242,7 @@ return `
         <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center">
           <span style="background:${pc}22;color:${pc};padding:4px 12px;border-radius:99px;font-size:12px;font-weight:700">${pri}</span>
           <span style="background:${sc}22;color:${sc};padding:4px 12px;border-radius:99px;font-size:12px">${stat==="inprogress"?"In Progress":stat}</span>
-          ${task.date ? `<span style="color:${isOv?"#EF4444":"#94A3B8"};font-size:13px">${isOv?"⚠ ":""}${fdate(task.date)}</span>` : ""}
+          ${task.date ? `<span style="color:${isOv?"#EF4444":"#94A3B8"};font-size:13px">${isOv?"! ":""}${fdate(task.date)}</span>` : ""}
         </div>
         ${task.subtasks && task.subtasks.length ? `
           <div style="margin-top:16px">
@@ -239,14 +253,14 @@ return `
               </div>`).join("")}
           </div>` : ""}
       </div>
-      <button onclick="deleteTask('${id}',${realIdx})" style="background:transparent;border:none;color:#374151;font-size:20px;cursor:pointer;padding:4px;flex-shrink:0">✕</button>
+      <button onclick="deleteTask('${id}',${realIdx})" style="background:transparent;border:none;color:#374151;font-size:20px;cursor:pointer;padding:4px;flex-shrink:0">x</button>
     </div>
   </div>`;
 ```
 
 }).join(””);
 
-app.innerHTML = ` <div style="background:#020617;min-height:100vh;color:white;font-family:-apple-system,BlinkMacSystemFont,sans-serif;padding-bottom:120px"> <div style="padding:20px;border-bottom:1px solid #1E293B;background:#0B1220;position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center"> <button onclick="renderHome()" style="${circleBtn()}">←</button> <div style="font-size:26px;font-weight:bold;color:${cat.color}">${cat.icon} ${cat.name}</div> <button onclick="syncCategory('${id}')" style="${circleBtn()}" title="Save">⟳</button> </div> <div style="padding:16px"> <div style="font-size:13px;color:#94A3B8;margin-bottom:14px">${tasks.filter(t=>!t.done).length} open · ${tasks.filter(t=>t.done).length} done</div> <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:12px;margin-bottom:4px">${chips}</div> ${filtered.length ? cards : '<p style="color:#94A3B8;text-align:center;padding:40px 0">No tasks — tap + to add</p>'} </div> <button onclick="addTaskUI('${id}')" style="position:fixed;right:24px;bottom:24px;width:68px;height:68px;border-radius:50%;border:none;background:${cat.color};color:white;font-size:40px;cursor:pointer;box-shadow:0 4px 20px ${cat.color}55">+</button> </div>`;
+app.innerHTML = ` <div style="background:#020617;min-height:100vh;color:white;font-family:-apple-system,BlinkMacSystemFont,sans-serif;padding-bottom:120px"> <div style="padding:20px;border-bottom:1px solid #1E293B;background:#0B1220;position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center"> <button onclick="renderHome()" style="${circleBtn()}"><-</button> <div style="font-size:26px;font-weight:bold;color:${cat.color}">${cat.icon} ${cat.name}</div> <button onclick="syncCategory('${id}')" style="${circleBtn()}" title="Save">O</button> </div> <div style="padding:16px"> <div style="font-size:13px;color:#94A3B8;margin-bottom:14px">${tasks.filter(t=>!t.done).length} open - ${tasks.filter(t=>t.done).length} done</div> <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:12px;margin-bottom:4px">${chips}</div> ${filtered.length ? cards : '<p style="color:#94A3B8;text-align:center;padding:40px 0">No tasks - tap + to add</p>'} </div> <button onclick="addTaskUI('${id}')" style="position:fixed;right:24px;bottom:24px;width:68px;height:68px;border-radius:50%;border:none;background:${cat.color};color:white;font-size:40px;cursor:pointer;box-shadow:0 4px 20px ${cat.color}55">+</button> </div>`;
 }
 
 function setCatFilter(id, status) {
@@ -254,7 +268,7 @@ state.catFilter = status;
 openCategory(id);
 }
 
-// ── TASK CRUD ─────────────────────────────────────────────────────────────────
+// – TASK CRUD —————————————————————–
 function toggleTask(cat, index) {
 state.data[cat][index].done = !state.data[cat][index].done;
 state.data[cat][index].status = state.data[cat][index].done ? “done” : “todo”;
@@ -316,7 +330,7 @@ closeModal();
 openCategory(cat);
 }
 
-// ── WORKLOG ───────────────────────────────────────────────────────────────────
+// – WORKLOG —————————————————————––
 function renderLog() {
 state.view = “log”;
 
@@ -341,12 +355,12 @@ const eHtml = es.map(e => {
 const cat = state.categories.find(c=>c.id===e.category)||{name:e.category,color:”#94A3B8”};
 const tc  = LCOL[e.type]||”#94A3B8”;
 const tl  = e.type===“investigation”?“Investigation”:e.type.charAt(0).toUpperCase()+e.type.slice(1);
-return `<div style="background:#081225;border-radius:16px;padding:16px;margin-bottom:8px;display:flex;gap:10px"> <div style="width:3px;min-height:20px;border-radius:99px;background:${cat.color};flex-shrink:0;margin-top:2px"></div> <div style="flex:1"> <div style="font-size:15px;line-height:1.5">${esc(e.text)}</div> <div style="margin-top:6px"> <span style="background:${cat.color}22;color:${cat.color};padding:2px 8px;border-radius:99px;font-size:11px;margin-right:6px">${esc(cat.name)}</span> <span style="background:${tc}22;color:${tc};padding:2px 8px;border-radius:99px;font-size:11px">${tl}</span> </div> </div> <button onclick="deleteLogEntry('${e.id}')" style="background:transparent;border:none;color:#374151;font-size:18px;cursor:pointer;padding:0 4px">✕</button> </div>`;
+return `<div style="background:#081225;border-radius:16px;padding:16px;margin-bottom:8px;display:flex;gap:10px"> <div style="width:3px;min-height:20px;border-radius:99px;background:${cat.color};flex-shrink:0;margin-top:2px"></div> <div style="flex:1"> <div style="font-size:15px;line-height:1.5">${esc(e.text)}</div> <div style="margin-top:6px"> <span style="background:${cat.color}22;color:${cat.color};padding:2px 8px;border-radius:99px;font-size:11px;margin-right:6px">${esc(cat.name)}</span> <span style="background:${tc}22;color:${tc};padding:2px 8px;border-radius:99px;font-size:11px">${tl}</span> </div> </div> <button onclick="deleteLogEntry('${e.id}')" style="background:transparent;border:none;color:#374151;font-size:18px;cursor:pointer;padding:0 4px">x</button> </div>`;
 }).join(””);
 return `<div style="margin-bottom:20px"> <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"> <span style="font-size:15px;font-weight:700">${fdate(date)}</span> <span style="color:#374151;font-size:12px;flex:1">${date}</span> <span style="background:#081225;color:#94A3B8;font-size:11px;border-radius:99px;padding:2px 10px">${es.length}</span> </div> ${eHtml} </div>`;
 }).join(””);
 
-app.innerHTML = ` <div style="background:#020617;min-height:100vh;color:white;font-family:-apple-system,BlinkMacSystemFont,sans-serif;padding-bottom:120px"> <div style="padding:20px;border-bottom:1px solid #1E293B;background:#0B1220;position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center"> <button onclick="renderHome()" style="${circleBtn()}">←</button> <div style="font-size:24px;font-weight:bold">📋 Worklog</div> <div style="font-size:12px;color:#94A3B8">${state.worklog.length} entries</div> </div> <div style="padding:20px"> <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px">${abar}</div> ${days.length ? entries : '<p style="color:#94A3B8;text-align:center;padding:40px 0">No entries yet — tap + to add</p>'} </div> <button onclick="addLogUI()" style="position:fixed;right:24px;bottom:24px;width:68px;height:68px;border-radius:50%;border:none;background:linear-gradient(135deg,#3B82F6,#8B5CF6);color:white;font-size:40px;cursor:pointer;box-shadow:0 4px 20px #3B82F655">+</button> </div>`;
+app.innerHTML = ` <div style="background:#020617;min-height:100vh;color:white;font-family:-apple-system,BlinkMacSystemFont,sans-serif;padding-bottom:120px"> <div style="padding:20px;border-bottom:1px solid #1E293B;background:#0B1220;position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center"> <button onclick="renderHome()" style="${circleBtn()}"><-</button> <div style="font-size:24px;font-weight:bold">Log Worklog</div> <div style="font-size:12px;color:#94A3B8">${state.worklog.length} entries</div> </div> <div style="padding:20px"> <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px">${abar}</div> ${days.length ? entries : '<p style="color:#94A3B8;text-align:center;padding:40px 0">No entries yet - tap + to add</p>'} </div> <button onclick="addLogUI()" style="position:fixed;right:24px;bottom:24px;width:68px;height:68px;border-radius:50%;border:none;background:linear-gradient(135deg,#3B82F6,#8B5CF6);color:white;font-size:40px;cursor:pointer;box-shadow:0 4px 20px #3B82F655">+</button> </div>`;
 }
 
 function deleteLogEntry(id) {
@@ -376,12 +390,12 @@ closeModal();
 renderLog();
 }
 
-// ── WEEKLY REPORT ─────────────────────────────────────────────────────────────
+// – WEEKLY REPORT ———————————————————––
 function renderReport() {
 state.view = “report”;
 const wk   = weekRange();
 
-app.innerHTML = ` <div style="background:#020617;min-height:100vh;color:white;font-family:-apple-system,BlinkMacSystemFont,sans-serif;padding-bottom:120px"> <div style="padding:20px;border-bottom:1px solid #1E293B;background:#0B1220;position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center"> <button onclick="renderHome()" style="${circleBtn()}">←</button> <div style="font-size:24px;font-weight:bold">📊 Weekly Report</div> <div></div> </div> <div style="padding:20px"> <div style="background:#081225;border:1px solid #1E293B;border-radius:24px;padding:24px;margin-bottom:20px"> <div style="font-size:18px;font-weight:700;margin-bottom:6px">${wk.label}</div> <div style="font-size:14px;color:#94A3B8;margin-bottom:16px">AI reads your worklog and tasks to draft your weekly email for Abhi Kapoor</div> <button onclick="buildReport()" id="repBtn" style="${savBtn()}">✨ Generate Weekly Report</button> </div> <div id="repOut" style="display:none"> <div style="display:flex;gap:10px;margin-bottom:16px"> <button onclick="copyRep()" style="flex:1;padding:14px;background:#081225;border:none;border-radius:14px;color:#94A3B8;font-size:15px;cursor:pointer">📋 Copy</button> <button onclick="dlRep()" style="flex:1;padding:14px;background:#081225;border:none;border-radius:14px;color:#94A3B8;font-size:15px;cursor:pointer">⬇ Download</button> </div> <div style="background:#081225;border-radius:20px;padding:20px;overflow-x:auto"> <pre id="repText" style="color:#C8D6E5;font-size:12px;line-height:1.8;white-space:pre-wrap;font-family:monospace"></pre> </div> </div> </div> </div>`;
+app.innerHTML = ` <div style="background:#020617;min-height:100vh;color:white;font-family:-apple-system,BlinkMacSystemFont,sans-serif;padding-bottom:120px"> <div style="padding:20px;border-bottom:1px solid #1E293B;background:#0B1220;position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center"> <button onclick="renderHome()" style="${circleBtn()}"><-</button> <div style="font-size:24px;font-weight:bold">Rep Weekly Report</div> <div></div> </div> <div style="padding:20px"> <div style="background:#081225;border:1px solid #1E293B;border-radius:24px;padding:24px;margin-bottom:20px"> <div style="font-size:18px;font-weight:700;margin-bottom:6px">${wk.label}</div> <div style="font-size:14px;color:#94A3B8;margin-bottom:16px">AI reads your worklog and tasks to draft your weekly email for Abhi Kapoor</div> <button onclick="buildReport()" id="repBtn" style="${savBtn()}">* Generate Weekly Report</button> </div> <div id="repOut" style="display:none"> <div style="display:flex;gap:10px;margin-bottom:16px"> <button onclick="copyRep()" style="flex:1;padding:14px;background:#081225;border:none;border-radius:14px;color:#94A3B8;font-size:15px;cursor:pointer">Log Copy</button> <button onclick="dlRep()" style="flex:1;padding:14px;background:#081225;border:none;border-radius:14px;color:#94A3B8;font-size:15px;cursor:pointer">v Download</button> </div> <div style="background:#081225;border-radius:20px;padding:20px;overflow-x:auto"> <pre id="repText" style="color:#C8D6E5;font-size:12px;line-height:1.8;white-space:pre-wrap;font-family:monospace"></pre> </div> </div> </div> </div>`;
 }
 
 async function buildReport() {
@@ -468,13 +482,13 @@ if (pre) pre.textContent  = text;
 } catch(e) {
 alert(“Error: “ + e.message);
 }
-if (btn) btn.textContent = “✨ Generate Weekly Report”;
+if (btn) btn.textContent = “* Generate Weekly Report”;
 }
 
 function copyRep() {
 navigator.clipboard.writeText(window._reportText||””).then(()=>{
 const btn = document.querySelector(’[onclick=“copyRep()”]’);
-if (btn) { btn.textContent = “✓ Copied!”; setTimeout(()=>{ btn.textContent = “📋 Copy”; },2000); }
+if (btn) { btn.textContent = “OK Copied!”; setTimeout(()=>{ btn.textContent = “Log Copy”; },2000); }
 });
 }
 
@@ -485,9 +499,9 @@ a.download = “Weekly-Report-” + new Date().toISOString().slice(0,10) + “.t
 a.click();
 }
 
-// ── CATEGORY MANAGEMENT ───────────────────────────────────────────────────────
+// – CATEGORY MANAGEMENT —————————————————––
 function addCategoryUI() {
-showModal(`<h3 style="margin-bottom:18px;font-size:22px">New Category</h3> <input id="cname" placeholder="Category name" style="${inp()}"> <input id="cicon" placeholder="Icon emoji e.g. 📁" style="${inp()}"> <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px"> <span style="color:#94A3B8;font-size:15px">Color:</span> <input type="color" id="ccolor" value="#3B82F6" style="width:52px;height:40px;border:none;border-radius:10px;cursor:pointer;background:transparent"> </div> <button onclick="submitAddCategory()" style="${savBtn()}">Create Category</button>`);
+showModal(`<h3 style="margin-bottom:18px;font-size:22px">New Category</h3> <input id="cname" placeholder="Category name" style="${inp()}"> <input id="cicon" placeholder="Icon emoji e.g. Folder" style="${inp()}"> <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px"> <span style="color:#94A3B8;font-size:15px">Color:</span> <input type="color" id="ccolor" value="#3B82F6" style="width:52px;height:40px;border:none;border-radius:10px;cursor:pointer;background:transparent"> </div> <button onclick="submitAddCategory()" style="${savBtn()}">Create Category</button>`);
 }
 
 function submitAddCategory() {
@@ -496,7 +510,7 @@ if (!name) { alert(“Name required”); return; }
 const id  = name.toLowerCase().replace(/\s+/g,”-”) + “-” + Date.now().toString(36);
 const cat = {
 id, name,
-icon:  document.getElementById(“cicon”).value || “📁”,
+icon:  document.getElementById(“cicon”).value || “Folder”,
 color: document.getElementById(“ccolor”).value,
 file:  id + “.json”
 };
@@ -507,7 +521,7 @@ closeModal();
 renderHome();
 }
 
-// ── TOKEN & SYNC ──────────────────────────────────────────────────────────────
+// – TOKEN & SYNC –––––––––––––––––––––––––––––––
 async function setToken() {
 showModal(`<h3 style="margin-bottom:18px;font-size:22px">GitHub Token</h3> <p style="color:#94A3B8;font-size:14px;margin-bottom:14px">Required to save data back to GitHub.<br>Get it at: github.com/settings/tokens</p> <input type="password" id="tok" value="${state.token||""}" placeholder="ghp_..." style="${inp()}"> <button onclick="submitToken()" style="${savBtn()}">Save Token</button>`);
 }
@@ -517,7 +531,7 @@ const t = document.getElementById(“tok”).value.trim();
 state.token = t;
 localStorage.setItem(“github_token”, t);
 closeModal();
-setStatus(“Token saved ✓”);
+setStatus(“Token saved OK”);
 }
 
 async function syncAll() {
@@ -528,7 +542,7 @@ await saveFile(cat.file, state.data[cat.id]);
 }
 await saveFile(“sb-categories.json”, state.categories);
 await saveFile(“sb-worklog.json”,    state.worklog);
-setStatus(“All synced ✓”);
+setStatus(“All synced OK”);
 }
 
 async function syncCategory(id) {
@@ -536,10 +550,10 @@ if (!state.token) { setToken(); return; }
 setStatus(“Saving…”);
 const cat = state.categories.find(c => c.id === id);
 await saveFile(cat.file, state.data[id]);
-setStatus(“Saved ✓”);
+setStatus(“Saved OK”);
 }
 
-// ── MODAL ─────────────────────────────────────────────────────────────────────
+// – MODAL ———————————————————————
 function showModal(html) {
 let mc = document.getElementById(”_mc”);
 if (!mc) { mc = document.createElement(“div”); mc.id = “_mc”; document.body.appendChild(mc); }
@@ -551,7 +565,7 @@ const mc = document.getElementById(”_mc”);
 if (mc) mc.innerHTML = “”;
 }
 
-// ── UTILS ─────────────────────────────────────────────────────────────────────
+// – UTILS ———————————————————————
 function esc(s) {
 return (s||””).replace(/&/g,”&”).replace(/</g,”<”).replace(/>/g,”>”).replace(/”/g,”"”);
 }
@@ -574,7 +588,7 @@ const d = new Date(), day = d.getDay();
 const mon = new Date(d); mon.setDate(d.getDate()-((day+6)%7));
 const sun = new Date(mon); sun.setDate(mon.getDate()+6);
 const fmt = x => x.toLocaleDateString(“en-GB”,{day:“2-digit”,month:“short”,year:“numeric”});
-return {start:mon.toISOString().slice(0,10), end:sun.toISOString().slice(0,10), label:`${fmt(mon)} – ${fmt(sun)}`};
+return {start:mon.toISOString().slice(0,10), end:sun.toISOString().slice(0,10), label:fmt(mon)+” - “+fmt(sun)};
 }
 
 function btnStyle()   { return “background:#081225;color:white;border:1px solid #1E293B;padding:10px 14px;border-radius:12px;cursor:pointer;font-size:14px”; }
@@ -582,7 +596,7 @@ function circleBtn()  { return “width:50px;height:50px;border-radius:50%;borde
 function inp()        { return “width:100%;background:#1E293B;border:none;color:white;padding:14px;border-radius:14px;margin-bottom:12px;font-size:16px;font-family:inherit;display:block;outline:none;”; }
 function savBtn()     { return “width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(135deg,#3B82F6,#8B5CF6);color:white;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit”; }
 
-// ── GLOBALS ───────────────────────────────────────────────────────────────────
+// – GLOBALS —————————————————————––
 window.renderHome         = renderHome;
 window.openCategory       = openCategory;
 window.setCatFilter       = setCatFilter;
