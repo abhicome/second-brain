@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
-html,body,#app{height:100%;background:#080C14;font-family:Sora,sans-serif;color:#E2E8F0;overflow:hidden}
+html,body{height:100%;margin:0}#app{height:100%;height:100dvh;background:#080C14;font-family:Sora,sans-serif;color:#E2E8F0;overflow:hidden}
 button{font-family:Sora,sans-serif;cursor:pointer}
 input,textarea,select{font-family:Sora,sans-serif;color:#E2E8F0;background:#080C14;color-scheme:dark}
 #app{display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:relative}
@@ -29,7 +29,7 @@ input,textarea,select{font-family:Sora,sans-serif;color:#E2E8F0;background:#080C
 .arow input{flex:1}
 .asave{background:#4F8EF7;border:none;border-radius:10px;color:#fff;font-size:13px;padding:0 14px;font-weight:600}
 .acanc{background:#0F1829;border:none;border-radius:10px;color:#6B7280;font-size:13px;padding:0 12px}
-#body{flex:1;overflow-y:auto;padding-bottom:88px;height:0}
+#body{flex:1;overflow-y:auto;padding-bottom:88px;min-height:0}
 .pg{padding:0 16px 16px}
 .hero{padding:18px 0 14px;border-bottom:1px solid #0F1829;margin-bottom:16px}
 .hdate{font-size:10px;color:#374151;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
@@ -1101,7 +1101,7 @@ return html;
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
-document.addEventListener(‘DOMContentLoaded’, function() {
+function init() {
 // Wire static buttons
 document.getElementById(‘keyBtn’).addEventListener(‘click’,  toggleApi);
 document.getElementById(‘logBtn’).addEventListener(‘click’,  toggleLog);
@@ -1130,7 +1130,10 @@ render();
 
 // Sync drive in background
 if (S.apiKey) syncDrive();
-});
+}
+
+// Run immediately - script is at end of body
+init();
 
 </script>
 </body>
