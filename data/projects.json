@@ -1,0 +1,221 @@
+{
+  "category": "Projects",
+  "color": "#A78BFA",
+  "icon": "🚀",
+  "items": [
+    {
+      "id": "project-1",
+      "title": "Arista AGNI Implementation",
+      "status": "inprogress",
+      "priority": "high",
+      "dueDate": "2026-09-30",
+      "notes": "Port validation for India proxy IPs completed; license procurement in progress",
+      "subtasks": [
+        {
+          "id": "project-1-sub-1",
+          "title": "Share site priority sheet with Rajesh",
+          "status": "todo"
+        },
+        {
+          "id": "project-1-sub-2",
+          "title": "Raise work intake for Network team",
+          "status": "todo"
+        },
+        {
+          "id": "project-1-sub-3",
+          "title": "Complete Infosec approval",
+          "status": "inprogress"
+        }
+      ],
+      "createdAt": "2026-05-05T18:12:24.903Z"
+    },
+    {
+      "id": "project-2",
+      "title": "DNS Block for corp.ad (Zscaler DNS Security)",
+      "status": "inprogress",
+      "priority": "high",
+      "dueDate": "2026-05-22",
+      "notes": "Identify users for pilot testing",
+      "subtasks": [
+        {
+          "id": "project-2-sub-1",
+          "title": "Finalize pilot user list",
+          "status": "todo"
+        },
+        {
+          "id": "project-2-sub-2",
+          "title": "Coordinate with Vinay",
+          "status": "todo"
+        },
+        {
+          "id": "project-2-sub-3",
+          "title": "Enable pilot policy",
+          "status": "todo"
+        }
+      ],
+      "createdAt": "2026-05-05T18:12:24.903Z"
+    },
+    {
+      "id": "project-3",
+      "title": "DHCP 50/50 Failover Dashboard",
+      "status": "inprogress",
+      "priority": "normal",
+      "dueDate": "2026-05-11",
+      "notes": "PEG team working on dashboard",
+      "subtasks": [
+        {
+          "id": "project-3-sub-1",
+          "title": "Review dashboard output",
+          "status": "todo"
+        },
+        {
+          "id": "project-3-sub-2",
+          "title": "Validate DHCP metrics",
+          "status": "todo"
+        }
+      ],
+      "createdAt": "2026-05-05T18:12:24.903Z"
+    },
+    {
+      "id": "project-4",
+      "title": "AD Transformation (AD-Less Roadmap)",
+      "status": "inprogress",
+      "priority": "high",
+      "dueDate": "2026-05-08",
+      "notes": "Await Microsoft response",
+      "subtasks": [
+        {
+          "id": "project-4-sub-1",
+          "title": "Document current AD dependencies",
+          "status": "todo"
+        },
+        {
+          "id": "project-4-sub-2",
+          "title": "Review Microsoft recommendations",
+          "status": "todo"
+        }
+      ],
+      "createdAt": "2026-05-05T18:12:24.903Z"
+    },
+    {
+      "id": "project-5",
+      "title": "DHCP Scope Creation Automation",
+      "status": "inprogress",
+      "priority": "normal",
+      "dueDate": "2026-06-30",
+      "notes": "Discuss implementation approach with Savreet",
+      "subtasks": [
+        {
+          "id": "project-5-sub-1",
+          "title": "Update BRD",
+          "status": "inprogress"
+        },
+        {
+          "id": "project-5-sub-2",
+          "title": "Discuss catalogue integration",
+          "status": "todo"
+        }
+      ],
+      "createdAt": "2026-05-05T18:12:24.903Z"
+    },
+    {
+      "id": "project-6",
+      "title": "DNS Catalogue Modification (with Database)",
+      "status": "inprogress",
+      "priority": "normal",
+      "dueDate": "2026-06-30",
+      "notes": "Update catalogue with final database and changes",
+      "subtasks": [
+        {
+          "id": "project-6-sub-1",
+          "title": "Identify remaining domain owners",
+          "status": "todo"
+        },
+        {
+          "id": "project-6-sub-2",
+          "title": "Update final catalogue fields",
+          "status": "todo"
+        }
+      ],
+      "createdAt": "2026-05-05T18:12:24.903Z"
+    },
+    {
+      "id": "project-7",
+      "title": "SailPoint Post Migration Activities",
+      "status": "inprogress",
+      "priority": "urgent",
+      "dueDate": "2026-05-11",
+      "notes": "Power on DCs and validate replication",
+      "subtasks": [
+        {
+          "id": "project-7-sub-1",
+          "title": "Power on domain controllers",
+          "status": "todo"
+        },
+        {
+          "id": "project-7-sub-2",
+          "title": "Verify AD replication",
+          "status": "todo"
+        },
+        {
+          "id": "project-7-sub-3",
+          "title": "Validate group membership",
+          "status": "todo"
+        }
+      ],
+      "createdAt": "2026-05-05T18:12:24.903Z"
+    },
+    {
+      "id": "project-8",
+      "title": "SailPoint Pre Migration Activities",
+      "status": "inprogress",
+      "priority": "urgent",
+      "dueDate": "2026-05-08",
+      "notes": "Outbound replication disable and backups pending",
+      "subtasks": [
+        {
+          "id": "project-8-sub-1",
+          "title": "Disable outbound replication",
+          "status": "todo"
+        },
+        {
+          "id": "project-8-sub-2",
+          "title": "Take DC backup",
+          "status": "todo"
+        },
+        {
+          "id": "project-8-sub-3",
+          "title": "Export users and groups",
+          "status": "todo"
+        }
+      ],
+      "createdAt": "2026-05-05T18:12:24.903Z"
+    },
+    {
+      "id": "project-9",
+      "title": "SailPoint Migration Scripts",
+      "status": "done",
+      "priority": "normal",
+      "dueDate": "2026-05-03",
+      "notes": "All scripts prepared and shared",
+      "subtasks": [
+        {
+          "id": "project-9-sub-1",
+          "title": "Prepare migration scripts",
+          "status": "done"
+        },
+        {
+          "id": "project-9-sub-2",
+          "title": "Test migration scripts",
+          "status": "done"
+        },
+        {
+          "id": "project-9-sub-3",
+          "title": "Share scripts with team",
+          "status": "done"
+        }
+      ],
+      "createdAt": "2026-05-05T18:12:24.903Z"
+    }
+  ]
+}
