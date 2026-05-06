@@ -15,27 +15,32 @@ const CATEGORIES = [
 ];
 
 export default function App(){
-
   const [tab,setTab] = useState('home');
   const [expanded,setExpanded] = useState(null);
 
   const TASKS = useMemo(() => {
-    return [
-      ...(Array.isArray(tasksData) ? tasksData : []),
-      ...(Array.isArray(workData) ? workData : []),
-      ...(Array.isArray(projectsData) ? projectsData : [])
-    ].map((t,index)=>(
+
+    const merged = [
+      ...(tasksData.tasks || []),
+      ...(workData.tasks || workData.work || []),
+      ...(projectsData.projects || [])
+    ];
+
+    return merged.map((t,index)=>(
       {
         id:t.id || String(index+1),
         title:t.title || t.name || 'Untitled',
-        category:t.category || (t.type === 'project' ? 'projects' : 'work'),
+        category:t.context || t.category || 'work',
         priority:(t.priority || 'normal').toLowerCase(),
         status:(t.status || 'todo').toLowerCase(),
-        dueDate:t.dueDate || t.targetDate || '',
+        dueDate:t.dueDate || '',
         notes:t.notes || t.summary || t.description || ''
       }
     ));
+
   },[]);
+
+  const WORKLOG = worklogData.worklog || worklogData.entries || [];
 
   const done = TASKS.filter(t=>t.status==='done').length;
   const open = TASKS.filter(t=>t.status!=='done');
@@ -51,7 +56,7 @@ export default function App(){
       <div style={styles.header}>
         <div>
           <div style={styles.brand}>⬡ Second Brain</div>
-          <div style={styles.sub}>Live JSON Database Connected</div>
+          <div style={styles.sub}>Live Database Connected</div>
         </div>
       </div>
 
@@ -73,7 +78,7 @@ export default function App(){
 
           <div style={styles.section}>🔥 PRIORITY TASKS</div>
 
-          {TASKS.filter(t=>['urgent','high'].includes(t.priority)).slice(0,6).map(task=>(
+          {TASKS.filter(t=>['urgent','high'].includes(t.priority)).slice(0,10).map(task=>(
             <TaskCard
               key={task.id}
               task={task}
@@ -102,7 +107,7 @@ export default function App(){
       {tab === 'log' && (
         <div style={styles.page}>
           <div style={styles.hero}>Worklog</div>
-          {(Array.isArray(worklogData)?worklogData:[]).slice(0,20).map((item,index)=>(
+          {WORKLOG.slice(0,20).map((item,index)=>(
             <div key={index} style={styles.log}>
               {item.text || item.title || JSON.stringify(item)}
             </div>
@@ -114,6 +119,7 @@ export default function App(){
         <div style={styles.page}>
           <button style={styles.back} onClick={()=>setTab('home')}>← Back</button>
           <div style={styles.hero}>{tab}</div>
+
           {filtered.map(task=>(
             <TaskCard
               key={task.id}
@@ -166,7 +172,7 @@ const styles = {
   brand:{fontSize:'20px',fontWeight:800},
   sub:{color:'#64748B',marginTop:'6px'},
   page:{padding:'20px'},
-  hero:{fontSize:'48px',fontWeight:800,lineHeight:1,marginBottom:'12px'},
+  hero:{fontSize:'58px',fontWeight:800,lineHeight:1,marginBottom:'12px'},
   subText:{color:'#64748B',marginBottom:'24px'},
   grid:{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:'12px',marginBottom:'28px'},
   card:{background:'#0F172A',padding:'24px',borderRadius:'22px'},
