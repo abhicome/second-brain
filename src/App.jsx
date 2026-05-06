@@ -41,10 +41,28 @@ const CATEGORIES = [
     color: '#A78BFA'
   },
   {
+    id: 'personal',
+    icon: '🌿',
+    label: 'Personal',
+    color: '#34D399'
+  },
+  {
     id: 'knowledge',
     icon: '🧠',
     label: 'Knowledge',
     color: '#FBBF24'
+  },
+  {
+    id: 'bills',
+    icon: '💳',
+    label: 'Bills',
+    color: '#F87171'
+  },
+  {
+    id: 'watchlist',
+    icon: '👁️',
+    label: 'Watchlist',
+    color: '#38BDF8'
   }
 ];
 
@@ -57,9 +75,7 @@ export default function App(){
 
   return (
     <div style={styles.shell}>
-
       <div style={styles.header}>
-
         <div>
           <div style={styles.brand}>⬡ Second Brain</div>
           <div style={styles.sub}>Live Preview · AI Workspace</div>
@@ -69,14 +85,10 @@ export default function App(){
           <button style={styles.iconBtn}>📋</button>
           <button style={styles.iconBtn}>🔍</button>
         </div>
-
       </div>
 
       <div style={styles.page}>
-
-        <div style={styles.heroTitle}>
-          Your Second Brain
-        </div>
+        <div style={styles.heroTitle}>Your Second Brain</div>
 
         <div style={styles.heroSub}>
           {TASKS.length - done} open tasks · {progress}% complete
@@ -87,24 +99,13 @@ export default function App(){
         </div>
 
         <div style={styles.statsGrid}>
-
           <StatCard value={TASKS.length} label="Tasks" color="#4F8EF7" />
-
           <StatCard value={done} label="Done" color="#34D399" />
-
-          <StatCard
-            value={TASKS.filter(t => t.status === 'inprogress').length}
-            label="In Progress"
-            color="#FBBF24"
-          />
-
+          <StatCard value={2} label="In Progress" color="#FBBF24" />
           <StatCard value={0} label="Overdue" color="#F87171" />
-
         </div>
 
-        <div style={styles.sectionTitle}>
-          🔥 Urgent & High Priority
-        </div>
+        <div style={styles.sectionTitle}>🔥 URGENT & HIGH PRIORITY</div>
 
         {
           TASKS.filter(t => ['urgent','high'].includes(t.priority))
@@ -114,29 +115,17 @@ export default function App(){
         }
 
         <div style={styles.weekBanner}>
-
           <div>
-            <div style={styles.weekTitle}>
-              28 Apr – 4 May 2026
-            </div>
-
-            <div style={styles.weekSub}>
-              AI weekly report ready
-            </div>
+            <div style={styles.weekTitle}>28 Apr – 4 May 2026</div>
+            <div style={styles.weekSub}>AI weekly report ready</div>
           </div>
 
-          <button style={styles.generateBtn}>
-            Generate →
-          </button>
-
+          <button style={styles.generateBtn}>Generate →</button>
         </div>
 
-        <div style={styles.sectionTitle}>
-          Categories
-        </div>
+        <div style={styles.sectionTitle}>CATEGORIES</div>
 
         <div style={styles.categoryGrid}>
-
           {
             CATEGORIES.map(cat => (
               <button
@@ -147,19 +136,12 @@ export default function App(){
                 }}
                 onClick={() => setTab(cat.id)}
               >
-                <div style={styles.categoryIcon}>
-                  {cat.icon}
-                </div>
-
-                <div style={styles.categoryLabel}>
-                  {cat.label}
-                </div>
+                <div style={styles.categoryIcon}>{cat.icon}</div>
+                <div style={styles.categoryLabel}>{cat.label}</div>
               </button>
             ))
           }
-
         </div>
-
       </div>
 
       <div style={styles.navbar}>
@@ -170,7 +152,6 @@ export default function App(){
       </div>
 
       <button style={styles.fab}>+</button>
-
     </div>
   );
 }
@@ -178,13 +159,8 @@ export default function App(){
 function StatCard({ value, label, color }){
   return (
     <div style={styles.statCard}>
-      <div style={{ ...styles.statValue, color }}>
-        {value}
-      </div>
-
-      <div style={styles.statLabel}>
-        {label}
-      </div>
+      <div style={{ ...styles.statValue, color }}>{value}</div>
+      <div style={styles.statLabel}>{label}</div>
     </div>
   );
 }
@@ -192,29 +168,16 @@ function StatCard({ value, label, color }){
 function TaskCard({ task }){
   return (
     <div style={styles.taskCard}>
-
       <div style={styles.taskAccent}></div>
 
       <div style={{ flex:1 }}>
-
-        <div style={styles.taskTitle}>
-          {task.title}
-        </div>
+        <div style={styles.taskTitle}>{task.title}</div>
 
         <div style={styles.badges}>
-
-          <span style={styles.priorityBadge}>
-            {task.priority}
-          </span>
-
-          <span style={styles.dateText}>
-            {task.dueDate}
-          </span>
-
+          <span style={styles.priorityBadge}>{task.priority}</span>
+          <span style={styles.dateText}>{task.dueDate}</span>
         </div>
-
       </div>
-
     </div>
   );
 }
@@ -231,7 +194,6 @@ function NavButton({ icon, active }){
 }
 
 const styles = {
-
   shell:{
     background:'#080C14',
     minHeight:'100vh',
@@ -401,23 +363,24 @@ const styles = {
   categoryGrid:{
     display:'grid',
     gridTemplateColumns:'repeat(3,1fr)',
-    gap:'12px'
+    gap:'12px',
+    marginBottom:'80px'
   },
 
   categoryCard:{
     background:'#0F172A',
     borderRadius:'22px',
-    padding:'18px 12px',
+    padding:'22px 12px',
     color:'#E2E8F0'
   },
 
   categoryIcon:{
-    fontSize:'28px',
-    marginBottom:'12px'
+    fontSize:'30px',
+    marginBottom:'14px'
   },
 
   categoryLabel:{
-    fontSize:'14px'
+    fontSize:'15px'
   },
 
   navbar:{
