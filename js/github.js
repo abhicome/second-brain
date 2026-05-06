@@ -2,14 +2,14 @@ async function loadAllData(){
 
   for(const id in CATEGORY_CONFIG){
 
-    const cat =
+    const config =
       CATEGORY_CONFIG[id];
 
     try{
 
       const res =
         await fetch(
-          rawUrl(cat.file)
+          rawUrl(config.file)
         );
 
       const text =
@@ -21,13 +21,11 @@ async function loadAllData(){
       state.raw[id] = json;
 
       state.data[id] =
-        json[cat.key] || [];
+        json[config.key] || [];
 
     }catch(e){
 
-      console.error(cat.file,e);
-
-      state.raw[id] = {};
+      console.error(e);
 
       state.data[id] = [];
 
@@ -37,7 +35,7 @@ async function loadAllData(){
 
 }
 
-async function setToken(){
+function setToken(){
 
   const token =
     prompt(
