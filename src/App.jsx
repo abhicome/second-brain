@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 import tasksData from '../data/tasks.json';
 import workData from '../data/work.json';
 import projectsData from '../data/projects.json';
@@ -8,15 +9,21 @@ const CATEGORIES = [
   { id:'work', icon:'💼', label:'Work', color:'#4F8EF7' },
   { id:'projects', icon:'🚀', label:'Projects', color:'#A78BFA' },
   { id:'personal', icon:'🌿', label:'Personal', color:'#34D399' },
-  { id:'knowledge', icon:'🧠', label:'Knowledge', color:'#FBBF24' },
-  { id:'bills', icon:'💳', label:'Bills', color:'#F87171' },
-  { id:'watchlist', icon:'👁️', label:'Watchlist', color:'#38BDF8' },
-  { id:'health', icon:'❤️', label:'Health', color:'#FB923C' }
+  { id:'knowledge', icon:'🧠', label:'Knowledge', color:'#FBBF24' }
 ];
 
 export default function App(){
   const [tab,setTab] = useState('home');
   const [expanded,setExpanded] = useState(null);
+  const [aiInput,setAiInput] = useState('');
+  const [messages,setMessages] = useState([
+    {
+      role:'assistant',
+      text:'Your AI second brain is online.'
+    }
+  ]);
+
+  const [note,setNote] = useState('# Welcome to MemAI\n\nThis note is synced-ready for GitHub storage.');
 
   const TASKS = useMemo(() => {
 
@@ -50,13 +57,28 @@ export default function App(){
     ? []
     : TASKS.filter(t=>t.category===tab);
 
+  const sendMessage = () => {
+    if(!aiInput.trim()) return;
+
+    setMessages(prev => [
+      ...prev,
+      { role:'user', text: aiInput },
+      {
+        role:'assistant',
+        text:'AI memory response placeholder for: ' + aiInput
+      }
+    ]);
+
+    setAiInput('');
+  };
+
   return (
     <div style={styles.shell}>
 
       <div style={styles.header}>
         <div>
-          <div style={styles.brand}>⬡ Second Brain</div>
-          <div style={styles.sub}>Live Database Connected</div>
+          <div style={styles.brand}>⬡ MemAI Vault</div>
+          <div style={styles.sub}>GitHub Connected Second Brain</div>
         </div>
       </div>
 
@@ -73,7 +95,21 @@ export default function App(){
             <Card value={TASKS.length} label='Tasks' color='#4F8EF7'/>
             <Card value={done} label='Done' color='#34D399'/>
             <Card value={TASKS.filter(t=>t.status==='inprogress').length} label='In Progress' color='#FBBF24'/>
-            <Card value={TASKS.filter(t=>t.priority==='urgent').length} label='Urgent' color='#F87171'/>
+            <Card value={messages.length} label='AI Chats' color='#A78BFA'/>
+          </div>
+
+          <div style={styles.section}>📝 QUICK NOTE</div>
+
+          <div style={styles.noteWrap}>
+            <textarea
+              style={styles.noteInput}
+              value={note}
+              onChange={(e)=>setNote(e.target.value)}
+            />
+
+            <div style={styles.preview}>
+              <ReactMarkdown>{note}</ReactMarkdown>
+            </div>
           </div>
 
           <div style={styles.section}>🔥 PRIORITY TASKS</div>
@@ -86,6 +122,30 @@ export default function App(){
               onClick={()=>setExpanded(expanded===task.id ? null : task.id)}
             />
           ))}
+
+          <div style={styles.section}>🧠 AI CHAT</div>
+
+          <div style={styles.aiBox}>
+            <div style={styles.msgs}>
+              {messages.map((m,index)=>(
+                <div key={index} style={m.role==='assistant' ? styles.aiMsg : styles.userMsg}>
+                  <strong>{m.role}</strong>
+                  <div>{m.text}</div>
+                </div>
+              ))}
+            </div>
+
+            <div style={styles.aiInputWrap}>
+              <input
+                style={styles.aiInput}
+                value={aiInput}
+                onChange={(e)=>setAiInput(e.target.value)}
+                placeholder='Ask your second brain...'
+              />
+
+              <button style={styles.sendBtn} onClick={sendMessage}>Send</button>
+            </div>
+          </div>
 
           <div style={styles.section}>CATEGORIES</div>
 
@@ -187,5 +247,15 @@ const styles = {
   nav:{position:'fixed',bottom:0,left:0,right:0,background:'#080C14',display:'flex',justifyContent:'space-around',padding:'18px',borderTop:'1px solid #1E293B'},
   navBtn:{background:'none',border:'none',color:'#fff',fontSize:'24px'},
   log:{background:'#0F172A',padding:'18px',borderRadius:'16px',marginBottom:'10px'},
-  back:{background:'none',border:'none',color:'#4F8EF7',marginBottom:'20px'}
+  back:{background:'none',border:'none',color:'#4F8EF7',marginBottom:'20px'},
+  noteWrap:{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'16px'},
+  noteInput:{background:'#0F172A',color:'#fff',border:'1px solid #1E293B',borderRadius:'18px',padding:'18px',minHeight:'240px'},
+  preview:{background:'#0F172A',padding:'18px',borderRadius:'18px',overflow:'auto'},
+  aiBox:{background:'#0F172A',padding:'18px',borderRadius:'20px'},
+  msgs:{maxHeight:'260px',overflow:'auto'},
+  aiMsg:{background:'#111827',padding:'14px',borderRadius:'14px',marginBottom:'10px'},
+  userMsg:{background:'#1E293B',padding:'14px',borderRadius:'14px',marginBottom:'10px'},
+  aiInputWrap:{display:'flex',gap:'10px',marginTop:'14px'},
+  aiInput:{flex:1,padding:'14px',borderRadius:'14px',border:'none',background:'#111827',color:'#fff'},
+  sendBtn:{background:'#4F8EF7',border:'none',padding:'14px 18px',borderRadius:'14px',color:'#fff'}
 };
