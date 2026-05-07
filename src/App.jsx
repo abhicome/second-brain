@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
+import { askAI } from './lib/ai';
 import tasksData from '../data/tasks.json';
 import workData from '../data/work.json';
 import projectsData from '../data/projects.json';
@@ -16,6 +17,8 @@ export default function App(){
   const [tab,setTab] = useState('home');
   const [expanded,setExpanded] = useState(null);
   const [aiInput,setAiInput] = useState('');
+  const [loading,setLoading] = useState(false);
+
   const [messages,setMessages] = useState([
     {
       role:'assistant',
@@ -57,24 +60,34 @@ export default function App(){
     ? []
     : TASKS.filter(t=>t.category===tab);
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if(!aiInput.trim()) return;
+
+    const userMessage = aiInput;
 
     setMessages(prev => [
       ...prev,
-      { role:'user', text: aiInput },
-      {
-        role:'assistant',
-        text:'AI memory response placeholder for: ' + aiInput
-      }
+      { role:'user', text:userMessage }
     ]);
 
     setAiInput('');
+    setLoading(true);
+
+    const response = await askAI(userMessage, note);
+
+    setMessages(prev => [
+      ...prev,
+      {
+        role:'assistant',
+        text:response
+      }
+    ]);
+
+    setLoading(false);
   };
 
   return (
     <div style={styles.shell}>
-
       <div style={styles.header}>
         <div>
           <div style={styles.brand}>⬡ MemAI Vault</div>
@@ -112,17 +125,6 @@ export default function App(){
             </div>
           </div>
 
-          <div style={styles.section}>🔥 PRIORITY TASKS</div>
-
-          {TASKS.filter(t=>['urgent','high'].includes(t.priority)).slice(0,10).map(task=>(
-            <TaskCard
-              key={task.id}
-              task={task}
-              expanded={expanded===task.id}
-              onClick={()=>setExpanded(expanded===task.id ? null : task.id)}
-            />
-          ))}
-
           <div style={styles.section}>🧠 AI CHAT</div>
 
           <div style={styles.aiBox}>
@@ -133,6 +135,10 @@ export default function App(){
                   <div>{m.text}</div>
                 </div>
               ))}
+
+              {loading && (
+                <div style={styles.aiMsg}>Thinking...</div>
+              )}
             </div>
 
             <div style={styles.aiInputWrap}>
@@ -146,48 +152,6 @@ export default function App(){
               <button style={styles.sendBtn} onClick={sendMessage}>Send</button>
             </div>
           </div>
-
-          <div style={styles.section}>CATEGORIES</div>
-
-          <div style={styles.catGrid}>
-            {CATEGORIES.map(cat => (
-              <button
-                key={cat.id}
-                style={{...styles.cat,border:`1px solid ${cat.color}55`}}
-                onClick={()=>setTab(cat.id)}
-              >
-                <div style={styles.catIcon}>{cat.icon}</div>
-                <div>{cat.label}</div>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {tab === 'log' && (
-        <div style={styles.page}>
-          <div style={styles.hero}>Worklog</div>
-          {WORKLOG.slice(0,20).map((item,index)=>(
-            <div key={index} style={styles.log}>
-              {item.text || item.title || JSON.stringify(item)}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {tab !== 'home' && tab !== 'log' && (
-        <div style={styles.page}>
-          <button style={styles.back} onClick={()=>setTab('home')}>← Back</button>
-          <div style={styles.hero}>{tab}</div>
-
-          {filtered.map(task=>(
-            <TaskCard
-              key={task.id}
-              task={task}
-              expanded={expanded===task.id}
-              onClick={()=>setExpanded(expanded===task.id ? null : task.id)}
-            />
-          ))}
         </div>
       )}
 
@@ -197,7 +161,6 @@ export default function App(){
         <button style={styles.navBtn} onClick={()=>setTab('projects')}>🚀</button>
         <button style={styles.navBtn} onClick={()=>setTab('log')}>📋</button>
       </div>
-
     </div>
   );
 }
@@ -207,21 +170,6 @@ function Card({value,label,color}){
     <div style={styles.card}>
       <div style={{fontSize:36,fontWeight:800,color}}>{value}</div>
       <div style={{color:'#64748B'}}>{label}</div>
-    </div>
-  );
-}
-
-function TaskCard({task,expanded,onClick}){
-  return (
-    <div style={styles.task} onClick={onClick}>
-      <div style={styles.taskTitle}>{task.title}</div>
-      <div style={styles.badges}>
-        <span>{task.priority}</span>
-        <span>{task.dueDate}</span>
-      </div>
-      {expanded && (
-        <div style={styles.notes}>{task.notes}</div>
-      )}
     </div>
   );
 }
@@ -237,17 +185,8 @@ const styles = {
   grid:{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:'12px',marginBottom:'28px'},
   card:{background:'#0F172A',padding:'24px',borderRadius:'22px'},
   section:{marginBottom:'14px',marginTop:'30px',color:'#94A3B8',fontWeight:700,letterSpacing:'2px'},
-  task:{background:'#0F172A',padding:'20px',borderRadius:'20px',marginBottom:'12px'},
-  taskTitle:{fontSize:'20px',fontWeight:700,marginBottom:'10px'},
-  badges:{display:'flex',gap:'12px',color:'#94A3B8',fontSize:'13px'},
-  notes:{marginTop:'14px',color:'#CBD5E1',lineHeight:1.6},
-  catGrid:{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:'12px'},
-  cat:{background:'#0F172A',borderRadius:'20px',padding:'24px',color:'#fff'},
-  catIcon:{fontSize:'32px',marginBottom:'10px'},
   nav:{position:'fixed',bottom:0,left:0,right:0,background:'#080C14',display:'flex',justifyContent:'space-around',padding:'18px',borderTop:'1px solid #1E293B'},
   navBtn:{background:'none',border:'none',color:'#fff',fontSize:'24px'},
-  log:{background:'#0F172A',padding:'18px',borderRadius:'16px',marginBottom:'10px'},
-  back:{background:'none',border:'none',color:'#4F8EF7',marginBottom:'20px'},
   noteWrap:{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'16px'},
   noteInput:{background:'#0F172A',color:'#fff',border:'1px solid #1E293B',borderRadius:'18px',padding:'18px',minHeight:'240px'},
   preview:{background:'#0F172A',padding:'18px',borderRadius:'18px',overflow:'auto'},
